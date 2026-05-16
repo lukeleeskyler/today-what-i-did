@@ -1,0 +1,2978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>今天做了啥</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: linear-gradient(180deg, #4ECDC4 0%, #2E86AB 100%);
+  --surface: #FFFFFF;
+  --primary: #FF6B6B;
+  --primary-light: #FFF0F0;
+  --secondary: #4ECDC4;
+  --secondary-light: #EDFBF9;
+  --text: #1a1a1a;
+  --text-secondary: #888888;
+  --text-tertiary: #B0B0B0;
+  --border: #E8E2DC;
+  --shadow: 0 2px 12px rgba(0,0,0,0.10);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.14);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+  /* Category colors */
+  --c-eat: #FF6B6B;
+  --c-learn: #4ECDC4;
+  --c-watch: #A78BFA;
+  --c-spend: #F59E0B;
+  --c-read: #34D399;
+  --c-mood: #F472B6;
+  --c-go: #60A5FA;
+  --c-sport: #22C55E;
+  --c-work: #F97316;
+  --c-custom: #94A3B8;
+}
+html { font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+body { min-height: 100vh; }
+input, textarea, button { font-family: inherit; font-size: inherit; }
+
+/* ===== Card Section ===== */
+.section-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+/* ===== App Container ===== */
+#app { max-width: 480px; margin: 0 auto; padding: 0 16px 80px; min-height: 100vh; }
+
+/* ===== Header ===== */
+.header { padding: 20px 0 14px; display: flex; align-items: center; justify-content: space-between; }
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-icon { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.2); border-radius: 10px; }
+.header-title { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.header-date { font-size: 12px; color: rgba(255,255,255,0.75); }
+.header-actions { display: flex; gap: 6px; }
+.header-btn {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.header-btn:hover { background: rgba(255,255,255,0.35); }
+.header-btn svg { width: 18px; height: 18px; display: block; stroke: #fff; }
+
+/* ===== Tabs ===== */
+.tabs { display: flex; gap: 4px; background: var(--surface); border-radius: var(--radius); padding: 4px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn.active { background: #4ECDC4; color: #fff; box-shadow: 0 2px 8px rgba(78,205,196,0.3); }
+.tab-btn:not(.active):hover { background: #f5f5f5; }
+
+/* ===== Views ===== */
+.view { display: none; }
+.view.active { display: block; animation: viewAppear 0.2s ease forwards; }
+.view.slide-in-right { animation: slideInRight 0.25s ease forwards; }
+.view.slide-in-left { animation: slideInLeft 0.25s ease forwards; }
+@keyframes viewAppear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ===== Quick Log ===== */
+.quick-section.section-card { padding-bottom: 12px; }
+.quick-section.section-card .quick-label { margin-bottom: 8px; }
+.quick-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; letter-spacing: 0.5px; }
+.quick-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 10px;
+  background: #F5F8F8;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.quick-btn:hover { background: #E8F4F4; }
+.quick-btn:active { transform: scale(0.97); }
+.quick-btn .q-icon svg { width: 18px; height: 18px; display: block; }
+.quick-btn .q-label { font-size: 13px; }
+.quick-btn.active { background: #4ECDC4; color: #fff; }
+.quick-btn.active .q-icon svg { stroke: #fff; }
+.quick-btn-custom { background: #F5F8F8; }
+.quick-btn-custom:hover { background: #E8F4F4; }
+.quick-btn-custom.active { background: #4ECDC4; color: #fff; }
+.quick-add-btn { background: transparent; border: 1.5px dashed #C8D5D5; font-size: 18px; font-weight: 300; color: var(--text-secondary); padding: 6px 10px; min-width: 36px; justify-content: center; }
+.quick-add-btn:hover { border-color: #4ECDC4; color: #4ECDC4; }
+
+/* ===== Quick Manager Dialog ===== */
+.custom-quick-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.custom-quick-item:last-child { border-bottom: none; }
+.custom-quick-item .q-left { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.custom-quick-item .q-left svg { width: 22px; height: 22px; display: block; }
+.custom-quick-item .q-del { border: none; background: none; color: #F87171; cursor: pointer; font-size: 15px; padding: 2px 6px; border-radius: 4px; }
+.custom-quick-item .q-del:hover { background: #FEE2E2; }
+
+/* ===== Experience System ===== */
+.xp-section { background: var(--surface); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.xp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.xp-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.xp-title span { font-size: 15px; }
+.xp-total { font-size: 12px; color: var(--text-tertiary); }
+.xp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.xp-bar-row { display: flex; align-items: center; gap: 8px; }
+.xp-bar-icon { font-size: 14px; width: 20px; text-align: center; flex-shrink: 0; }
+.xp-bar-track {
+  flex: 1; height: 10px; background: #E8F4F4; border-radius: 6px; overflow: hidden; position: relative;
+}
+.xp-bar-fill {
+  height: 100%; border-radius: 4px; transition: width 0.4s ease;
+  background: var(--primary);
+}
+.xp-bar-label {
+  font-size: 10px; color: var(--text-tertiary); width: 24px; text-align: right; flex-shrink: 0; font-weight: 600;
+}
+.xp-bar-fill.lv0 { width: 0%; background: #E8F4F4; }
+.xp-bar-fill.lv1 { background: #5B7BA3; }
+.xp-bar-fill.lv2 { background: #4ECDC4; }
+.xp-bar-fill.lv3 { background: #4ECDC4; }
+.xp-bar-fill.lv4 { background: #FF6B6B; }
+.xp-bar-fill.lv5 { background: #FF6B6B; }
+/* Level indicator at the end of each bar */
+.xp-combo-text { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-left: 4px; }
+/* Level badge */
+.xp-level-badge {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 12px; margin-bottom: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.xp-level-icon { font-size: 16px; }
+.xp-level-num { font-size: 16px; font-weight: 800; color: var(--primary); }
+.xp-level-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.xp-level-progress { display: flex; align-items: center; gap: 8px; }
+.xp-level-track { flex: 1; height: 6px; background: #F0EDE8; border-radius: 3px; overflow: hidden; }
+.xp-level-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--primary), #F97316); transition: width 0.5s ease; }
+.xp-level-text { font-size: 10px; color: var(--text-tertiary); white-space: nowrap; }
+@media (max-width: 400px) {
+  .xp-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Entry Form ===== */
+.entry-form {
+  display: none;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.entry-form.open {
+  display: block;
+  animation: formSlideIn 0.2s ease;
+}
+@keyframes formSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.entry-form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.entry-form-category { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.entry-form-category svg { width: 24px; height: 24px; display: block; }
+.entry-form-close {
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+.entry-form-close:hover { color: var(--text); }
+/* ===== Sub-Option Chips ===== */
+.sub-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  min-height: 0;
+  transition: all 0.15s;
+}
+.sub-option-chip {
+  padding: 5px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+.sub-option-chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-1px);
+}
+.sub-option-chip:active {
+  transform: scale(0.95);
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 60px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+.form-textarea:focus { outline: none; border-color: var(--primary); }
+.form-amount {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+.form-amount:focus { outline: none; border-color: var(--primary); }
+.form-amount.show { display: block; }
+.form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 8px; }
+.form-image-area { display: flex; align-items: center; gap: 8px; }
+.form-image-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.form-image-btn:hover { border-color: var(--primary); color: var(--primary); }
+.form-image-preview {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  display: none;
+}
+.form-image-preview.show { display: block; }
+.form-image-remove {
+  display: none;
+  border: none;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  cursor: pointer;
+  position: relative;
+  margin-left: -16px;
+  margin-top: -28px;
+}
+.form-image-remove.show { display: inline; }
+.form-submit {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.form-submit:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(232,121,81,0.3); }
+.form-submit:active { transform: scale(0.97); }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ===== Foldable Category Groups ===== */
+.cat-group { margin-bottom: 12px; background: #F9FBFB; border-radius: var(--radius-sm); overflow: hidden; }
+.cat-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s;
+  border-left: 4px solid var(--border);
+}
+.cat-group-header:hover { background: #F0F5F5; }
+.cat-group-header .cat-icon { display: flex; align-items: center; font-size: 18px; line-height: 1; }
+.cat-group-header .cat-icon svg { width: 20px; height: 20px; display: block; }
+.cat-group-header .cat-label { font-size: 14px; font-weight: 600; flex: 1; color: var(--text); }
+.cat-group-header .cat-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--surface);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.cat-group-header .cat-arrow {
+  font-size: 10px;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+.cat-group-header .cat-arrow.open { transform: rotate(90deg); }
+.cat-group-body {
+  display: none;
+  padding: 0 12px 12px;
+}
+.cat-group-body.open {
+  display: block;
+  animation: groupExpand 0.2s ease;
+}
+@keyframes groupExpand {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 1000px; }
+}
+
+/* ===== Today: horizontal category grid ===== */
+#viewToday #timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  align-items: start;
+}
+#viewToday .cat-group { margin-bottom: 0; }
+#viewToday .cat-group-header { padding: 10px 12px; }
+#viewToday .cat-group-header .cat-icon { font-size: 14px; }
+#viewToday .cat-group-header .cat-label { font-size: 12px; }
+#viewToday .cat-group-header .cat-count { font-size: 10px; padding: 0 6px; }
+#viewToday .cat-group-body { padding: 0 8px 8px; }
+/* Compact entry cards inside today's grid */
+#viewToday .entry-card { padding: 8px 10px; margin-bottom: 4px; border-left-width: 3px; }
+#viewToday .entry-card-text { font-size: 12px; line-height: 1.4; }
+#viewToday .entry-card-time { font-size: 10px; }
+#viewToday .entry-card-category { width: 6px; height: 6px; }
+#viewToday .entry-card-amount { font-size: 12px; }
+/* Week view keeps vertical stacking */
+#viewWeek #weekEntries .cat-group { margin-bottom: 6px; }
+
+/* ===== Timeline ===== */
+.timeline-section { background: var(--surface); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.timeline-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.timeline-count { font-size: 12px; color: var(--text-secondary); }
+.timeline-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.timeline-empty .empty-icon { margin-bottom: 12px; display: block; }
+
+/* ===== Entry Card ===== */
+.entry-card {
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: var(--radius-sm);
+  background: #F9FBFB;
+  border-left: 4px solid var(--border);
+  transition: all 0.15s;
+  position: relative;
+}
+.entry-card:last-child { margin-bottom: 0; }
+.entry-card:hover { background: #F0F5F5; }
+.entry-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.entry-card-left { flex: 1; min-width: 0; }
+.entry-card-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.entry-card-time { font-size: 11px; color: var(--text-tertiary); }
+.entry-card-category {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.entry-card-category svg { width: 12px; height: 12px; display: block; }
+.cat-icon svg { width: 16px; height: 16px; display: block; }
+.q-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.q-icon svg { width: 22px; height: 22px; display: block; }
+.entry-card-text { font-size: 14px; line-height: 1.6; word-break: break-word; }
+.entry-card-amount {
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.entry-card-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.entry-card-image {
+  width: 60px; height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.entry-card-image:hover { transform: scale(1.05); }
+.entry-card-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.entry-card:hover .entry-card-actions { opacity: 1; }
+.entry-card-edit, .entry-card-delete {
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.1s;
+}
+.entry-card-edit { color: #FF6B6B; }
+.entry-card-edit:hover { background: #FFF0F0; }
+.entry-card-delete { color: #FF6B6B; }
+.entry-card-delete:hover { background: #FFF0F0; }
+
+/* ===== Image Modal ===== */
+.image-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.image-modal.open { display: flex; }
+.image-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain; }
+.image-modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.image-modal-close:hover { background: rgba(255,255,255,0.4); }
+
+/* ===== Weekly View ===== */
+.week-header { margin-bottom: 16px; }
+.week-range { font-size: 16px; font-weight: 700; }
+.week-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.week-nav-btn {
+  border: none;
+  background: var(--surface);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+.week-nav-btn:hover { background: var(--primary); color: white; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-card .stat-value { font-size: 22px; font-weight: 700; color: var(--primary); }
+.stat-card .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.chart-container { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.chart-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+.week-entries { }
+.day-group { margin-bottom: 14px; }
+.day-group-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 6px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+/* ===== Monthly View ===== */
+.month-header { margin-bottom: 16px; }
+.month-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.month-nav-btn {
+  border: none;
+  background: var(--surface);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+.month-nav-btn:hover { background: var(--primary); color: white; }
+.month-title { font-size: 16px; font-weight: 700; }
+
+/* ===== Calendar Grid ===== */
+.calendar { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 8px; }
+.calendar-weekday { font-size: 11px; color: var(--text-tertiary); padding: 4px 0; font-weight: 600; }
+.calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.1s;
+  position: relative;
+}
+.calendar-day:hover { transform: scale(1.1); z-index: 1; }
+.calendar-day.other-month { color: var(--text-tertiary); opacity: 0.4; }
+.calendar-day.today { font-weight: 700; color: var(--primary); box-shadow: inset 0 0 0 2px var(--primary); }
+.calendar-day.selected { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(232,121,81,0.3); }
+.calendar-day .day-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+.month-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.chart-container.half { padding: 12px; }
+.chart-container.half .chart-title { font-size: 12px; }
+canvas { display: block; width: 100%; height: auto; }
+.hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0,0,0,0); }
+.day-detail-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow);
+}
+.day-detail-date { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(45,45,45,0.9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== Modal Backdrop ===== */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 100;
+}
+.modal-backdrop.open { display: block; }
+
+/* ===== Context Menu ===== */
+.context-menu {
+  display: none;
+  position: absolute;
+  right: 12px;
+  top: 36px;
+  background: var(--surface);
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.context-menu.open { display: block; }
+.context-menu-item {
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.1s;
+}
+.context-menu-item:hover { background: #F5F5F5; }
+.context-menu-item.danger { color: #EF4444; }
+
+/* ===== Export/Import Modal ===== */
+.dialog-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.dialog-overlay.open { display: flex; }
+.dialog {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: var(--shadow-lg);
+}
+.dialog-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+.dialog-text { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6; }
+.dialog-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.dialog-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dialog-btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+.dialog-btn.primary:hover { opacity: 0.9; }
+.dialog-btn:hover:not(.primary) { background: #F5F5F5; }
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-tertiary);
+}
+.empty-state .empty-emoji { font-size: 48px; margin-bottom: 12px; display: block; }
+.empty-state .empty-text { font-size: 14px; }
+.empty-state .empty-hint { font-size: 12px; margin-top: 4px; color: var(--text-tertiary); }
+
+/* ===== Animations ===== */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.entry-card { animation: slideUp 0.25s ease; }
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  #app { padding: 0 12px 80px; }
+  .stats-row { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .stat-card { padding: 10px; }
+  .stat-card .stat-value { font-size: 18px; }
+  .month-stats { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div>
+        <div class="header-title">今天做了啥</div>
+        <div class="header-date" id="headerDate"></div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="showExportDialog()" title="导出数据">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
+      <button class="header-btn" onclick="showImportDialog()" title="导入数据">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </button>
+      <button class="header-btn" onclick="confirmClearAll()" title="清空数据">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6"/><path d="M14 11v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </button>
+      <button class="header-btn" onclick="startSync()" title="同步到电脑">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+      </button>
+    </div>
+    <div style="position:fixed;bottom:8px;right:12px;font-size:10px;color:var(--text-tertiary);pointer-events:none;z-index:1;">v21</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-view="today" onclick="switchView('today')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      今天
+    </button>
+    <button class="tab-btn" data-view="week" onclick="switchView('week')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;">
+        <line x1="12" y1="20" x2="12" y2="10"/>
+        <line x1="18" y1="20" x2="18" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="16"/>
+      </svg>
+      本周
+    </button>
+    <button class="tab-btn" data-view="month" onclick="switchView('month')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      本月
+    </button>
+  </div>
+
+  <!-- ===== TODAY VIEW ===== -->
+  <div class="view active" id="viewToday">
+    <!-- Quick Log -->
+    <div class="quick-section section-card">
+      <div class="quick-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <polyline points="19 12 12 19 5 12"/>
+        </svg>
+        快速记录
+      </div>
+      <div class="quick-grid" id="quickGrid"></div>
+    </div>
+
+    <!-- XP Stats -->
+    <div class="xp-section" id="xpSection"></div>
+
+    <!-- Entry Form -->
+    <div class="entry-form" id="entryForm">
+      <div class="entry-form-header">
+        <div class="entry-form-category" id="formCategory">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline-block;vertical-align:-3px;margin-right:4px;">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          <span id="formCategoryText">记录</span>
+        </div>
+        <button class="entry-form-close" onclick="closeEntryForm()">✕</button>
+      </div>
+      <div class="sub-options" id="subOptions"></div>
+      <input type="file" accept="image/*" multiple id="imageInput" class="hidden-input">
+      <input type="file" accept="image/*" capture="environment" id="cameraInput" class="hidden-input">
+      <input type="file" accept=".json,application/json" id="importFileInput" class="hidden-input">
+      <input type="hidden" id="formCustomIcon" value="">
+      <input type="hidden" id="formCustomLabel" value="">
+      <input type="hidden" id="formCustomBtnId" value="">
+      <textarea class="form-textarea" id="formText" placeholder="记录一下..." rows="3"></textarea>
+      <input class="form-amount" id="formAmount" type="number" placeholder="金额 ¥" min="0" step="0.01">
+      <div class="form-footer">
+        <div class="form-image-area">
+          <button class="form-image-btn" onclick="document.getElementById('imageInput').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            图片
+          </button>
+          <button class="form-image-btn" onclick="takeCameraPhoto()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            拍照
+          </button>
+          <div style="position:relative;display:inline-flex;align-items:center;">
+            <img class="form-image-preview" id="formImagePreview">
+            <button class="form-image-remove" id="formImageRemove" onclick="removeSelectedImage()">✕</button>
+          </div>
+        </div>
+        <button class="form-submit" id="formSubmit" onclick="submitEntry()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          记录
+        </button>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-section">
+      <div class="timeline-header">
+        <div class="timeline-title">📋 今天记录</div>
+        <div class="timeline-count" id="timelineCount"></div>
+      </div>
+      <div id="timeline"></div>
+    </div>
+  </div>
+
+  <!-- ===== WEEKLY VIEW ===== -->
+  <div class="view" id="viewWeek">
+    <div class="week-header">
+      <div class="week-nav">
+        <button class="week-nav-btn" onclick="navigateWeek(-1)">‹</button>
+        <div>
+          <div class="week-range" id="weekRange"></div>
+        </div>
+        <button class="week-nav-btn" onclick="navigateWeek(1)">›</button>
+      </div>
+    </div>
+    <div class="stats-row" id="weekStats"></div>
+    <div class="section-card">
+      <div class="chart-title">分类统计</div>
+      <canvas id="weekChart"></canvas>
+    </div>
+    <div id="weekEntries"></div>
+  </div>
+
+  <!-- ===== MONTHLY VIEW ===== -->
+  <div class="view" id="viewMonth">
+    <div class="month-header">
+      <div class="month-nav">
+        <button class="month-nav-btn" onclick="navigateMonth(-1)">‹</button>
+        <div>
+          <div class="month-title" id="monthTitle"></div>
+        </div>
+        <button class="month-nav-btn" onclick="navigateMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="calendar" id="calendar"></div>
+    <div class="month-stats" id="monthStats"></div>
+    <div class="charts-row">
+      <div class="chart-container half">
+        <div class="chart-title">分类分布</div>
+        <canvas id="monthChart"></canvas>
+        <div class="chart-legend" style="margin-top:8px;"></div>
+      </div>
+      <div class="chart-container half">
+        <div class="chart-title">每日支出</div>
+        <canvas id="spendChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="chart-title">每日记录数</div>
+      <canvas id="activityChart"></canvas>
+    </div>
+    <div id="monthDayDetail"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Image Modal -->
+<div class="image-modal" id="imageModal" onclick="closeImageModal()">
+  <button class="image-modal-close">✕</button>
+  <img id="imageModalContent" alt="preview">
+</div>
+
+<!-- Export Dialog -->
+<div class="dialog-overlay" id="exportDialog">
+  <div class="dialog">
+    <div class="dialog-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:inline-block;vertical-align:-3px;margin-right:4px;">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      导出数据
+    </div>
+    <div class="dialog-text" id="exportText">选择要导出的数据范围。</div>
+    <div class="dialog-actions">
+      <button class="dialog-btn" onclick="closeDialog('exportDialog')">取消</button>
+      <button class="dialog-btn" onclick="closeDialog('exportDialog')">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Dialog -->
+<div class="dialog-overlay" id="importDialog">
+  <div class="dialog">
+    <div class="dialog-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:inline-block;vertical-align:-3px;margin-right:4px;">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      导入数据
+    </div>
+    <div class="dialog-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">选择 JSON 备份文件，或直接粘贴 JSON 内容</div>
+    <div class="dialog-actions" style="margin-bottom:10px;">
+      <button class="dialog-btn primary" onclick="triggerImportFile()">📁 选择文件</button>
+      <button class="dialog-btn" onclick="togglePasteImport()">📋 粘贴内容</button>
+    </div>
+    <div id="pasteImportArea" style="display:none;">
+      <textarea id="pasteImportText" style="width:100%;height:120px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:vertical;" placeholder="在此粘贴 JSON 数据..."></textarea>
+      <div class="dialog-actions" style="margin-top:8px;">
+        <button class="dialog-btn primary" onclick="doPasteImport()">导入粘贴内容</button>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="dialog-btn" onclick="closeDialog('importDialog')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Quick Manager Dialog -->
+<div class="dialog-overlay" id="quickManagerDialog">
+  <div class="dialog">
+    <div class="dialog-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:inline-block;vertical-align:-3px;margin-right:4px;">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      自定义快速记录
+    </div>
+    <div class="dialog-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">添加常用的快捷按钮，点击即可快速记录。</div>
+
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <div id="quickMgrIconPreview" style="width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;">
+        <svg viewBox="0 0 200 200" style="width:28px;height:28px;display:block;"><rect width="200" height="200" fill="#4ECDC4"/><path d="M85 40 Q125 40 125 80 Q125 120 85 120 Q65 120 55 105 Q75 105 85 85 Q95 65 85 40 Z" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5"/><rect x="40" y="130" width="120" height="40" rx="12" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>
+      </div>
+      <input type="hidden" id="quickMgrIcon" value="">
+      <input type="text" id="quickMgrLabel" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;" placeholder="名称（如：练字、冥想）">
+    </div>
+    <!-- Emoji picker -->
+    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">选择图标</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;" id="emojiPicker">
+    </div>
+    <button class="dialog-btn primary" onclick="handleAddCustomBtn()" style="width:100%;">＋ 添加</button>
+
+    <div id="quickMgrList" style="margin-top:12px;max-height:200px;overflow-y:auto;"></div>
+
+    <div class="dialog-actions" style="margin-top:10px;">
+      <button class="dialog-btn" onclick="closeDialog('quickManagerDialog')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sync Dialog -->
+<div class="dialog-overlay" id="syncDialog">
+  <div class="dialog" style="text-align:center;">
+    <div class="dialog-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:inline-block;vertical-align:-4px;margin-right:6px;">
+        <polyline points="17 1 21 5 17 9"/>
+        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+        <polyline points="7 23 3 19 7 15"/>
+        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+      </svg>
+      同步数据
+    </div>
+    <div id="syncStatus">
+      <div style="padding:16px 0;">
+        <div style="font-size:40px;margin-bottom:12px;">🔄</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">正在准备数据...</div>
+        <div style="font-size:12px;color:var(--text-secondary);" id="syncMessage">读取数据中</div>
+      </div>
+    </div>
+    <div id="syncReady" style="display:none;padding:12px 0;">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;">✅ 同步服务器已启动</div>
+      <div style="background:#F5F8F8;border-radius:12px;padding:14px;margin-bottom:12px;word-break:break-all;">
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">在电脑浏览器打开：</div>
+        <div id="syncUrl" style="font-size:16px;font-weight:700;color:var(--text);letter-spacing:0.5px;"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
+        确保手机和电脑在<b>同一个 WiFi 网络</b>下。<br>
+        打开链接即可下载 JSON 数据。
+      </div>
+    </div>
+    <div class="dialog-actions" style="margin-top:12px;">
+      <button class="dialog-btn" id="syncCloseBtn" onclick="stopSync()">停止同步</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA LAYER - IndexedDB
+// ============================================================
+const DB_NAME = 'TodayJournalDB';
+const DB_VERSION = 2;
+const STORE_NAME = 'entries';
+const CONFIG_STORE = 'config';
+
+const CATEGORY_SVGS = {
+  eat: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#FFD93D"/><path d="M0 160 Q30 140 60 160 Q90 180 120 160 Q150 140 200 160 L200 200 L0 200 Z" fill="#4ECDC4" stroke="#1a1a1a" stroke-width="4"/><path d="M50 100 L150 100 L140 150 Q130 170 100 170 Q70 170 60 150 Z" fill="#fff" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/><path d="M85 35 Q80 25 85 20 Q90 15 85 10" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M100 35 Q95 25 100 20 Q105 15 100 10" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M115 35 Q115 25 115 20 Q120 15 115 10" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round"/></svg>',
+  learn: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#FF8C42"/><path d="M70 110 C70 80 85 60 100 60 C115 60 130 80 130 110 C130 125 120 135 110 140 L90 140 C80 135 70 125 70 110 Z" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/><rect x="88" y="140" width="24" height="12" rx="3" fill="#fff" stroke="#1a1a1a" stroke-width="4"/><rect x="92" y="152" width="16" height="8" rx="2" fill="#fff" stroke="#1a1a1a" stroke-width="4"/><path d="M95 110 L95 100 L100 95 L105 100 L105 110" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="100" y1="40" x2="100" y2="50" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/><line x1="65" y1="65" x2="72" y2="72" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/><line x1="135" y1="65" x2="128" y2="72" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/></svg>',
+  watch: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#3B82F6"/><path d="M40 100 Q100 50 160 100 Q100 150 40 100 Z" fill="#fff" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/><circle cx="100" cy="100" r="20" fill="#1a1a1a"/><circle cx="108" cy="92" r="6" fill="#fff"/></svg>',
+  spend: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#FFD93D"/><rect x="40" y="70" width="120" height="75" rx="10" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><rect x="50" y="55" width="100" height="25" rx="4" fill="#4ECDC4" stroke="#1a1a1a" stroke-width="4"/><circle cx="130" cy="107" r="8" fill="#FFD93D" stroke="#1a1a1a" stroke-width="4"/></svg>',
+  read: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#7B61FF"/><polygon points="170,25 173,35 183,35 175,42 178,52 170,46 162,52 165,42 157,35 167,35" fill="#FFD93D" stroke="#1a1a1a" stroke-width="3"/><circle cx="170" cy="160" r="30" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="4"/><rect x="50" y="50" width="100" height="80" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><line x1="50" y1="70" x2="150" y2="70" stroke="#1a1a1a" stroke-width="4"/><line x1="50" y1="90" x2="150" y2="90" stroke="#1a1a1a" stroke-width="4"/><line x1="50" y1="110" x2="150" y2="110" stroke="#1a1a1a" stroke-width="4"/><path d="M125 50 L125 75 L132 70 L140 75 L140 50" fill="#4ECDC4" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/></svg>',
+  mood: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#FF6B9D"/><circle cx="100" cy="105" r="50" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5"/><ellipse cx="82" cy="95" rx="6" ry="8" fill="#1a1a1a"/><ellipse cx="118" cy="95" rx="6" ry="8" fill="#1a1a1a"/><path d="M80 120 Q100 140 120 120" stroke="#1a1a1a" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="75" cy="115" r="8" fill="#FF6B9D" opacity="0.6"/><circle cx="125" cy="115" r="8" fill="#FF6B9D" opacity="0.6"/></svg>',
+  go: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#4ECDC4"/><path d="M100 50 C125 50 140 70 140 90 C140 110 100 150 100 150 C100 150 60 110 60 90 C60 70 75 50 100 50 Z" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/><circle cx="100" cy="85" r="12" fill="#fff" stroke="#1a1a1a" stroke-width="4"/></svg>',
+  sport: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#7B61FF"/><circle cx="100" cy="55" r="15" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><line x1="100" y1="70" x2="100" y2="110" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M100 80 L80 95 L70 85" stroke="#1a1a1a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 80 L125 75 L135 60" stroke="#1a1a1a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 110 L80 130 L75 155" stroke="#1a1a1a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 110 L120 125 L130 145" stroke="#1a1a1a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  work: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#FF8C42"/><rect x="45" y="55" width="110" height="75" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><rect x="55" y="65" width="90" height="55" rx="3" fill="#4ECDC4" stroke="#1a1a1a" stroke-width="3"/><path d="M80 130 L120 130 L125 150 L75 150 Z" fill="#fff" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/></svg>',
+  custom: '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" fill="#FF6B9D"/><ellipse cx="100" cy="105" rx="55" ry="40" transform="rotate(-15 100 105)" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><circle cx="75" cy="95" r="8" fill="#FFD93D" stroke="#1a1a1a" stroke-width="3"/><circle cx="100" cy="85" r="8" fill="#4ECDC4" stroke="#1a1a1a" stroke-width="3"/><circle cx="125" cy="95" r="8" fill="#FF8C42" stroke="#1a1a1a" stroke-width="3"/><circle cx="85" cy="115" r="8" fill="#7B61FF" stroke="#1a1a1a" stroke-width="3"/><circle cx="115" cy="115" r="8" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="3"/><circle cx="148" cy="115" r="10" fill="#f0f0f0" stroke="#1a1a1a" stroke-width="4"/></svg>',
+};
+
+function catSvg(catId) {
+  return CATEGORY_SVGS[catId] || CATEGORY_SVGS.custom;
+}
+
+const CATEGORIES = [
+  { id: 'eat',   emoji: '🍽️', svg: CATEGORY_SVGS.eat, label: '吃了啥', color: 'var(--c-eat)',
+    subs: ['水果', '蔬菜', '主食', '肉类', '零食', '甜点', '饮品', '外卖', '自己做', '早餐', '午餐', '晚餐', '夜宵'] },
+  { id: 'learn', emoji: '📚', svg: CATEGORY_SVGS.learn, label: '学了啥', color: 'var(--c-learn)',
+    subs: ['看书', '课程', '编程', '语言学习', '视频教程', '读书笔记', '技术文章', 'AI', '写作', '考证'] },
+  { id: 'watch', emoji: '📺', svg: CATEGORY_SVGS.watch, label: '看了啥', color: 'var(--c-watch)',
+    subs: ['电影', '电视剧', '纪录片', '综艺', '动漫', '短视频', '直播', '球赛', '演讲'] },
+  { id: 'spend', emoji: '💰', svg: CATEGORY_SVGS.spend, label: '花了钱', color: 'var(--c-spend)',
+    subs: ['餐饮', '购物', '交通', '娱乐', '住房', '医疗', '教育', '日用品', '服装', '数码', '礼物的', '充值'] },
+  { id: 'read',  emoji: '📖', svg: CATEGORY_SVGS.read, label: '读了啥', color: 'var(--c-read)',
+    subs: ['小说', '非虚构', '杂志', '论文', '公众号', '新闻', '专业书籍', '博客', '漫画'] },
+  { id: 'mood',  emoji: '😊', svg: CATEGORY_SVGS.mood, label: '心情',   color: 'var(--c-mood)',
+    subs: ['开心', '平静', '疲惫', '焦虑', '兴奋', '难过', '生气', '感恩', '迷茫', '满足'] },
+  { id: 'go',    emoji: '📍', svg: CATEGORY_SVGS.go, label: '去了哪', color: 'var(--c-go)',
+    subs: ['上班', '公园', '商场', '餐厅', '咖啡馆', '健身房', '旅行', '回家', '医院', '图书馆'] },
+  { id: 'sport', emoji: '🏃', svg: CATEGORY_SVGS.sport, label: '运动了', color: 'var(--c-sport)',
+    subs: ['跑步', '健身', '瑜伽', '散步', '骑行', '游泳', '球类', '跳绳', '爬山', '拉伸', '其他'] },
+  { id: 'work',  emoji: '💼', svg: CATEGORY_SVGS.work, label: '工作',   color: 'var(--c-work)',
+    subs: ['开会', '写代码', '写文档', '设计', '沟通', '汇报', '计划', '复盘', '面试', '培训', '出差'] },
+  { id: 'custom', emoji: '✍️', svg: CATEGORY_SVGS.custom, label: '自定义',   color: 'var(--c-custom)',
+    subs: [] },
+];
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        store.createIndex('date', 'date', { unique: false });
+        store.createIndex('category', 'category', { unique: false });
+      }
+      if (!db.objectStoreNames.contains(CONFIG_STORE)) {
+        db.createObjectStore(CONFIG_STORE, { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function addEntry(entry) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.add(entry);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function updateEntry(entry) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put(entry);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function deleteEntry(id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getAllEntries() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// ============================================================
+// CUSTOM QUICK BUTTONS (user-defined)
+// ============================================================
+async function getCustomQuickButtons() {
+  const db = await openDB();
+  return new Promise((resolve) => {
+    const tx = db.transaction(CONFIG_STORE, 'readonly');
+    const store = tx.objectStore(CONFIG_STORE);
+    const req = store.get('customQuickButtons');
+    req.onsuccess = () => resolve(req.result?.value || []);
+    req.onerror = () => resolve([]);
+  });
+}
+
+async function setCustomQuickButtons(buttons) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(CONFIG_STORE, 'readwrite');
+    const store = tx.objectStore(CONFIG_STORE);
+    store.put({ key: 'customQuickButtons', value: buttons });
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function addCustomQuickBtn(icon, label, targetCat) {
+  const btns = await getCustomQuickButtons();
+  btns.push({ id: Date.now(), icon: icon || '📌', label: label.trim(), category: targetCat || 'custom' });
+  await setCustomQuickButtons(btns);
+  await renderQuickButtons();
+}
+
+async function deleteCustomQuickBtn(id) {
+  const btns = await getCustomQuickButtons();
+  const filtered = btns.filter(b => b.id !== id);
+  await setCustomQuickButtons(filtered);
+  await renderQuickButtons();
+}
+
+// Open entry form from a custom quick button
+// btnElement is the button DOM element with data-qicon, data-qlabel, data-qid attributes
+function openEntryFormFromCustom(btnElement) {
+  const icon = btnElement.dataset.qicon || '📌';
+  const label = btnElement.dataset.qlabel || '';
+  const btnId = btnElement.dataset.qid ? Number(btnElement.dataset.qid) : null;
+  if (!label) { showToast('按钮数据错误'); return; }
+  // Each custom button gets its own unique category ID so it appears as an independent group
+  const catId = `cbtn_${btnId}`;
+  const cat = { id: catId, icon: icon, svg: icon, label: label, subs: [], color: '#94A3B8' };
+  state.customQuickIcon = icon;
+  state.customQuickLabel = label;
+  state.customQuickBtnId = btnId;
+  document.getElementById('formCustomIcon').value = icon;
+  document.getElementById('formCustomLabel').value = label;
+  document.getElementById('formCustomBtnId').value = btnId || '';
+  openEntryForm(cat);
+  // Highlight THIS custom button
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.quick-btn[data-qid="${btnId}"]`)?.classList.add('active');
+  document.getElementById('formText').value = label;
+  document.getElementById('formCategoryText').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">${icon}<span style="vertical-align:middle;">${label}</span></span>`;
+}
+
+// 15 custom quick button SVG icons (Memphis style)
+const CUSTOM_ICONS = [
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#FF8C42"/><rect x="40" y="55" width="120" height="100" rx="10" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><rect x="40" y="55" width="120" height="30" rx="10" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="5"/><circle cx="70" cy="55" r="8" fill="#FFD93D" stroke="#1a1a1a" stroke-width="4"/><circle cx="130" cy="55" r="8" fill="#FFD93D" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '日历' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#3B82F6"/><circle cx="130" cy="65" r="22" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5"/><path d="M45 120 Q35 120 35 110 Q35 95 50 95 Q55 80 75 80 Q95 80 100 95 Q115 95 115 110 Q115 120 105 120 Z" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>', label: '天气' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#7B61FF"/><path d="M65 140 L65 65 L115 50 L115 125" stroke="#1a1a1a" stroke-width="5" fill="none"/><ellipse cx="55" cy="140" rx="12" ry="10" fill="#FFD93D" stroke="#1a1a1a" stroke-width="4"/><ellipse cx="105" cy="125" rx="12" ry="10" fill="#FFD93D" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '音乐' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#FF6B9D"/><rect x="35" y="65" width="130" height="85" rx="12" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><circle cx="100" cy="107" r="32" fill="#7B61FF" stroke="#1a1a1a" stroke-width="5"/><circle cx="100" cy="107" r="20" fill="#3B82F6" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '相机' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#FFD93D"/><path d="M60 85 L155 85 L145 120 L70 120 Z" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><circle cx="80" cy="135" r="10" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="4"/><circle cx="135" cy="135" r="10" fill="#FF6B9D" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '购物' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#4ECDC4"/><path d="M85 40 Q125 40 125 80 Q125 120 85 120 Q65 120 55 105 Q75 105 85 85 Q95 65 85 40 Z" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5"/><rect x="40" y="130" width="120" height="40" rx="12" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>', label: '睡觉' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#3B82F6"/><path d="M60 50 L140 50 L130 150 Q130 160 100 160 Q70 160 70 150 Z" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><ellipse cx="100" cy="80" rx="32" ry="8" fill="#3B82F6" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '喝水' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#E74C3C"/><circle cx="100" cy="75" r="28" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><rect x="50" y="125" width="28" height="18" rx="9" fill="#4ECDC4" stroke="#1a1a1a" stroke-width="4"/><rect x="90" y="135" width="28" height="18" rx="9" fill="#FFD93D" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '健康' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#2ECC71"/><path d="M55 55 Q35 75 35 105 Q35 145 65 160 Q95 175 130 160 L145 140 L120 125 L105 145 Q85 150 70 135 Q55 120 65 95 L80 80 L65 55 Z" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>', label: '电话' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#7B61FF"/><rect x="40" y="60" width="120" height="80" rx="8" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><path d="M40 60 L100 105 L160 60" fill="none" stroke="#1a1a1a" stroke-width="4"/></svg>', label: '邮件' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#FF8C42"/><circle cx="90" cy="85" r="45" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><line x1="123" y1="118" x2="165" y2="160" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round"/></svg>', label: '搜索' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#FFD93D"/><polygon points="100,35 115,75 160,75 125,105 140,150 100,120 60,150 75,105 40,75 85,75" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>', label: '收藏' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#4ECDC4"/><path d="M70 90 L70 65 Q70 35 100 35 Q130 35 130 65 L130 90" fill="none" stroke="#1a1a1a" stroke-width="5"/><rect x="55" y="85" width="90" height="70" rx="10" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>', label: '安全' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#95A5A6"/><rect x="55" y="60" width="90" height="90" rx="6" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><path d="M55 60 L145 60 L140 45 L60 45 Z" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5"/></svg>', label: '删除' },
+  { svg: '<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#FF6B9D"/><circle cx="100" cy="100" r="50" fill="#fff" stroke="#1a1a1a" stroke-width="5"/><line x1="100" y1="100" x2="100" y2="72" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="122" y2="112" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/></svg>', label: '闹钟' },
+];
+
+function showEmojiPicker() {
+  const container = document.getElementById('emojiPicker');
+  container.innerHTML = CUSTOM_ICONS.map((ic, i) =>
+    `<div style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:6px;border-radius:8px;transition:background 0.1s;" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background=''" onclick="selectCustomIcon(${i})" data-icidx="${i}">
+      ${ic.svg.replace('<svg ', '<svg style="width:36px;height:36px;display:block;" ')}
+    </div>`
+  ).join('');
+}
+
+function selectCustomIcon(idx) {
+  const ic = CUSTOM_ICONS[idx];
+  document.getElementById('quickMgrIcon').value = ic.svg;
+  document.getElementById('quickMgrIconPreview').innerHTML = ic.svg.replace('<svg ', '<svg style="width:32px;height:32px;display:block;" ');
+  document.querySelectorAll('#emojiPicker > div').forEach(d => d.style.background = '');
+  document.querySelector(`#emojiPicker > div[data-icidx="${idx}"]`).style.background = 'var(--primary)';
+}
+
+// Custom quick button manager
+async function showCustomQuickManager() {
+  // Default to first SVG icon (sleep)
+  document.getElementById('quickMgrIcon').value = CUSTOM_ICONS[0].svg;
+  document.getElementById('quickMgrIconPreview').innerHTML = CUSTOM_ICONS[0].svg.replace('<svg ', '<svg style="width:32px;height:32px;display:block;" ');
+  document.getElementById('quickMgrLabel').value = '';
+  showEmojiPicker();
+  await renderQuickManagerList();
+  document.getElementById('quickManagerDialog').classList.add('open');
+}
+
+async function renderQuickManagerList() {
+  const listEl = document.getElementById('quickMgrList');
+  const btns = await getCustomQuickButtons();
+  if (btns.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-tertiary);font-size:12px;">还没有自定义按钮，在上方添加</div>';
+    return;
+  }
+  listEl.innerHTML = btns.map(b =>
+    `<div class="custom-quick-item">
+      <span class="q-left"><span>${b.icon}</span> <span>${b.label}</span></span>
+      <button class="q-del" onclick="handleDeleteCustomBtn(${b.id})">✕</button>
+    </div>`
+  ).join('');
+}
+
+async function handleAddCustomBtn() {
+  const icon = document.getElementById('quickMgrIcon').value.trim() || '📌';
+  const label = document.getElementById('quickMgrLabel').value.trim();
+  if (!label) { showToast('请输入名称'); return; }
+  await addCustomQuickBtn(icon, label, 'custom');
+  await renderQuickManagerList();
+  document.getElementById('quickMgrLabel').value = '';
+  // Reset to first SVG icon
+  document.getElementById('quickMgrIcon').value = CUSTOM_ICONS[0].svg;
+  document.getElementById('quickMgrIconPreview').innerHTML = CUSTOM_ICONS[0].svg.replace('<svg ', '<svg style="width:32px;height:32px;display:block;" ');
+  showToast('✓ 已添加');
+}
+
+async function handleDeleteCustomBtn(id) {
+  if (!confirm('删除此快捷按钮？')) return;
+  await deleteCustomQuickBtn(id);
+  await renderQuickManagerList();
+  showToast('已删除');
+}
+
+async function getEntriesByDate(dateStr) {
+  const all = await getAllEntries();
+  return all.filter(e => e.date === dateStr).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+async function getEntriesByDateRange(start, end) {
+  const all = await getAllEntries();
+  return all.filter(e => e.date >= start && e.date <= end).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+async function getEntriesByMonth(year, month) {
+  const all = await getAllEntries();
+  const prefix = `${year}-${String(month).padStart(2, '0')}`;
+  return all.filter(e => e.date.startsWith(prefix)).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  currentView: 'today',
+  selectedCategory: null,
+  selectedImage: null,
+  editingId: null,
+  weekOffset: 0,
+  monthOffset: 0,
+  weekChart: null,
+  monthChart: null,
+  spendChart: null,
+  activityChart: null,
+  selectedDay: null,
+  customQuickIcon: null,
+  customQuickLabel: null,
+  customQuickBtnId: null,
+};
+
+let dateUtils = {
+  today() {
+    const d = new Date();
+    return this.formatDate(d);
+  },
+  formatDate(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  },
+  formatDisplay(dateStr) {
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m-1, d);
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    return `${y}年${m}月${d}日 周${weekdays[dt.getDay()]}`;
+  },
+  parseDate(dateStr) {
+    const [y,m,d] = dateStr.split('-').map(Number);
+    return new Date(y, m-1, d);
+  },
+  getWeekRange(offset = 0) {
+    const now = new Date();
+    now.setDate(now.getDate() + offset * 7);
+    const day = now.getDay();
+    const diff = day === 0 ? 6 : day - 1; // Monday start
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - diff);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    return {
+      start: this.formatDate(monday),
+      end: this.formatDate(sunday),
+      startDisplay: `${monday.getMonth()+1}月${monday.getDate()}日`,
+      endDisplay: `${sunday.getMonth()+1}月${sunday.getDate()}日`,
+    };
+  },
+  getMonthYear(offset = 0) {
+    const now = new Date();
+    now.setMonth(now.getMonth() + offset);
+    return { year: now.getFullYear(), month: now.getMonth() + 1 };
+  },
+  getDaysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  },
+  getFirstDayOfMonth(year, month) {
+    return new Date(year, month-1, 1).getDay(); // 0=Sun
+  },
+};
+
+// ============================================================
+// TOAST
+// ============================================================
+// Dialog helpers
+function openDialog(id) { document.getElementById(id).classList.add('open'); }
+function closeDialog(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// IMAGE HANDLING (v17 style — single photo, simple & reliable)
+// ============================================================
+// Compress a File object into a resized JPEG data URL
+function compressImage(file, maxW = 800, quality = 0.7) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = h * maxW / w; w = maxW; }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function takeCameraPhoto() {
+  document.getElementById('cameraInput').click();
+}
+
+// Simple timestamp guard: ignore change events within 1.5s of the last one
+let _lastPhotoTime = 0;
+
+document.getElementById('cameraInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  const now = Date.now();
+  if (now - _lastPhotoTime < 1500) return;
+  _lastPhotoTime = now;
+  if (file.size > 20 * 1024 * 1024) { showToast('图片太大'); return; }
+  compressImage(file).then(dataUrl => {
+    state.selectedImage = dataUrl;
+    renderImagePreview();
+  }).catch(() => showToast('拍照处理失败'));
+});
+
+document.getElementById('imageInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  if (file.size > 20 * 1024 * 1024) { showToast('图片太大'); return; }
+  compressImage(file).then(dataUrl => {
+    state.selectedImage = dataUrl;
+    renderImagePreview();
+  }).catch(() => showToast('图片处理失败'));
+});
+
+function removeSelectedImage() {
+  state.selectedImage = null;
+  document.getElementById('imageInput').value = '';
+  document.getElementById('cameraInput').value = '';
+  document.getElementById('formImagePreview').classList.remove('show');
+  document.getElementById('formImageRemove').classList.remove('show');
+}
+
+function renderImagePreview() {
+  if (!state.selectedImage) { removeSelectedImage(); return; }
+  const preview = document.getElementById('formImagePreview');
+  preview.src = state.selectedImage;
+  preview.classList.add('show');
+  document.getElementById('formImageRemove').classList.add('show');
+}
+
+// ============================================================
+// IMAGE MODAL
+// ============================================================
+function openImageModal(src) {
+  document.getElementById('imageModalContent').src = src;
+  document.getElementById('imageModal').classList.add('open');
+}
+function closeImageModal() {
+  document.getElementById('imageModal').classList.remove('open');
+}
+
+// ============================================================
+// ENTRY CRUD
+// ============================================================
+async function submitEntry() {
+  const text = document.getElementById('formText').value.trim();
+  const cat = state.selectedCategory;
+  if (!cat) { showToast('请选择分类'); return; }
+  if (!text && !state.selectedImage) { showToast('请输入内容或选择图片'); return; }
+
+  const amtField = parseFloat(document.getElementById('formAmount').value) || 0;
+  const amount = cat.id === 'spend' ? (amtField || parseAmountFromText(text)) : 0;
+
+  if (state.editingId) {
+    // Update existing entry — preserve original date/time
+    try {
+      const all = await getAllEntries();
+      const original = all.find(e => e.id === state.editingId);
+      if (!original) { showToast('原始记录未找到'); return; }
+      const images = state.selectedImage ? [state.selectedImage] : null;
+      const updated = { ...original, text, amount, images, image: images ? images[0] : null };
+      await updateEntry(updated);
+      invalidateXPCache();
+      showToast('✓ 已更新');
+      closeEntryForm();
+      if (state.currentView === 'today') renderToday();
+      else if (state.currentView === 'week') renderWeek();
+      else renderMonth();
+    } catch (err) {
+      showToast('更新失败');
+    }
+  } else {
+    // Create new entry
+    const now = new Date();
+    const dateStr = dateUtils.formatDate(now);
+    const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+    // Read custom button info from DOM hidden fields (most reliable), fallback to JS state
+    const hIcon = document.getElementById('formCustomIcon').value;
+    const hLabel = document.getElementById('formCustomLabel').value;
+    const hBtnId = document.getElementById('formCustomBtnId').value;
+    const entry = {
+      id: Date.now(),
+      date: dateStr,
+      time: timeStr,
+      category: cat.id,
+      text: text,
+      amount: amount,
+      image: state.selectedImage || null,
+      images: state.selectedImage ? [state.selectedImage] : null,
+      customQuickIcon: hIcon || state.customQuickIcon || null,
+      customQuickLabel: hLabel || state.customQuickLabel || null,
+      customQuickBtnId: hBtnId ? Number(hBtnId) : (state.customQuickBtnId || null),
+      createdAt: now.getTime(),
+    };
+
+    try {
+      await addEntry(entry);
+      invalidateXPCache();
+      showToast('✓ 已记录');
+      closeEntryForm();
+      if (state.currentView === 'today') renderToday();
+      else if (state.currentView === 'week') renderWeek();
+      else renderMonth();
+    } catch (err) {
+      showToast('保存失败');
+    }
+  }
+}
+
+async function deleteEntryById(id) {
+  if (!confirm('删除这条记录？')) return;
+  try {
+    await deleteEntry(id);
+    invalidateXPCache();
+    showToast('已删除');
+    if (state.currentView === 'today') renderToday();
+    else if (state.currentView === 'week') renderWeek();
+    else renderMonth();
+  } catch (err) {
+    showToast('删除失败');
+  }
+}
+
+async function editEntryById(id, entryData) {
+  // Find the category object for this entry
+  const isCbtn = entryData.category && entryData.category.startsWith('cbtn_');
+  const cat = CATEGORIES.find(c => c.id === entryData.category)
+    || (isCbtn ? { id: entryData.category, emoji: entryData.customQuickIcon || '📌', label: entryData.customQuickLabel || '自定义', color: '#94A3B8', subs: [] } : null)
+    || CATEGORIES[7];
+  state.editingId = id;
+  state.selectedCategory = cat;
+
+  // Fill form
+  const displayIcon = entryData.customQuickIcon || cat.emoji;
+  const displayLabel = entryData.customQuickLabel || cat.label;
+  document.getElementById('formCategoryText').innerHTML = `${displayIcon} ${displayLabel} (编辑)`;
+  document.getElementById('formText').placeholder = `记录一下${displayLabel}...`;
+  // Restore custom button state and hidden fields for re-submit
+  state.customQuickIcon = entryData.customQuickIcon || null;
+  state.customQuickLabel = entryData.customQuickLabel || null;
+  state.customQuickBtnId = entryData.customQuickBtnId || null;
+  document.getElementById('formCustomIcon').value = entryData.customQuickIcon || '';
+  document.getElementById('formCustomLabel').value = entryData.customQuickLabel || '';
+  document.getElementById('formCustomBtnId').value = entryData.customQuickBtnId || '';
+  document.getElementById('formText').value = entryData.text || '';
+
+  const amtInput = document.getElementById('formAmount');
+  if (cat.id === 'spend') {
+    amtInput.classList.add('show');
+    amtInput.placeholder = '金额 ¥';
+    amtInput.value = entryData.amount || '';
+  } else {
+    amtInput.classList.remove('show');
+    amtInput.value = '';
+  }
+
+  // Restore image
+  removeSelectedImage();
+  const existingImg = entryData.images && entryData.images.length > 0
+    ? entryData.images[0]
+    : (entryData.image || null);
+  if (existingImg) {
+    state.selectedImage = existingImg;
+    renderImagePreview();
+  }
+
+  // Render sub-options
+  const subContainer = document.getElementById('subOptions');
+  subContainer.innerHTML = '';
+  if (cat.subs && cat.subs.length > 0) {
+    cat.subs.forEach(s => {
+      const chip = document.createElement('button');
+      chip.className = 'sub-option-chip';
+      chip.type = 'button';
+      chip.textContent = s;
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ta = document.getElementById('formText');
+        const existing = ta.value.trim();
+        ta.value = existing ? `${existing} ${s}` : s;
+        ta.focus();
+        ta.setSelectionRange(ta.value.length, ta.value.length);
+      });
+      subContainer.appendChild(chip);
+    });
+  }
+
+  document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> 更新';
+  document.getElementById('entryForm').classList.add('open');
+  document.getElementById('formText').focus();
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+}
+
+// ============================================================
+// ENTRY FORM
+// ============================================================
+function openEntryForm(category) {
+  state.selectedCategory = category;
+  document.getElementById('formCategoryText').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">${category.svg}<span style="vertical-align:middle;">${category.label}</span></span>`;
+  document.getElementById('formText').placeholder = `记录一下${category.label}...`;
+
+  const amtInput = document.getElementById('formAmount');
+  if (category.id === 'spend') {
+    amtInput.classList.add('show');
+    amtInput.placeholder = '金额 ¥';
+  } else {
+    amtInput.classList.remove('show');
+    amtInput.value = '';
+  }
+
+  // Render sub-option chips
+  const subContainer = document.getElementById('subOptions');
+  subContainer.innerHTML = '';
+  if (category.subs && category.subs.length > 0) {
+    category.subs.forEach(s => {
+      const chip = document.createElement('button');
+      chip.className = 'sub-option-chip';
+      chip.type = 'button';
+      chip.textContent = s;
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ta = document.getElementById('formText');
+        const existing = ta.value.trim();
+        ta.value = existing ? `${existing} ${s}` : s;
+        ta.focus();
+        ta.setSelectionRange(ta.value.length, ta.value.length);
+      });
+      subContainer.appendChild(chip);
+    });
+  }
+
+  document.getElementById('entryForm').classList.add('open');
+  document.getElementById('formText').focus();
+
+  // Highlight active button
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.quick-btn[data-cat="${category.id}"]`)?.classList.add('active');
+}
+
+function closeEntryForm() {
+  document.getElementById('entryForm').classList.remove('open');
+  document.getElementById('formText').value = '';
+  document.getElementById('formAmount').value = '';
+  document.getElementById('subOptions').innerHTML = '';
+  document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg> 记录';
+  removeSelectedImage();
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  state.selectedCategory = null;
+  state.editingId = null;
+  state.customQuickIcon = null;
+  state.customQuickLabel = null;
+  state.customQuickBtnId = null;
+  // Clear hidden form fields
+  document.getElementById('formCustomIcon').value = '';
+  document.getElementById('formCustomLabel').value = '';
+  document.getElementById('formCustomBtnId').value = '';
+}
+
+// ============================================================
+// FOLDABLE GROUP TOGGLE
+// ============================================================
+function toggleGroup(catId) {
+  const body = document.getElementById(`groupBody_${catId}`);
+  if (!body) return;
+  body.classList.toggle('open');
+  const arrow = body.parentElement?.querySelector('.cat-arrow');
+  if (arrow) arrow.classList.toggle('open');
+}
+
+// ============================================================
+// INLINE CHARTS (no external dependencies)
+// ============================================================
+function _setupCanvas(canvas) {
+  // CSS width:100% handles the width, we read the rendered size
+  const w = canvas.clientWidth || 280;
+  const h = Math.round(w * 0.5);
+  const dpr = window.devicePixelRatio || 1;
+  // Set bitmap size for sharp rendering on retina displays
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  // Set CSS height to maintain aspect ratio (width already 100% via CSS)
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  // Use setTransform (resets + sets) instead of scale (accumulates)
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+
+function drawDonutChart(canvasId, labels, data, colors) {
+  const c = document.getElementById(canvasId);
+  if (!c) return;
+  requestAnimationFrame(() => {
+    const { ctx, w, h } = _setupCanvas(c);
+    const cx = w / 2, cy = h / 2;
+    const outerR = Math.min(w, h) / 2 - 20;  // ring outer radius
+    const innerR = outerR * 0.65;             // wider inner hole → true ring
+    const lineW = outerR - innerR;
+    ctx.clearRect(0, 0, w, h);
+
+    const total = data.reduce((s, v) => s + v, 0);
+    if (total === 0) {
+      // Empty state: full faint ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR - lineW/2, 0, Math.PI * 2);
+      ctx.strokeStyle = '#E8F4F4';
+      ctx.lineWidth = lineW;
+      ctx.stroke();
+      ctx.fillStyle = '#999'; ctx.font = '13px sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('暂无记录', cx, cy);
+    } else {
+      // Background ring (#E8F4F4)
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR - lineW/2, 0, Math.PI * 2);
+      ctx.strokeStyle = '#E8F4F4';
+      ctx.lineWidth = lineW;
+      ctx.stroke();
+
+      // Data segments — drawn as arc strokes with round caps
+      let startAngle = -Math.PI / 2;
+      data.forEach((v, i) => {
+        if (v === 0) return;
+        const a = (v / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerR - lineW/2, startAngle, startAngle + a);
+        ctx.strokeStyle = colors[i] || '#999';
+        ctx.lineWidth = lineW;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        startAngle += a;
+      });
+
+      // Center text — total count
+      ctx.fillStyle = '#1a1a1a'; ctx.font = 'bold 16px sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(total, cx, cy - 6);
+      ctx.fillStyle = '#8B8B8B'; ctx.font = '10px sans-serif';
+      ctx.fillText('条记录', cx, cy + 12);
+    }
+
+    // Legend
+    const legendEl = c.parentElement?.querySelector('.chart-legend');
+    if (legendEl && total > 0) {
+      legendEl.innerHTML = labels.map((l, i) =>
+        '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;margin:3px 10px 3px 0;color:#555;">' +
+        '<span style="width:8px;height:8px;border-radius:2px;background:' + colors[i] + ';display:inline-block;"></span>' + l +
+        '<span style="color:#999;font-weight:600;margin-left:2px;">' + data[i] + '</span></span>'
+      ).join('');
+    }
+  });
+}
+
+function drawBarChart(canvasId, labels, data, colors, opts) {
+  const c = document.getElementById(canvasId);
+  if (!c) return;
+  opts = opts || {};
+  // Animate bars from 0 to target heights
+  const animateFn = (progress) => {
+    const { ctx, w, h } = _setupCanvas(c);
+    const pad = { top: 10, bottom: opts.hideX ? 4 : 24, left: opts.yPrefix ? 44 : 32, right: 12 };
+    const cw = w - pad.left - pad.right;
+    const ch = h - pad.top - pad.bottom;
+    ctx.clearRect(0, 0, w, h);
+    const maxVal = Math.max(1, ...data);
+
+    // Step size for Y axis
+    let yStep;
+    if (opts.stepSize) yStep = Math.ceil(maxVal / opts.stepSize) * opts.stepSize;
+    else if (maxVal <= 5) yStep = maxVal;
+    else yStep = Math.ceil(maxVal / 3) * Math.ceil(maxVal / 10 || 1);
+    const ySteps = opts.stepSize ? Math.ceil(maxVal / opts.stepSize) : Math.min(4, maxVal);
+
+    // Y axis grid + labels (draw once)
+    for (let t = 0; t <= ySteps; t++) {
+      const yv = (maxVal * t) / ySteps;
+      const y = Math.round(h - pad.bottom - (yv / maxVal) * ch);
+      ctx.strokeStyle = '#EEF0F0'; ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(w - pad.right, y); ctx.stroke();
+      ctx.fillStyle = '#8B8B8B'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+      ctx.fillText(opts.yPrefix ? opts.yPrefix + Math.round(yv) : String(Math.round(yv)), pad.left - 5, y + 4);
+    }
+
+    const maxBarW = data.length > 12 ? 24 : 36;
+    const barW = Math.min(cw / data.length * 0.65, maxBarW, 40);
+    const gap = cw / data.length * 0.35;
+    const br = opts.borderRadius || 4;
+    const labelStep = data.length > 15 ? Math.ceil(data.length / 8) : 1;
+
+    // Draw bars with animated heights
+    data.forEach((v, i) => {
+      const x = pad.left + i * (cw / data.length) + gap / 2;
+      const currentH = Math.max(0, (v / maxVal) * ch * easeOutCubic(progress));
+      const barH = Math.min(currentH, Math.max(0, (v / maxVal) * ch));
+      if (barH < 0.5) return;
+      const y = h - pad.bottom - barH;
+      ctx.fillStyle = Array.isArray(colors) ? (colors[i] || '#4ECDC4') : colors;
+      const r = Math.min(br, barW / 2, barH / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + barW - r, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+      ctx.lineTo(x + barW, h - pad.bottom);
+      ctx.lineTo(x, h - pad.bottom);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      ctx.fill();
+      // X label
+      if (!opts.hideX && labels[i] !== undefined && i % labelStep === 0) {
+        ctx.fillStyle = '#8B8B8B'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(String(labels[i]).substring(0, 5), x + barW / 2, h - pad.bottom + 14);
+      }
+    });
+  };
+
+  // Animate over ~400ms
+  const duration = 400;
+  const startTime = performance.now();
+  function step(now) {
+    const elapsed = now - startTime;
+    const p = Math.min(elapsed / duration, 1);
+    animateFn(p);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+// ============================================================
+// RENDER: TODAY
+// ============================================================
+async function renderToday() {
+  // Pre-load custom buttons cache for badge fallback
+  try { _customBtnsCache = await getCustomQuickButtons(); } catch(e) { _customBtnsCache = null; }
+  await renderQuickButtons();
+
+  const entries = await getEntriesByDate(dateUtils.today());
+  const timeline = document.getElementById('timeline');
+  const countEl = document.getElementById('timelineCount');
+
+  // Populate image lookup
+  _imgLookup = {};
+  entries.forEach(e => {
+    const imgs = e.images || (e.image ? [e.image] : []);
+    imgs.forEach((url, j) => { _imgLookup[`e_${e.id}_${j}`] = url; });
+  });
+
+  // Render XP stats (even if no entries — shows empty state)
+  await renderXPStats(entries);
+
+  if (entries.length === 0) {
+    timeline.innerHTML = `
+      <div class="timeline-empty">
+        <span class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;opacity:0.5;">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </span>
+        今天还没有记录<br>
+        <span style="font-size:12px;color:var(--text-tertiary);">点击上方按钮快速记录</span>
+      </div>`;
+    countEl.textContent = '';
+    return;
+  }
+
+  // Today total entries count + total spending
+  const spendEntries = entries.filter(e => e.category === 'spend');
+  const todaySpend = spendEntries.reduce((s, e) => s + getEntryAmount(e), 0);
+  const spendStr = spendEntries.length > 0 ? `  ¥${todaySpend.toFixed(2)}` : '';
+  countEl.innerHTML = `共 ${entries.length} 条${spendStr ? `<span style="color:#5B7BA3;font-weight:600;">${spendStr}</span>` : ''}`;
+
+  // Group entries by category — standard categories + cbtn_ dynamic categories
+  const grouped = {};
+  const cbtnGroups = {};
+  CATEGORIES.forEach(c => grouped[c.id] = []);
+  entries.forEach(e => {
+    if (e.category && e.category.startsWith('cbtn_')) {
+      if (!cbtnGroups[e.category]) cbtnGroups[e.category] = [];
+      cbtnGroups[e.category].push(e);
+    } else if (grouped[e.category]) {
+      grouped[e.category].push(e);
+    }
+  });
+
+  let html = '';
+  CATEGORIES.forEach(cat => {
+    const list = grouped[cat.id];
+    if (!list || list.length === 0) return;
+    let groupIcon = cat.svg;
+    let groupLabel = cat.label;
+    if (cat.id === 'custom') {
+      const labels = new Set(list.map(e => e.customQuickLabel).filter(Boolean));
+      if (labels.size === 1) {
+        const first = list.find(e => e.customQuickIcon);
+        groupIcon = first?.customQuickIcon || cat.svg;
+        groupLabel = [...labels][0];
+      }
+    }
+    html += `
+      <div class="cat-group" data-group="${cat.id}">
+        <div class="cat-group-header" data-toggle="${cat.id}" style="border-left-color:var(--c-${cat.id})">
+          <span class="cat-icon">${groupIcon}</span>
+          <span class="cat-label">${groupLabel}</span>
+          <span class="cat-count">${list.length}</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="cat-group-body" id="groupBody_${cat.id}">
+          ${list.map(e => renderEntryCard(e)).join('')}
+        </div>
+      </div>`;
+  });
+  // Render cbtn_ dynamic groups after standard categories
+  for (const [catId, list] of Object.entries(cbtnGroups)) {
+    const first = list[0];
+    const icon = first?.customQuickIcon || '📌';
+    const label = first?.customQuickLabel || '';
+    html += `
+      <div class="cat-group" data-group="${catId}">
+        <div class="cat-group-header" data-toggle="${catId}" style="border-left-color:#94A3B8">
+          <span class="cat-icon">${icon}</span>
+          <span class="cat-label">${label}</span>
+          <span class="cat-count">${list.length}</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="cat-group-body" id="groupBody_${catId}">
+          ${list.map(e => renderEntryCard(e)).join('')}
+        </div>
+      </div>`;
+  }
+
+  timeline.innerHTML = html;
+}
+
+// ============================================================
+// EXPERIENCE & LEVEL SYSTEM
+// ============================================================
+const XP_DAILY_CAP = 5;
+
+/*
+  XP mapping — each category grants a different type of experience:
+  🍽️ 吃了啥  → 💪 身体   📚 学了啥 → 🧠 智力
+  📺 看了啥  → 🎬 娱乐   💰 花了钱 → 💰 财务
+  📖 读了啥  → 📖 文化   😊 心情   → ❤️ 情感
+  📍 去了哪  → 🌍 探索   💼 工作   → 🏆 职业
+  ✍️ 其他    → ⭐ 通用
+*/
+const XP_TYPES = {
+  eat:    { icon: '💪', name: '身体' },
+  learn:  { icon: '🧠', name: '智力' },
+  watch:  { icon: '🎬', name: '娱乐' },
+  spend:  { icon: '💰', name: '财务' },
+  read:   { icon: '📖', name: '文化' },
+  mood:   { icon: '❤️', name: '情感' },
+  go:     { icon: '🌍', name: '探索' },
+  work:   { icon: '🏆', name: '职业' },
+  custom: { icon: '⭐', name: '通用' },
+};
+
+/*
+  Level thresholds (cumulative XP needed).
+  Beyond L30 uses formula: xp = 5 * level^2  (so level ≈ sqrt(xp/5))
+  Formula-based: L30=4500, L40=8000, L50=12500, L100=50000
+*/
+const LEVELS = [
+  { level: 1,  xp: 0,    title: '见习记录者' },
+  { level: 2,  xp: 15,   title: '初级记录者' },
+  { level: 3,  xp: 40,   title: '中级记录者' },
+  { level: 4,  xp: 80,   title: '高级记录者' },
+  { level: 5,  xp: 140,  title: '记录达人' },
+  { level: 6,  xp: 220,  title: '记录精英' },
+  { level: 7,  xp: 330,  title: '记录大师' },
+  { level: 8,  xp: 480,  title: '传说记录者' },
+  { level: 9,  xp: 680,  title: '记录王者' },
+  { level: 10, xp: 950,  title: '记录之神' },
+  { level: 11, xp: 1300, title: '星辰记录者' },
+  { level: 12, xp: 1750, title: '银河记录者' },
+  { level: 13, xp: 2300, title: '宇宙记录者' },
+  { level: 14, xp: 3000, title: '时空记录者' },
+  { level: 15, xp: 3850, title: '次元记录者' },
+  { level: 16, xp: 4900, title: '创世记录者' },
+  { level: 17, xp: 6200, title: '无限记录者' },
+  { level: 18, xp: 7800, title: '永恒记录者' },
+  { level: 19, xp: 9700, title: '传说之证' },
+  { level: 20, xp: 12000, title: '神话再临' },
+];
+
+// Beyond L20: each level's gap grows by 100 XP (L21 gap=300, L22 gap=400, ...)
+function getLevelThreshold(level) {
+  const found = LEVELS.find(l => l.level === level);
+  if (found) return found.xp;
+  if (level > 20) {
+    const k = level - 20;
+    return 12000 + 200 * k + 50 * k * k;
+  }
+  return Infinity;
+}
+
+function getLevelData(totalXP) {
+  let currentLevel = 1;
+  let currentTitle = LEVELS[0].title;
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (totalXP >= LEVELS[i].xp) {
+      currentLevel = LEVELS[i].level;
+      currentTitle = LEVELS[i].title;
+      break;
+    }
+  }
+  // If beyond defined levels
+  if (totalXP >= LEVELS[LEVELS.length - 1].xp) {
+    let lvl = LEVELS[LEVELS.length - 1].level;
+    while (getLevelThreshold(lvl + 1) <= totalXP) lvl++;
+    currentLevel = lvl;
+    currentTitle = lvl <= 20 ? LEVELS[lvl - 1].title : `Lv.${lvl} 无限超越者`;
+  }
+
+  const nextXP = getLevelThreshold(currentLevel + 1);
+  const currentXP = getLevelThreshold(currentLevel);
+  const needed = nextXP - currentXP;
+  const have = totalXP - currentXP;
+  const progress = needed > 0 ? Math.min(have / needed * 100, 100) : 100;
+
+  return { level: currentLevel, title: currentTitle, totalXP, nextXP, currentXP, have, needed, progress };
+}
+
+/* Calculate all-time total XP (with daily per-category cap applied).
+   Cached — invalidated on entry add/update/delete. */
+let _totalXPCache = null;
+function invalidateXPCache() { _totalXPCache = null; }
+
+/* Canonicalize category for XP: cbtn_* → 'custom' so all custom buttons share XP pool */
+function _xpCat(catId) {
+  return (catId && catId.startsWith('cbtn_')) ? 'custom' : catId;
+}
+
+async function calcTotalXP() {
+  if (_totalXPCache !== null) return _totalXPCache;
+  const all = await getAllEntries();
+  const byDate = {};
+  all.forEach(e => {
+    const xpCat = _xpCat(e.category);
+    if (!byDate[e.date]) byDate[e.date] = {};
+    if (!byDate[e.date][xpCat]) byDate[e.date][xpCat] = 0;
+    byDate[e.date][xpCat] = Math.min(byDate[e.date][xpCat] + 1, XP_DAILY_CAP);
+  });
+  let total = 0;
+  Object.values(byDate).forEach(day => {
+    Object.values(day).forEach(xp => total += xp);
+  });
+  _totalXPCache = total;
+  return total;
+}
+
+/* Calculate today's per-category XP */
+function calcDailyXP(entries) {
+  const dayXP = {};
+  CATEGORIES.forEach(c => dayXP[c.id] = 0);
+  entries.forEach(e => {
+    const xpCat = _xpCat(e.category);
+    if (dayXP[xpCat] !== undefined) {
+      dayXP[xpCat] = Math.min(dayXP[xpCat] + 1, XP_DAILY_CAP);
+    }
+  });
+  return dayXP;
+}
+
+/* Daily bar level (0-5 for the fill animation) */
+const BAR_LEVELS = [
+  { min: 0, label: '',        color: '#E0DDD8' },
+  { min: 1, label: '',        color: '#FBBF24' },
+  { min: 2, label: '',        color: '#F59E0B' },
+  { min: 3, label: '',        color: '#4ECDC4' },
+  { min: 4, label: '🔥',     color: '#F97316' },
+  { min: 5, label: '💥 MAX', color: '#EF4444' },
+];
+
+function getBarLevel(xp) {
+  for (let i = BAR_LEVELS.length - 1; i >= 0; i--) {
+    if (xp >= BAR_LEVELS[i].min) return i;
+  }
+  return 0;
+}
+
+async function renderXPStats(entries) {
+  const dayXP = calcDailyXP(entries);
+  const container = document.getElementById('xpSection');
+
+  // Compute level info
+  const totalXP = await calcTotalXP();
+  const levelData = getLevelData(totalXP);
+
+  const todayTotal = Object.values(dayXP).reduce((a, b) => a + b, 0);
+  const activeCats = CATEGORIES.filter(c => dayXP[c.id] > 0);
+
+  // Level progress bar
+  const levelHTML = `
+    <div class="xp-level-badge">
+      <span class="xp-level-icon">🏅</span>
+      <span class="xp-level-num">Lv.${levelData.level}</span>
+      <span class="xp-level-title">${levelData.title}</span>
+    </div>
+    <div class="xp-level-progress">
+      <div class="xp-level-track">
+        <div class="xp-level-fill" style="width:${levelData.progress}%"></div>
+      </div>
+      <div class="xp-level-text">${levelData.have} / ${levelData.needed}</div>
+    </div>
+  `;
+
+  let xpHeaderHTML = '';
+  if (activeCats.length === 0) {
+    xpHeaderHTML = `
+      <div class="xp-header">
+        <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
+        <div class="xp-total">记录一条开始积累</div>
+      </div>`;
+  }
+
+  const xpHTML = activeCats.map(cat => {
+    const xp = dayXP[cat.id];
+    const xpType = XP_TYPES[cat.id] || { icon: '⭐', name: '通用' };
+    const bl = getBarLevel(xp);
+    const pct = (xp / XP_DAILY_CAP) * 100;
+    const barColor = BAR_LEVELS[bl].color;
+    const badge = BAR_LEVELS[bl].label;
+
+    return `
+      <div class="xp-bar-row">
+        <span class="xp-bar-icon">${xpType.icon}</span>
+        <div class="xp-bar-track">
+          <div class="xp-bar-fill" style="width:${pct}%;background:${barColor};transition:width 0.4s ease;"></div>
+        </div>
+        <span class="xp-bar-label">${xp}/${XP_DAILY_CAP}</span>
+        ${badge ? `<span class="xp-combo-text">${badge}</span>` : ''}
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    ${levelHTML}
+    <div class="xp-header">
+      <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
+      <div class="xp-total">${todayTotal} / ${activeCats.length * XP_DAILY_CAP}</div>
+    </div>
+    <div class="xp-grid">
+      ${xpHTML}
+    </div>`;
+}
+
+async function renderQuickButtons() {
+  const grid = document.getElementById('quickGrid');
+
+  // Main category buttons (exclude 'custom' — use custom quick buttons instead)
+  let html = CATEGORIES.filter(cat => cat.id !== 'custom').map(cat => `
+    <button class="quick-btn" data-cat="${cat.id}" onclick="openEntryForm(${JSON.stringify(cat).replace(/"/g, '&quot;')})">
+      <span class="q-icon">${cat.svg}</span>
+      <span class="q-label">${cat.label}</span>
+    </button>
+  `).join('');
+
+  // Custom quick buttons (user-defined), fail-safe in case IndexedDB is busy
+  let customBtns = [];
+  try { customBtns = await getCustomQuickButtons(); } catch(e) { customBtns = []; }
+  customBtns.forEach(btn => {
+    const safeIcon = btn.icon.replace(/"/g, '&#34;').replace(/'/g, '&#39;');
+    html += `
+      <button class="quick-btn quick-btn-custom" data-qicon="${safeIcon}" data-qlabel="${btn.label}" data-qid="${btn.id}" data-qcat="${btn.category}" onclick="openEntryFormFromCustom(this)">
+        <span class="q-icon">${btn.icon}</span>
+        <span class="q-label">${btn.label}</span>
+      </button>
+    `;
+  });
+
+  // "+" manage button
+  html += `<button class="quick-btn quick-add-btn" onclick="showCustomQuickManager()" title="自定义快速记录">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </button>`;
+
+  grid.innerHTML = html;
+}
+
+function renderEntryCard(e) {
+  const isCbtn = e.category && e.category.startsWith('cbtn_');
+  const cat = CATEGORIES.find(c => c.id === e.category)
+    || (isCbtn ? { id: e.category, emoji: e.customQuickIcon || '📌', label: e.customQuickLabel || '自定义', color: '#94A3B8', subs: [] } : null)
+    || CATEGORIES[7];
+  const amtVal = getEntryAmount(e);
+  const amtStr = amtVal > 0 ? `¥${amtVal.toFixed(2)}` : '';
+  const dataId = `e_${e.id}`;
+
+  // Determine badge icon/label
+  // Priority: 1) stored customQuickIcon/label from entry, 2) cache lookup by button ID or text,
+  //           3) category default
+  let badgeIcon = e.customQuickIcon || cat.emoji;
+  let badgeLabel = e.customQuickLabel || cat.label;
+
+  // For custom button entries (legacy 'custom' or new 'cbtn_*'), try cache lookup
+  const isCustomCat = isCbtn || e.category === 'custom';
+  if (!e.customQuickLabel && isCustomCat && _customBtnsCache && _customBtnsCache.length > 0) {
+    if (e.customQuickBtnId) {
+      const match = _customBtnsCache.find(b => b.id === e.customQuickBtnId);
+      if (match) { badgeIcon = match.icon; badgeLabel = match.label; }
+    }
+    if (badgeLabel === cat.label && e.text) {
+      const match = _customBtnsCache.find(b => e.text === b.label || e.text.indexOf(b.label) === 0);
+      if (match) { badgeIcon = match.icon; badgeLabel = match.label; }
+    }
+  }
+
+  return `
+    <div class="entry-card" data-entry-id="${dataId}" style="border-left-color: var(--c-${e.category})">
+      <div class="entry-card-top">
+        <div class="entry-card-left">
+          <div class="entry-card-meta">
+            <span class="entry-card-time">${e.time}</span>
+            <span class="entry-card-category" style="background:var(--c-${e.category});"></span>
+          </div>
+          ${e.text ? `<div class="entry-card-text">${escapeHtml(e.text)}</div>` : ''}
+          ${amtStr ? `<div class="entry-card-amount" style="color:var(--c-spend)">${amtStr}</div>` : ''}
+        </div>
+        <div class="entry-card-right">
+          ${(() => {
+            const imgs = e.images || (e.image ? [e.image] : []);
+            return imgs.length > 0
+              ? `<img class="entry-card-image" data-entry-img="${dataId}_0" src="${imgs[0]}" style="cursor:pointer;">`
+              : '';
+          })()}
+          <div class="entry-card-actions">
+            <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑">✎</button>
+            <button class="entry-card-delete" data-del-id="${e.id}" title="删除">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* Parse amount from text like "21.97元 生榨米粉", "餐饮21.97", "¥30", "花了50块"
+   If multiple amounts found (e.g. "吃了50元买了30元"), sums them all. */
+function parseAmountFromText(text) {
+  if (!text) return 0;
+  // Try summing all "X元", "X块" or "¥X" patterns
+  const all = [...text.matchAll(/(\d+(?:\.\d+)?)\s*[元块]/g)];
+  if (all.length > 0) {
+    return all.reduce((s, m) => s + parseFloat(m[1]), 0);
+  }
+  // Also match "¥30" style
+  const yenAll = [...text.matchAll(/¥(\d+(?:\.\d+)?)/g)];
+  if (yenAll.length > 0) {
+    return yenAll.reduce((s, m) => s + parseFloat(m[1]), 0);
+  }
+  // Fallback: single decimal number (for "餐饮21.97" style — sub-option + amount)
+  const match = text.match(/.*?(\d+(?:\.\d+)?)/);
+  if (match) return parseFloat(match[1]);
+  return 0;
+}
+
+/* Get effective amount from an entry. Only auto-parse from text for 花了钱 category,
+   to avoid false positives like "跑了5公里" being treated as ¥5. */
+function getEntryAmount(e) {
+  // Explicit amount field takes priority
+  if (Number(e.amount) > 0) return Number(e.amount);
+  // For spend category, try to extract from text
+  if (e.category === 'spend') return parseAmountFromText(e.text);
+  return 0;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ============================================================
+// RENDER: WEEKLY
+// ============================================================
+async function renderWeek() {
+  // Pre-load custom buttons cache for badge fallback
+  try { _customBtnsCache = await getCustomQuickButtons(); } catch(e) { _customBtnsCache = null; }
+  const range = dateUtils.getWeekRange(state.weekOffset);
+  document.getElementById('weekRange').textContent = `${range.startDisplay} - ${range.endDisplay}`;
+
+  const entries = await getEntriesByDateRange(range.start, range.end);
+
+  // Populate image lookup
+  _imgLookup = {};
+  entries.forEach(e => {
+    const imgs = e.images || (e.image ? [e.image] : []);
+    imgs.forEach((url, j) => { _imgLookup[`e_${e.id}_${j}`] = url; });
+  });
+
+  // Stats
+  const total = entries.length;
+  const daysActive = new Set(entries.map(e => e.date)).size;
+  const totalSpend = entries.reduce((s, e) => s + getEntryAmount(e), 0);
+
+  document.getElementById('weekStats').innerHTML = `
+    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">总记录</div></div>
+    <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label">活跃天数</div></div>
+    <div class="stat-card"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">总支出</div></div>
+  `;
+
+  // Category chart
+  const catCounts = {};
+  CATEGORIES.forEach(c => catCounts[c.label] = 0);
+  entries.forEach(e => {
+    const cat = CATEGORIES.find(c => c.id === e.category);
+    if (cat) {
+      catCounts[cat.label]++;
+    } else if (e.category && e.category.startsWith('cbtn_')) {
+      catCounts['自定义']++;
+    }
+  });
+
+  const labels = CATEGORIES.map(c => c.label.substring(0, 3));
+  const data = CATEGORIES.map(c => catCounts[c.label] || 0);
+  const colors = CATEGORIES.map(c => getComputedStyle(document.documentElement).getPropertyValue(`--c-${c.id}`).trim());
+
+  drawBarChart('weekChart', labels, data, colors, { stepSize: 1, borderRadius: 6 });
+
+  // Entries by day
+  const dayGroups = {};
+  for (let d = new Date(dateUtils.parseDate(range.start)); d <= dateUtils.parseDate(range.end); d.setDate(d.getDate() + 1)) {
+    const ds = dateUtils.formatDate(d);
+    dayGroups[ds] = entries.filter(e => e.date === ds);
+  }
+
+  const weekContainer = document.getElementById('weekEntries');
+  weekContainer.innerHTML = '';
+
+  let hasEntries = false;
+  const sortedDays = Object.entries(dayGroups).sort(([a], [b]) => b.localeCompare(a));
+  for (const [ds, dayEntries] of sortedDays) {
+    if (dayEntries.length === 0) continue;
+    hasEntries = true;
+
+    // Group day's entries by category — standard + cbtn_ dynamic
+    const dayGrouped = {};
+    const dayCbtnGroups = {};
+    CATEGORIES.forEach(c => dayGrouped[c.id] = []);
+    dayEntries.forEach(e => {
+      if (e.category && e.category.startsWith('cbtn_')) {
+        if (!dayCbtnGroups[e.category]) dayCbtnGroups[e.category] = [];
+        dayCbtnGroups[e.category].push(e);
+      } else if (dayGrouped[e.category]) {
+        dayGrouped[e.category].push(e);
+      }
+    });
+
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'day-group';
+    const daySpend = dayEntries.reduce((s, e) => s + getEntryAmount(e), 0);
+    const daySpendStr = daySpend > 0 ? ` <span style="color:var(--c-spend);font-weight:700;">¥${daySpend.toFixed(1)}</span>` : '';
+    let dayHTML = `<div class="day-group-header">${dateUtils.formatDisplay(ds)}${daySpendStr}</div>`;
+    CATEGORIES.forEach(cat => {
+      const list = dayGrouped[cat.id];
+      if (!list || list.length === 0) return;
+      let gIcon = cat.svg;
+      let gLabel = cat.label;
+      if (cat.id === 'custom') {
+        const labels = new Set(list.map(e => e.customQuickLabel).filter(Boolean));
+        if (labels.size === 1) {
+          const first = list.find(e => e.customQuickIcon);
+          gIcon = first?.customQuickIcon || cat.svg;
+          gLabel = [...labels][0];
+        }
+      }
+      const groupId = `${ds}_${cat.id}`.replace(/-/g, '');
+      dayHTML += `
+        <div class="cat-group" style="margin-bottom:6px;">
+          <div class="cat-group-header" data-toggle="${groupId}" style="border-left-color:var(--c-${cat.id});padding:8px 12px;">
+            <span class="cat-icon" style="font-size:13px;">${gIcon}</span>
+            <span class="cat-label" style="font-size:13px;">${gLabel}</span>
+            <span class="cat-count">${list.length}</span>
+            <span class="cat-arrow">▶</span>
+          </div>
+          <div class="cat-group-body" id="groupBody_${groupId}">
+            ${list.map(e => renderEntryCard(e)).join('')}
+          </div>
+        </div>`;
+    });
+    // Render cbtn_ dynamic groups
+    for (const [catId, list] of Object.entries(dayCbtnGroups)) {
+      const first = list[0];
+      const groupId = `${ds}_${catId}`.replace(/-/g, '');
+      dayHTML += `
+        <div class="cat-group" style="margin-bottom:6px;">
+          <div class="cat-group-header" data-toggle="${groupId}" style="border-left-color:#94A3B8;padding:8px 12px;">
+            <span class="cat-icon" style="font-size:13px;">${first?.customQuickIcon || '📌'}</span>
+            <span class="cat-label" style="font-size:13px;">${first?.customQuickLabel || ''}</span>
+            <span class="cat-count">${list.length}</span>
+            <span class="cat-arrow">▶</span>
+          </div>
+          <div class="cat-group-body" id="groupBody_${groupId}">
+            ${list.map(e => renderEntryCard(e)).join('')}
+          </div>
+        </div>`;
+    }
+    dayDiv.innerHTML = dayHTML;
+    weekContainer.appendChild(dayDiv);
+  }
+
+  if (!hasEntries) {
+    weekContainer.innerHTML = `<div class="empty-state"><span class="empty-emoji">
+  <svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;opacity:0.4;">
+    <line x1="12" y1="20" x2="12" y2="10"/>
+    <line x1="18" y1="20" x2="18" y2="4"/>
+    <line x1="6" y1="20" x2="6" y2="16"/>
+  </svg>
+</span><div class="empty-text">本周暂无记录</div></div>`;
+  }
+}
+
+// ============================================================
+// RENDER: MONTHLY
+// ============================================================
+async function renderMonth() {
+  // Pre-load custom buttons cache for badge fallback
+  try { _customBtnsCache = await getCustomQuickButtons(); } catch(e) { _customBtnsCache = null; }
+  const { year, month } = dateUtils.getMonthYear(state.monthOffset);
+  document.getElementById('monthTitle').textContent = `${year}年${month}月`;
+
+  const entries = await getEntriesByMonth(year, month);
+
+  // Populate image lookup
+  _imgLookup = {};
+  entries.forEach(e => {
+    const imgs = e.images || (e.image ? [e.image] : []);
+    imgs.forEach((url, j) => { _imgLookup[`e_${e.id}_${j}`] = url; });
+  });
+
+  // Calendar
+  renderCalendar(year, month, entries);
+
+  // Month stats
+  const total = entries.length;
+  const daysActive = new Set(entries.map(e => e.date)).size;
+  const totalSpend = entries.reduce((s, e) => s + getEntryAmount(e), 0);
+  const avgPerDay = daysActive > 0 ? (total / daysActive).toFixed(1) : '0';
+
+  document.getElementById('monthStats').innerHTML = `
+    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">总记录</div></div>
+    <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label">记录天数</div></div>
+    <div class="stat-card"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">总支出</div></div>
+    <div class="stat-card"><div class="stat-value">${avgPerDay}</div><div class="stat-label">日均记录</div></div>
+  `;
+
+  // Category distribution
+  const catCounts = {};
+  CATEGORIES.forEach(c => catCounts[c.label] = 0);
+  entries.forEach(e => {
+    const cat = CATEGORIES.find(c => c.id === e.category);
+    if (cat) {
+      catCounts[cat.label]++;
+    } else if (e.category && e.category.startsWith('cbtn_')) {
+      catCounts['自定义']++;
+    }
+  });
+
+  const colors = CATEGORIES.map(c => getComputedStyle(document.documentElement).getPropertyValue(`--c-${c.id}`).trim());
+
+  // Donut chart
+  const donutLabels = CATEGORIES.filter((_, i) => catCounts[CATEGORIES[i].label] > 0).map(c => `${c.emoji} ${c.label}`);
+  const donutValues = donutLabels.map((_, i) => catCounts[CATEGORIES.filter(c => catCounts[c.label] > 0)[i].label]);
+  const donutColors = CATEGORIES.filter(c => catCounts[c.label] > 0).map(c =>
+    getComputedStyle(document.documentElement).getPropertyValue(`--c-${c.id}`).trim()
+  );
+  drawDonutChart('monthChart', donutLabels, donutValues, donutColors);
+
+  // Daily spend chart
+  const dailySpend = {};
+  entries.filter(e => getEntryAmount(e) > 0).forEach(e => {
+    dailySpend[e.date] = (dailySpend[e.date] || 0) + getEntryAmount(e);
+  });
+  const spendDates = Object.keys(dailySpend).sort();
+  const spendValues = spendDates.map(d => dailySpend[d]);
+  if (spendDates.length > 0) {
+    drawBarChart('spendChart', spendDates.map(d => d.slice(5)), spendValues, '#5B7BA3', { yPrefix: '¥', borderRadius: 4 });
+  } else {
+    drawBarChart('spendChart', ['暂无支出'], [0], '#E8F4F4', { hideX: true });
+  }
+
+  // Daily activity chart
+  const daysInMonth = dateUtils.getDaysInMonth(year, month);
+  const dailyCounts = {};
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    dailyCounts[ds] = 0;
+  }
+  entries.forEach(e => { if (dailyCounts[e.date] !== undefined) dailyCounts[e.date]++; });
+
+  const activityLabels = Object.keys(dailyCounts).map(d => parseInt(d.slice(-2)));
+  const activityValues = Object.values(dailyCounts);
+  const activityColors = activityValues.map(v => v > 0 ? '#4ECDC4' : '#E8F4F4');
+
+  drawBarChart('activityChart', activityLabels, activityValues, activityColors, { stepSize: 1, borderRadius: 4 });
+
+  // Day detail
+  if (state.selectedDay) {
+    const dayEntries = entries.filter(e => e.date === state.selectedDay);
+    const detailEl = document.getElementById('monthDayDetail');
+    if (dayEntries.length > 0) {
+      detailEl.innerHTML = `
+        <div class="day-detail-card">
+          <div class="day-detail-date">${dateUtils.formatDisplay(state.selectedDay)}</div>
+          ${dayEntries.map(e => renderEntryCard(e)).join('')}
+        </div>
+      `;
+    } else {
+      detailEl.innerHTML = '';
+    }
+  }
+}
+
+function renderCalendar(year, month, entries) {
+  const daysInMonth = dateUtils.getDaysInMonth(year, month);
+  const firstDay = dateUtils.getFirstDayOfMonth(year, month);
+  const today = dateUtils.today();
+
+  // Build entry counts per day
+  const entryCounts = {};
+  entries.forEach(e => { entryCounts[e.date] = (entryCounts[e.date] || 0) + 1; });
+
+  // Max count for heatmap intensity
+  const maxCount = Math.max(1, ...Object.values(entryCounts));
+
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+
+  let html = `<div class="calendar-weekdays">${weekdays.map(d => `<div class="calendar-weekday">${d}</div>`).join('')}</div>`;
+  html += '<div class="calendar-days">';
+
+  // Empty cells before first day
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="calendar-day other-month"></div>';
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const count = entryCounts[ds] || 0;
+    const isToday = ds === today;
+    const isSelected = ds === state.selectedDay;
+
+    // Heatmap intensity
+    const intensity = count > 0 ? Math.min(0.3 + (count / maxCount) * 0.7, 1) : 0;
+    const bgColor = count > 0 ? `rgba(232, 121, 81, ${intensity})` : 'transparent';
+    const textColor = count > 3 ? 'white' : '';
+
+    html += `
+      <div class="calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
+           style="background:${bgColor};${textColor ? 'color:'+textColor : ''}"
+           onclick="selectDay('${ds}')">
+        ${d}
+        ${count > 0 ? `<div class="day-dot" style="background:${isSelected ? 'white' : 'var(--primary)'}"></div>` : ''}
+      </div>
+    `;
+  }
+
+  // Fill remaining cells
+  const totalCells = firstDay + daysInMonth;
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let i = 0; i < remaining; i++) {
+    html += '<div class="calendar-day other-month"></div>';
+  }
+
+  html += '</div>';
+  document.getElementById('calendar').innerHTML = html;
+}
+
+async function selectDay(dateStr) {
+  state.selectedDay = state.selectedDay === dateStr ? null : dateStr;
+  await renderMonth();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function switchView(view, direction) {
+  const views = ['today', 'week', 'month'];
+  state.currentView = view;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  document.querySelectorAll('.view').forEach(v => {
+    v.classList.remove('active', 'slide-in-right', 'slide-in-left');
+  });
+  const el = document.getElementById(`view${view.charAt(0).toUpperCase() + view.slice(1)}`);
+  // Determine animation direction
+  const curIdx = views.indexOf(view);
+  const prevIdx = direction !== undefined ? (direction === -1 ? curIdx + 1 : curIdx - 1) : curIdx;
+  if (direction === 1) el.classList.add('slide-in-right');
+  else if (direction === -1) el.classList.add('slide-in-left');
+  el.classList.add('active');
+
+  if (view === 'today') renderToday();
+  else if (view === 'week') renderWeek();
+  else renderMonth();
+}
+
+function navigateWeek(dir) {
+  state.weekOffset += dir;
+  renderWeek();
+}
+
+function navigateMonth(dir) {
+  state.monthOffset += dir;
+  state.selectedDay = null;
+  renderMonth();
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+async function showExportDialog() {
+  try {
+    const entries = await getAllEntries();
+    if (entries.length === 0) {
+      showToast('暂无数据可导出');
+      return;
+    }
+    const jsonStr = JSON.stringify(entries, null, 2);
+    const filename = `今天做了啥_备份_${dateUtils.today()}.json`;
+    // Use Android bridge if available (WebView), fallback to data URL
+    if (window.AndroidBridge && window.AndroidBridge.exportJson) {
+      AndroidBridge.exportJson(filename, jsonStr);
+      showToast('✓ 已导出到「下载」文件夹');
+    } else {
+      const dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonStr);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('✓ 数据已导出');
+    }
+  } catch (err) {
+    showToast('导出失败');
+  }
+}
+
+function showImportDialog() {
+  // Reset state
+  document.getElementById('importFileInput').value = '';
+  document.getElementById('pasteImportText').value = '';
+  document.getElementById('pasteImportArea').style.display = 'none';
+  document.getElementById('importDialog').classList.add('open');
+}
+
+function triggerImportFile() {
+  document.getElementById('importFileInput').value = '';
+  document.getElementById('importFileInput').click();
+}
+
+function togglePasteImport() {
+  const area = document.getElementById('pasteImportArea');
+  area.style.display = area.style.display === 'none' ? 'block' : 'none';
+}
+
+// File input handler (runs when user picks a file via the file chooser)
+document.getElementById('importFileInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const text = await file.text();
+    await doImportData(text);
+  } catch (err) {
+    showToast('导入失败，请检查文件格式');
+  }
+});
+
+// Paste import handler
+async function doPasteImport() {
+  const text = document.getElementById('pasteImportText').value.trim();
+  if (!text) { showToast('请先粘贴 JSON 内容'); return; }
+  try {
+    await doImportData(text);
+  } catch (err) {
+    showToast('导入失败，请检查 JSON 格式');
+  }
+}
+
+async function doImportData(jsonText) {
+  const data = JSON.parse(jsonText);
+
+  // Support both plain array (legacy export) and wrapped sync format
+  let entries = [];
+  let customBtns = null;
+  if (Array.isArray(data)) {
+    entries = data;
+  } else if (data && Array.isArray(data.entries)) {
+    entries = data.entries;
+    customBtns = data.customQuickButtons || null;
+  } else {
+    throw new Error('Invalid format');
+  }
+
+  closeDialog('importDialog');
+
+  if (!confirm(`将导入 ${entries.length} 条记录${customBtns ? ' + 自定义按钮' : ''}，是否继续？`)) return;
+
+  // Import custom quick buttons first
+  if (customBtns && Array.isArray(customBtns) && customBtns.length > 0) {
+    await setCustomQuickButtons(customBtns);
+  }
+
+  let imported = 0;
+  for (const entry of entries) {
+    if (entry.id && entry.date && entry.category) {
+      await addEntry(entry);
+      imported++;
+    }
+  }
+  showToast(`✓ 已导入 ${imported} 条记录${customBtns ? ' + 自定义按钮' : ''}`);
+  invalidateXPCache();
+  if (state.currentView === 'today') renderToday();
+  else if (state.currentView === 'week') renderWeek();
+  else renderMonth();
+}
+
+async function confirmClearAll() {
+  if (!confirm('确定要清空所有数据吗？此操作不可恢复！')) return;
+  if (!confirm('再次确认：真的要删除所有记录吗？')) return;
+  try {
+    const entries = await getAllEntries();
+    for (const e of entries) {
+      await deleteEntry(e.id);
+    }
+    showToast('✓ 已清空所有数据');
+    if (state.currentView === 'today') renderToday();
+    else if (state.currentView === 'week') renderWeek();
+    else renderMonth();
+  } catch (err) {
+    showToast('清空失败');
+  }
+}
+
+// ============================================================
+// SYNC: phone-as-server (requires Android bridge)
+// ============================================================
+async function startSync() {
+  const statusEl = document.getElementById('syncStatus');
+  const readyEl = document.getElementById('syncReady');
+  const urlEl = document.getElementById('syncUrl');
+  const msgEl = document.getElementById('syncMessage');
+
+  statusEl.style.display = 'block';
+  readyEl.style.display = 'none';
+  msgEl.textContent = '正在读取全部数据...';
+  document.getElementById('syncDialog').classList.add('open');
+
+  // Check if Android bridge is available
+  if (typeof AndroidBridge === 'undefined' || !AndroidBridge.startSyncServer) {
+    msgEl.textContent = '❌ 非 Android App 环境，无法启动同步';
+    document.getElementById('syncCloseBtn').textContent = '关闭';
+    return;
+  }
+
+  try {
+    // Read all entries from IndexedDB
+    const allEntries = await getAllEntries();
+    const customBtns = await getCustomQuickButtons();
+    const data = {
+      timestamp: new Date().toISOString(),
+      version: 22,
+      entries: allEntries,
+      customQuickButtons: customBtns,
+    };
+    const json = JSON.stringify(data, null, 2);
+
+    msgEl.textContent = '正在启动同步服务器...';
+
+    // Call Android to start the HTTP server
+    const url = AndroidBridge.startSyncServer(json);
+    if (url.startsWith('ERROR:no-wifi')) {
+      msgEl.textContent = '❌ 未连接到 WiFi 网络，请连接后重试';
+      document.getElementById('syncCloseBtn').textContent = '关闭';
+      return;
+    }
+    if (url.startsWith('ERROR:')) {
+      msgEl.textContent = '❌ 启动同步失败：' + url;
+      document.getElementById('syncCloseBtn').textContent = '关闭';
+      return;
+    }
+
+    // Success!
+    statusEl.style.display = 'none';
+    readyEl.style.display = 'block';
+    urlEl.textContent = url;
+    document.getElementById('syncCloseBtn').textContent = '停止同步';
+    showToast('同步服务器已启动');
+  } catch (err) {
+    msgEl.textContent = '❌ 错误：' + err.message;
+    document.getElementById('syncCloseBtn').textContent = '关闭';
+  }
+}
+
+function stopSync() {
+  closeDialog('syncDialog');
+  if (typeof AndroidBridge !== 'undefined' && AndroidBridge.stopSyncServer) {
+    AndroidBridge.stopSyncServer();
+  }
+  document.getElementById('syncCloseBtn').textContent = '停止同步';
+}
+
+// ============================================================
+// EVENT DELEGATION (for entry cards rendered dynamically)
+// ============================================================
+// Image data lookup — populated before each render
+let _imgLookup = {};
+// Custom quick buttons cache — for fallback matching in renderEntryCard
+let _customBtnsCache = null;
+
+document.addEventListener('click', (e) => {
+  // Category group toggle (with stopPropagation to prevent adjacent groups from opening)
+  const toggle = e.target.closest('[data-toggle]');
+  if (toggle && toggle.dataset.toggle) {
+    e.stopPropagation();
+    e.preventDefault();
+    const id = toggle.dataset.toggle;
+    // Use direct DOM traversal: find sibling body within the same cat-group
+    // This is more reliable than ID-based lookup
+    const group = toggle.closest('.cat-group');
+    if (group) {
+      const body = group.querySelector('.cat-group-body');
+      if (body) {
+        body.classList.toggle('open');
+        const arrow = toggle.querySelector('.cat-arrow');
+        if (arrow) arrow.classList.toggle('open');
+      }
+    }
+    return;
+  }
+  // Image click: open modal
+  const img = e.target.closest('.entry-card-image');
+  if (img && img.dataset.entryImg) {
+    const src = _imgLookup[img.dataset.entryImg];
+    if (src) { e.stopPropagation(); openImageModal(src); }
+    return;
+  }
+  // Edit button
+  const editBtn = e.target.closest('.entry-card-edit');
+  if (editBtn && editBtn.dataset.editId) {
+    e.stopPropagation();
+    const id = Number(editBtn.dataset.editId);
+    // Retrieve entry data from _imgLookup context — we need the full entry
+    getAllEntries().then(all => {
+      const entry = all.find(ent => ent.id === id);
+      if (entry) editEntryById(id, entry);
+      else showToast('找不到该记录');
+    });
+    return;
+  }
+  // Delete button
+  const del = e.target.closest('.entry-card-delete');
+  if (del && del.dataset.delId) {
+    e.stopPropagation();
+    deleteEntryById(Number(del.dataset.delId));
+    return;
+  }
+  // Close entry form when clicking outside
+  const entryForm = document.getElementById('entryForm');
+  if (entryForm.classList.contains('open')) {
+    if (!e.target.closest('.entry-form') && !e.target.closest('.quick-btn')) {
+      // Don't close if clicking in timeline or other controls
+    }
+  }
+});
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeEntryForm();
+    closeImageModal();
+  }
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    if (document.getElementById('entryForm').classList.contains('open')) {
+      submitEntry();
+    }
+  }
+});
+
+// ============================================================
+// SWIPE TO SWITCH TABS
+// ============================================================
+(function() {
+  let startX = 0, startY = 0;
+  const views = ['today', 'week', 'month'];
+  document.addEventListener('touchstart', (e) => {
+    // Don't swipe when interacting with entry form or dialogs
+    if (e.target.closest('.entry-form') || e.target.closest('.dialog-overlay')) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (startX === 0) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 1.5) { startX = 0; return; }
+    const currentIdx = views.indexOf(state.currentView);
+    if (dx < 0 && currentIdx < views.length - 1) switchView(views[currentIdx + 1], 1);
+    else if (dx > 0 && currentIdx > 0) switchView(views[currentIdx - 1], -1);
+    startX = 0;
+  }, { passive: true });
+})();
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  // Update header date
+  document.getElementById('headerDate').textContent = dateUtils.formatDisplay(dateUtils.today());
+
+  // Render today view
+  await renderToday();
+
+  // Update date every minute
+  setInterval(() => {
+    document.getElementById('headerDate').textContent = dateUtils.formatDisplay(dateUtils.today());
+  }, 60000);
+}
+
+init();
+</script>
+</body>
+</html>

@@ -37,8 +37,8 @@
   --c-work: #F97316;
   --c-custom: #94A3B8;
 }
-html { font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
-body { min-height: 100vh; }
+html { font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; font-size: 16px; }
+body { min-height: 100vh; font-size: 15px; }
 input, textarea, button { font-family: inherit; font-size: inherit; }
 
 /* ===== Card Section ===== */
@@ -52,6 +52,30 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 
 /* ===== App Container ===== */
 #app { max-width: 480px; margin: 0 auto; padding: 0 16px 80px; min-height: 100vh; }
+
+/* Mobile text size boost — iPhone等设备文字偏小 */
+@media (max-width: 480px) {
+  .header-date { font-size: 13px !important; }
+  .quick-label { font-size: 14px !important; }
+  .quick-btn .q-label { font-size: 14px !important; }
+  .tab-btn { font-size: 15px !important; }
+  .entry-card-time { font-size: 13px !important; }
+  .day-group-header { font-size: 14px !important; }
+  .cat-label { font-size: 14px !important; }
+  .cat-count { font-size: 12px !important; }
+  .stat-card .stat-label { font-size: 12px !important; }
+  .empty-state .empty-hint { font-size: 13px !important; }
+  .calendar-weekday { font-size: 12px !important; }
+  .quick-btn { font-size: 14px !important; }
+  .slow-btn { font-size: 14px !important; }
+  .dialog-title { font-size: 16px !important; }
+  .dialog-text { font-size: 13px !important; }
+  #viewToday .entry-card-text { font-size: 13px !important; }
+  #viewToday .entry-card-time { font-size: 12px !important; }
+  #viewToday .cat-group-header .cat-label { font-size: 13px !important; }
+  .xp-title { font-size: 14px !important; }
+  .entry-form .form-textarea { font-size: 15px !important; }
+}
 
 /* ===== Header ===== */
 .header { padding: 20px 0 14px; display: flex; align-items: center; justify-content: space-between; }

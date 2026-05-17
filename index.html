@@ -2366,11 +2366,14 @@ async function renderXPStats(entries) {
 
   container.innerHTML = `
     ${levelHTML}
-    <div class="xp-header">
+    <div class="xp-header" style="cursor:pointer;" onclick="const xg=document.getElementById('xpGrid');xg.classList.toggle('collapsed');_xpCollapsed=xg.classList.contains('collapsed');this.querySelector('.xp-toggle').textContent=_xpCollapsed?'▲':'▼'">
       <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
-      <div class="xp-total">${todayTotal} / ${activeCats.length * XP_DAILY_CAP}</div>
+      <span style="display:flex;align-items:center;gap:6px;">
+        <span class="xp-total">${todayTotal} / ${activeCats.length * XP_DAILY_CAP}</span>
+        <span class="xp-toggle" style="font-size:10px;color:var(--text-tertiary);">${_xpCollapsed?'▲':'▼'}</span>
+      </span>
     </div>
-    <div class="xp-grid">
+    <div class="xp-grid collapsible-body${_xpCollapsed?' collapsed':''}" id="xpGrid">
       ${xpHTML}
     </div>`;
   // Animate XP bars and level bar from 0 → target
@@ -2653,7 +2656,8 @@ async function renderWeek() {
     const daySpend = dayEntries.reduce((s, e) => s + getEntryAmount(e), 0);
     const daySpendStr = daySpend > 0 ? ` <span style="color:var(--c-spend);font-weight:700;">¥${daySpend.toFixed(1)}</span>` : '';
     const dayGroupId = `day_${ds}`.replace(/-/g, '');
-    const isDayCollapsed = _dayCollapsed[ds] || false;
+    // First day default expanded, others default collapsed (unless user overrode)
+    const isDayCollapsed = _dayCollapsed[ds] !== undefined ? _dayCollapsed[ds] : (dayCount > 1);
     let dayHTML = `<div class="day-group-header" style="cursor:pointer;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;">${dateUtils.formatDisplay(ds)}${daySpendStr} <span class="day-toggle" style="font-size:10px;color:var(--text-tertiary);margin-left:6px;">${isDayCollapsed?'▲':'▼'}</span></div>
     <div id="${dayGroupId}" class="day-body collapsible-body${isDayCollapsed?' collapsed':''}">`;
     CATEGORIES.forEach(cat => {
@@ -3337,6 +3341,7 @@ let _weekChartCollapsed = false; // collapsed state for week chart section
 let _earlierCollapsed = false; // collapsed state for earlier records section
 let _monthChartState = { spend: false, activity: false, cat: false };
 let _quickCollapsed = false;
+let _xpCollapsed = false;
 
 async function renderSettings() {
   // Settings page has no search — just data management buttons

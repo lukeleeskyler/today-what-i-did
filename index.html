@@ -231,7 +231,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .quick-btn-custom { background: #F5F8F8; }
 .quick-btn-custom:hover { background: #E8F4F4; }
 .quick-btn-custom.active { background: #4ECDC4; color: #fff; }
-.quick-add-btn { background: transparent; border: 1.5px dashed #C8D5D5; font-size: 18px; font-weight: 300; color: var(--text-secondary); padding: 6px 10px; min-width: 36px; justify-content: center; }
+.quick-add-btn { background: transparent; border: 1.5px dashed #C8D5D5; font-size: 18px; font-weight: 300; color: var(--text); padding: 6px 10px; min-width: 36px; justify-content: center; }
 .quick-add-btn:hover { border-color: #4ECDC4; color: #4ECDC4; }
 
 /* ===== Quick Manager Dialog ===== */
@@ -562,6 +562,8 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .entry-card.show-actions .entry-card-actions {
   display: flex;
 }
+.entry-card-add { color: #4ECDC4; border: none; background: none; cursor: pointer; padding: 4px 6px; border-radius: 4px; transition: all 0.1s; display:flex; align-items:center; justify-content:center; width:28px; height:28px; }
+.entry-card-add:hover { background: #EDFBF9; }
 .entry-card-edit, .entry-card-delete {
   border: none;
   background: none;
@@ -904,7 +906,7 @@ canvas { display: block; width: 100%; height: auto; }
           </svg>
           快速记录
         </span>
-        <span class="q-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+        <span class="q-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div class="quick-grid collapsible-body" id="quickGrid"></div>
     </div>
@@ -1014,7 +1016,7 @@ canvas { display: block; width: 100%; height: auto; }
     <div class="section-card" id="monthCalendarSection" style="padding-bottom:12px;">
       <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const cal=document.getElementById('calendar');cal.classList.toggle('collapsed');this.querySelector('.cal-toggle').textContent=cal.classList.contains('collapsed')?'▲':'▼'">
         <span>日历</span>
-        <span class="cal-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+        <span class="cal-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div class="calendar collapsible-body" id="calendar"></div>
     </div>
@@ -1022,21 +1024,21 @@ canvas { display: block; width: 100%; height: auto; }
     <div class="chart-container">
       <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const sc=document.getElementById('spendChartContainer');sc.classList.toggle('collapsed');this.querySelector('.s-toggle').textContent=sc.classList.contains('collapsed')?'▲':'▼';_monthChartState.spend=sc.classList.contains('collapsed')">
         <span>每日支出</span>
-        <span class="s-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+        <span class="s-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div id="spendChartContainer" class="collapsible-body"></div>
     </div>
     <div class="chart-container">
       <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const ac=document.getElementById('activityChartContainer');ac.classList.toggle('collapsed');this.querySelector('.a-toggle').textContent=ac.classList.contains('collapsed')?'▲':'▼';_monthChartState.activity=ac.classList.contains('collapsed')">
         <span>每日记录数</span>
-        <span class="a-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+        <span class="a-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div id="activityChartContainer" class="collapsible-body"></div>
     </div>
     <div class="chart-container">
       <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const mc=document.getElementById('monthChartContainer');mc.classList.toggle('collapsed');this.querySelector('.m-toggle').textContent=mc.classList.contains('collapsed')?'▲':'▼';_monthChartState.cat=mc.classList.contains('collapsed')">
         <span>分类分布</span>
-        <span class="m-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+        <span class="m-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div id="monthChartContainer" class="collapsible-body"></div>
     </div>
@@ -2325,7 +2327,7 @@ async function renderXPStats(entries) {
       <span class="xp-level-icon">🏅</span>
       <span class="xp-level-num">Lv.${levelData.level}</span>
       <span class="xp-level-title">${levelData.title}</span>
-      <span style="margin-left:auto;font-size:10px;color:var(--text-tertiary);" id="xpToggleArrow">▼</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text);" id="xpToggleArrow">▼</span>
     </div>
     <div class="xp-level-progress">
       <div class="xp-level-track">
@@ -2370,8 +2372,14 @@ async function renderXPStats(entries) {
       <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
       <span style="display:flex;align-items:center;gap:6px;">
         <span class="xp-total">${todayTotal} / ${activeCats.length * XP_DAILY_CAP}</span>
-        <span class="xp-toggle" style="font-size:10px;color:var(--text-tertiary);">${_xpCollapsed?'▲':'▼'}</span>
+        <span class="xp-toggle" style="font-size:10px;color:var(--text);">${_xpCollapsed?'▲':'▼'}</span>
       </span>
+    </div>
+    <div style="margin:8px 0 4px;display:flex;align-items:center;gap:8px;">
+      <div style="flex:1;height:8px;background:#F0EDE8;border-radius:4px;overflow:hidden;">
+        <div class="xp-bar-fill-anim" style="height:100%;width:0%;background:linear-gradient(90deg,var(--secondary),var(--primary));border-radius:4px;transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);" data-xp="${activeCats.length > 0 ? (todayTotal / (activeCats.length * XP_DAILY_CAP)) * 100 : 0}"></div>
+      </div>
+      <span style="font-size:11px;font-weight:600;color:var(--text-secondary);white-space:nowrap;">${todayTotal} / ${activeCats.length * XP_DAILY_CAP}</span>
     </div>
     <div class="xp-grid collapsible-body${_xpCollapsed?' collapsed':''}" id="xpGrid">
       ${xpHTML}
@@ -2426,7 +2434,7 @@ async function renderQuickButtons() {
   grid.innerHTML = html;
 }
 
-function renderEntryCard(e) {
+function renderEntryCard(e, showAdd) {
   const isCbtn = e.category && e.category.startsWith('cbtn_');
   const cat = CATEGORIES.find(c => c.id === e.category)
     || (isCbtn ? { id: e.category, emoji: e.customQuickIcon || '📌', label: e.customQuickLabel || '自定义', color: '#94A3B8', subs: [] } : null)
@@ -2467,11 +2475,14 @@ function renderEntryCard(e) {
         </div>
         <div class="entry-card-right" style="gap:8px;">
           <div class="entry-card-actions" style="gap:6px;">
+            ${showAdd !== false ? `<button class="entry-card-add" data-add-id="${e.id}" data-add-cat="${e.category}" title="新增同类别">
+              <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:24px;height:24px;display:block;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            </button>` : ''}
             <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑">
-              <svg viewBox="0 0 24 24" fill="#FF6B6B" stroke="none" style="width:22px;height:22px;display:block;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+              <svg viewBox="0 0 24 24" fill="#FF6B6B" stroke="none" style="width:24px;height:24px;display:block;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
             </button>
             <button class="entry-card-delete" data-del-id="${e.id}" title="删除">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;display:block;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;display:block;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>
           </div>
           ${(() => {
@@ -2597,7 +2608,7 @@ async function renderWeek() {
   document.getElementById('weekChartSection').querySelector('.chart-title').innerHTML = `
     <span style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="var c=document.getElementById('weekChartContainer');var isCollapsed=c.classList.contains('collapsed');if(isCollapsed){c.classList.remove('collapsed');requestAnimationFrame(function(){c.querySelectorAll('.chart-bar-fill').forEach(function(b){b.style.width=b.dataset.w+'%';});});}else{c.classList.add('collapsed');c.querySelectorAll('.chart-bar-fill').forEach(function(b){b.style.width='0%';});c.querySelectorAll('.chart-bar-label').forEach(function(l){l.style.opacity='0';});}_weekChartCollapsed=!isCollapsed;this.querySelector('.chart-toggle').textContent=isCollapsed?'▼':'▲';">
       分类统计
-      <span class="chart-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
+      <span class="chart-toggle" style="font-size:10px;color:var(--text);">▼</span>
     </span>`;
   const chartContainer = document.getElementById('weekChartContainer');
   chartContainer.className = 'collapsible-body';
@@ -2658,7 +2669,7 @@ async function renderWeek() {
     const dayGroupId = `day_${ds}`.replace(/-/g, '');
     // First day default expanded, others default collapsed (unless user overrode)
     const isDayCollapsed = _dayCollapsed[ds] !== undefined ? _dayCollapsed[ds] : (dayCount > 1);
-    let dayHTML = `<div class="day-group-header" style="cursor:pointer;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;">${dateUtils.formatDisplay(ds)}${daySpendStr} <span class="day-toggle" style="font-size:10px;color:var(--text-tertiary);margin-left:6px;">${isDayCollapsed?'▲':'▼'}</span></div>
+    let dayHTML = `<div class="day-group-header" style="cursor:pointer;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;">${dateUtils.formatDisplay(ds)}${daySpendStr} <span class="day-toggle" style="font-size:10px;color:var(--text);margin-left:6px;">${isDayCollapsed?'▲':'▼'}</span></div>
     <div id="${dayGroupId}" class="day-body collapsible-body${isDayCollapsed?' collapsed':''}">`;
     CATEGORIES.forEach(cat => {
       const list = dayGrouped[cat.id];
@@ -2683,7 +2694,7 @@ async function renderWeek() {
             <span class="cat-arrow">▶</span>
           </div>
           <div class="cat-group-body" id="groupBody_${groupId}">
-            ${list.map(e => renderEntryCard(e)).join('')}
+            ${list.map(e => renderEntryCard(e, false)).join('')}
           </div>
         </div>`;
     });
@@ -2700,7 +2711,7 @@ async function renderWeek() {
             <span class="cat-arrow">▶</span>
           </div>
           <div class="cat-group-body" id="groupBody_${groupId}">
-            ${list.map(e => renderEntryCard(e)).join('')}
+            ${list.map(e => renderEntryCard(e, false)).join('')}
           </div>
         </div>`;
     }
@@ -2724,7 +2735,7 @@ async function renderWeek() {
       <div class="section-card" style="padding:0;overflow:hidden;">
         <div class="day-group-header" style="cursor:pointer;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;" onclick="var eb=this.nextElementSibling;eb.classList.toggle('collapsed');_earlierCollapsed=eb.classList.contains('collapsed');this.querySelector('.earlier-arrow').textContent=_earlierCollapsed?'▶':'▼'">
           <span style="font-size:13px;font-weight:600;color:var(--text-secondary);">更早记录</span>
-          <span class="earlier-arrow" style="font-size:12px;color:var(--text-tertiary);">${_earlierCollapsed?'▶':'▼'}</span>
+          <span class="earlier-arrow" style="font-size:12px;color:var(--text);">${_earlierCollapsed?'▶':'▼'}</span>
         </div>
         <div class="collapsible-body${_earlierCollapsed?' collapsed':''}" style="padding:0 16px 12px;">${earlierHtml}</div>
       </div>`;
@@ -3295,8 +3306,36 @@ document.addEventListener('click', (e) => {
     deleteEntryById(Number(del.dataset.delId));
     return;
   }
-  // Toggle entry card actions on tap (not on edit/delete buttons)
-  if (!e.target.closest('.entry-card-edit') && !e.target.closest('.entry-card-delete')) {
+  // Add button — open entry form with same category
+  const addBtn = e.target.closest('.entry-card-add');
+  if (addBtn && addBtn.dataset.addCat) {
+    e.stopPropagation();
+    const catId = addBtn.dataset.addCat;
+    // Look up standard category
+    let cat = CATEGORIES.find(c => c.id === catId);
+    if (cat) {
+      closeEntryForm();
+      openEntryForm(cat);
+      document.getElementById('formText').value = '';
+      document.getElementById('formText').focus();
+      state.editingId = null;
+    } else if (catId && catId.startsWith('cbtn_')) {
+      const btnId = parseInt(catId.replace('cbtn_', ''));
+      const btn = document.querySelector(`.quick-btn[data-qid="${btnId}"]`);
+      if (btn) {
+        closeEntryForm();
+        openEntryFormFromCustom(btn);
+        document.getElementById('formText').value = '';
+        document.getElementById('formText').focus();
+        state.editingId = null;
+      } else {
+        showToast('无法识别该分类');
+      }
+    }
+    return;
+  }
+  // Toggle entry card actions on tap (not on edit/delete/add buttons)
+  if (!e.target.closest('.entry-card-edit') && !e.target.closest('.entry-card-delete') && !e.target.closest('.entry-card-add')) {
     const entryCard = e.target.closest('.entry-card');
     if (entryCard) {
       document.querySelectorAll('.entry-card.show-actions').forEach(c => {

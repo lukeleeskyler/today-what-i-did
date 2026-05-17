@@ -587,34 +587,23 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0);
   z-index: 1000;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  opacity: 0;
-  visibility: hidden;
-  transition: background 0.25s ease, opacity 0.25s ease, visibility 0.25s;
-  pointer-events: none;
 }
-.image-modal.open {
-  background: rgba(0,0,0,0.85);
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
+.image-modal.open { display: flex; }
+@keyframes modalBgIn { from { background: rgba(0,0,0,0); } to { background: rgba(0,0,0,0.85); } }
+@keyframes modalImgIn { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes modalImgOut { from { transform: scale(1); opacity: 1; } to { transform: scale(0.6); opacity: 0; } }
+.image-modal.open { animation: modalBgIn 0.25s ease forwards; }
 .image-modal img {
-  max-width: 100%;
-  max-height: 90vh;
-  border-radius: 8px;
-  object-fit: contain;
-  transform: scale(0.6);
-  opacity: 0;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+  max-width: 100%; max-height: 90vh;
+  border-radius: 8px; object-fit: contain;
+  animation: modalImgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-.image-modal.open img {
-  transform: scale(1);
-  opacity: 1;
-}
+.image-modal.closing { animation: modalBgIn 0.25s ease reverse forwards; }
+.image-modal.closing img { animation: modalImgOut 0.2s ease forwards; }
 .image-modal-close {
   position: absolute;
   top: 20px; right: 20px;
@@ -625,9 +614,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   border-radius: 50%;
   font-size: 20px;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
 }
-.image-modal-close:hover { background: rgba(255,255,255,0.4); }
 .image-modal-close:active { transform: scale(0.9); }
 
 /* ===== Weekly View ===== */
@@ -1639,30 +1626,17 @@ function renderImagePreview() {
 function openImageModal(src) {
   const modal = document.getElementById('imageModal');
   const img = document.getElementById('imageModalContent');
-  // Show modal backdrop first
-  modal.classList.add('open');
-  // Prepare image with smaller starting scale
-  img.style.transform = 'scale(0.6)';
-  img.style.opacity = '0';
+  modal.classList.remove('closing');
+  img.classList.remove('no-anim');
   img.src = src;
-  // Wait for image load, then animate to full size
-  var anim = function() {
-    requestAnimationFrame(function() {
-      img.style.transform = '';
-      img.style.opacity = '';
-    });
-  };
-  if (img.complete) anim();
-  else { img.onload = anim; img.onerror = anim; }
+  // Show modal immediately; image animation plays via CSS keyframes
+  modal.classList.add('open');
 }
 function closeImageModal() {
   const modal = document.getElementById('imageModal');
-  const img = document.getElementById('imageModalContent');
-  // Shrink + fade out, then hide modal
-  img.style.transform = 'scale(0.6)';
-  img.style.opacity = '0';
+  modal.classList.add('closing');
   setTimeout(function() {
-    modal.classList.remove('open');
+    modal.classList.remove('open', 'closing');
   }, 250);
 }
 

@@ -204,9 +204,11 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .quick-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; letter-spacing: 0.5px; }
 .quick-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   gap: 6px;
+  width: 100%;
 }
+.quick-grid:empty { display: none; }
 .quick-btn {
   display: flex;
   align-items: center;
@@ -221,10 +223,12 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .quick-btn:hover { background: #E8F4F4; }
 .quick-btn:active { transform: scale(0.97); }
-.quick-btn .q-icon svg { width: 18px; height: 18px; display: block; }
+.quick-btn .q-icon { display: flex; align-items: center; flex-shrink: 0; }
+.quick-btn .q-icon svg { width: 18px; height: 18px; display: block; flex-shrink: 0; }
 .quick-btn .q-label { font-size: 13px; }
 .quick-btn.active { background: #4ECDC4; color: #fff; }
 .quick-btn.active .q-icon svg { stroke: #fff; }
@@ -233,6 +237,40 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .quick-btn-custom.active { background: #4ECDC4; color: #fff; }
 .quick-add-btn { background: transparent; border: 1.5px dashed #C8D5D5; font-size: 18px; font-weight: 300; color: var(--text); padding: 6px 10px; min-width: 36px; justify-content: center; }
 .quick-add-btn:hover { border-color: #4ECDC4; color: #4ECDC4; }
+
+/* Quick button edit mode */
+.quick-btn-edit-mode .quick-btn-custom { position: relative; }
+.quick-btn-edit-mode .quick-btn-custom::after {
+  content: '✕';
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 18px; height: 18px;
+  background: #FF6B6B;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.quick-btn-edit-mode .quick-btn-custom:active { transform: scale(0.92); }
+.quick-btn-edit-done {
+  display: none;
+  margin-left: auto;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--secondary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.quick-btn-edit-mode .quick-btn-edit-done { display: inline-block; }
 
 /* ===== Quick Manager Dialog ===== */
 .custom-quick-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
@@ -554,6 +592,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .entry-card-image:active { transform: scale(0.95); opacity: 0.8; }
 @media (max-width: 480px) {
   .entry-card-image { width: 80px !important; height: 80px !important; }
+  audio { max-width: 100px !important; height: 28px !important; }
 }
 .entry-card-actions {
   display: none;
@@ -561,6 +600,15 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 }
 .entry-card.show-actions .entry-card-actions {
   display: flex;
+  animation: actionsPopIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.entry-card.show-actions .show-on-card-tap {
+  display: flex !important;
+  animation: actionsPopIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes actionsPopIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
 }
 .entry-card-add { color: #4ECDC4; border: none; background: none; cursor: pointer; padding: 4px 6px; border-radius: 4px; transition: all 0.1s; display:flex; align-items:center; justify-content:center; width:28px; height:28px; }
 .entry-card-add:hover { background: #EDFBF9; }
@@ -862,7 +910,7 @@ canvas { display: block; width: 100%; height: auto; }
         </svg>
       </button>
     </div>
-    <div style="position:fixed;bottom:8px;right:12px;font-size:10px;color:var(--text-tertiary);pointer-events:none;z-index:1;">v29</div>
+    <div style="position:fixed;bottom:8px;right:12px;font-size:10px;color:var(--text-tertiary);pointer-events:none;z-index:1;">v30</div>
   </div>
 
   <!-- Tabs -->
@@ -936,22 +984,39 @@ canvas { display: block; width: 100%; height: auto; }
       <textarea class="form-textarea" id="formText" placeholder="记录一下..." rows="3"></textarea>
       <input class="form-amount" id="formAmount" type="number" placeholder="金额 ¥" min="0" step="0.01">
       <div class="form-footer">
-        <div class="form-image-area">
-          <button class="form-image-btn" onclick="document.getElementById('imageInput').click()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
-            图片
-          </button>
-          <button class="form-image-btn" onclick="takeCameraPhoto()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-            拍照
-          </button>
+        <div class="form-image-area" style="position:relative;">
+          <!-- Media add button (+, same size as image preview) -->
+          <div style="position:relative;display:inline-flex;align-items:center;">
+            <button id="mediaAddBtn" onclick="toggleMediaMenu()" type="button" style="width:40px;height:40px;border:1.5px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;" title="添加附件">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <!-- Popup menu -->
+            <div id="mediaMenu" style="display:none;position:absolute;bottom:48px;left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);padding:6px;z-index:10;min-width:140px;opacity:0;transform:translateY(10px);transition:opacity 0.2s ease,transform 0.2s cubic-bezier(0.34,1.56,0.64,1);">
+              <button onclick="document.getElementById('imageInput').click();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                图片
+              </button>
+              <button onclick="takeCameraPhoto();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                拍照
+              </button>
+              <button id="voiceMenuBtn" onclick="toggleAudioRecording()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                <span id="voiceMenuText">录音</span>
+              </button>
+            </div>
+          </div>
+          <div id="audioPreviewArea" style="display:none;align-items:center;gap:4px;">
+            <button id="audioPlayBtn" onclick="toggleAudioPlayback()" style="width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="播放/暂停">
+              <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><polygon points="8,5 19,12 8,19"/></svg>
+            </button>
+            <div style="flex:1;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;max-width:80px;">
+              <div id="audioProgress" style="height:100%;width:0%;background:#4ECDC4;border-radius:2px;transition:width 0.1s linear;"></div>
+            </div>
+            <span id="audioTime" style="font-size:10px;color:var(--text-tertiary);min-width:32px;">0:00</span>
+            <button onclick="removeSelectedAudio()" style="border:none;background:none;color:#FF6B6B;font-size:15px;cursor:pointer;padding:2px;">✕</button>
+            <audio id="audioPreview" style="display:none;"></audio>
+          </div>
           <div style="position:relative;display:inline-flex;align-items:center;">
             <img class="form-image-preview" id="formImagePreview">
             <button class="form-image-remove" id="formImageRemove" onclick="removeSelectedImage()">✕</button>
@@ -1474,6 +1539,7 @@ let state = {
   currentView: 'today',
   selectedCategory: null,
   selectedImage: null,
+  selectedAudio: null,
   editingId: null,
   weekOffset: 0,
   monthOffset: 0,
@@ -1661,7 +1727,7 @@ async function submitEntry() {
       const original = all.find(e => e.id === state.editingId);
       if (!original) { showToast('原始记录未找到'); return; }
       const images = state.selectedImage ? [state.selectedImage] : null;
-      const updated = { ...original, text, amount, images, image: images ? images[0] : null };
+      const updated = { ...original, text, amount, images, image: images ? images[0] : null, audio: state.selectedAudio || original.audio || null };
       await updateEntry(updated);
       invalidateXPCache();
       showToast('✓ 已更新');
@@ -1691,6 +1757,7 @@ async function submitEntry() {
       amount: amount,
       image: state.selectedImage || null,
       images: state.selectedImage ? [state.selectedImage] : null,
+      audio: state.selectedAudio || null,
       customQuickIcon: hIcon || state.customQuickIcon || null,
       customQuickLabel: hLabel || state.customQuickLabel || null,
       customQuickBtnId: hBtnId ? Number(hBtnId) : (state.customQuickBtnId || null),
@@ -1847,6 +1914,7 @@ function closeEntryForm() {
   document.getElementById('formAmount').value = '';
   document.getElementById('subOptions').innerHTML = '';
   document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg> 记录';
+  removeSelectedAudio();
   removeSelectedImage();
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   state.selectedCategory = null;
@@ -2431,7 +2499,14 @@ async function renderQuickButtons() {
     </svg>
   </button>`;
 
+  // In edit mode, add "完成" button and enable edit mode class
+  if (_quickEditMode) {
+    html += `<button class="quick-btn-edit-done" onclick="exitQuickEditMode()">完成</button>`;
+  }
   grid.innerHTML = html;
+  const qs = document.querySelector('.quick-section');
+  if (_quickEditMode) qs.classList.add('quick-btn-edit-mode');
+  else qs.classList.remove('quick-btn-edit-mode');
 }
 
 function renderEntryCard(e, showAdd) {
@@ -2474,24 +2549,35 @@ function renderEntryCard(e, showAdd) {
           ${amtStr ? `<div class="entry-card-amount" style="color:var(--c-spend)">${amtStr}</div>` : ''}
         </div>
         <div class="entry-card-right" style="gap:8px;">
-          <div class="entry-card-actions" style="gap:6px;">
-            ${showAdd !== false ? `<button class="entry-card-add" data-add-id="${e.id}" data-add-cat="${e.category}" title="新增同类别">
-              <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:24px;height:24px;display:block;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-            </button>` : ''}
-            <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑">
-              <svg viewBox="0 0 24 24" fill="#FF6B6B" stroke="none" style="width:24px;height:24px;display:block;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            </button>
-            <button class="entry-card-delete" data-del-id="${e.id}" title="删除">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;display:block;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-            </button>
-          </div>
           ${(() => {
             const imgs = e.images || (e.image ? [e.image] : []);
-            return imgs.length > 0
-              ? `<img class="entry-card-image" data-entry-img="${dataId}_0" src="${imgs[0]}" style="cursor:pointer;">`
-              : '';
+            let mediaHtml = '';
+            if (imgs.length > 0) {
+              mediaHtml += `<div style="position:relative;display:inline-block;">
+                <img class="entry-card-image" data-entry-img="${dataId}_0" src="${imgs[0]}" style="cursor:pointer;">
+                <button class="entry-card-del-img show-on-card-tap" data-img-id="${e.id}" title="删除图片" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#FF6B6B;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,0.3);">✕</button>
+              </div>`;
+            }
+            if (e.audio) {
+              mediaHtml += `<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;padding:4px 10px 4px 8px;border-radius:8px;background:#EDFBF9;position:relative;cursor:pointer;" onclick="event.stopPropagation();playAudio('${e.audio}')">
+                <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:18px;height:18px;display:block;flex-shrink:0;"><path d="M8 5v14l11-7z"/></svg>
+                <span style="font-size:12px;font-weight:500;color:#4ECDC4;">语音</span>
+                <button class="entry-card-del-audio show-on-card-tap" data-audio-id="${e.id}" title="删除录音" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#FF6B6B;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,0.3);padding:0;">✕</button>
+              </div>`;
+            }
+            return mediaHtml;
           })()}
-        </div>
+          <div class="entry-card-actions" style="flex-direction:row;gap:4px;">
+            ${showAdd !== false ? `<button class="entry-card-add" data-add-id="${e.id}" data-add-cat="${e.category}" title="新增同类别" style="width:32px;height:32px;border:none;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+              <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:22px;height:22px;display:block;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            </button>` : ''}
+            <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑" style="width:32px;height:32px;border:none;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+              <svg viewBox="0 0 24 24" fill="#FF6B6B" stroke="none" style="width:22px;height:22px;display:block;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            </button>
+            <button class="entry-card-delete" data-del-id="${e.id}" title="删除" style="width:32px;height:32px;border:none;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;display:block;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>        </div>
       </div>
     </div>
   `;
@@ -2572,10 +2658,10 @@ async function renderWeek() {
   document.getElementById('weekStats').innerHTML = `
     <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">总记录</div></div>
     <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label">活跃天数</div></div>
-    <div class="stat-card"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">总支出</div></div>
+    <div class="stat-card" style="cursor:pointer;" onclick="showWeekReview(${state.weekOffset})"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">总支出 ›</div></div>
   `;
 
-  // Category chart — horizontal bars with icons
+  // Category chart — horizontal bars with icons (max 50 fills bar)
   const catCounts = {};
   CATEGORIES.forEach(c => catCounts[c.id] = 0);
   entries.forEach(e => {
@@ -2590,7 +2676,7 @@ async function renderWeek() {
   CATEGORIES.forEach(c => {
     const val = catCounts[c.id] || 0;
     if (val === 0) return;
-    const pct = Math.max(8, (val / maxCatVal) * 100);
+    const pct = Math.min(100, Math.max(8, (val / 50) * 100));
     const color = getComputedStyle(document.documentElement).getPropertyValue(`--c-${c.id}`).trim();
     chartHtml += `
       <div style="display:flex;align-items:center;gap:8px;">
@@ -2810,7 +2896,7 @@ async function renderMonth() {
   CATEGORIES.forEach(c => {
     const val = catCounts[c.id] || 0;
     if (val === 0) return;
-    const pct = Math.max(8, (val / maxCatVal) * 100);
+    const pct = Math.min(100, Math.max(8, (val / 100) * 100));
     const color = getComputedStyle(document.documentElement).getPropertyValue(`--c-${c.id}`).trim();
     catChartHtml += `
       <div style="display:flex;align-items:center;gap:8px;">
@@ -3128,7 +3214,12 @@ async function doPasteImport() {
 }
 
 async function doImportData(jsonText) {
-  const data = JSON.parse(jsonText);
+  let data;
+  try {
+    data = JSON.parse(jsonText);
+  } catch (e) {
+    throw new Error('JSON 解析失败：' + e.message);
+  }
 
   // Support both plain array (legacy export) and wrapped sync format
   let entries = [];
@@ -3139,7 +3230,11 @@ async function doImportData(jsonText) {
     entries = data.entries;
     customBtns = data.customQuickButtons || null;
   } else {
-    throw new Error('Invalid format');
+    throw new Error('无法识别的数据格式，请确认文件为「今天做了啥」导出的备份');
+  }
+
+  if (entries.length === 0) {
+    throw new Error('文件中没有可导入的记录');
   }
 
   closeDialog('importDialog');
@@ -3286,6 +3381,70 @@ document.addEventListener('click', (e) => {
     if (src) { e.stopPropagation(); openImageModal(src); }
     return;
   }
+  // Audio delete button
+  const audioDel = e.target.closest('.entry-card-del-audio');
+  if (audioDel && audioDel.dataset.audioId) {
+    e.stopPropagation();
+    const id = Number(audioDel.dataset.audioId);
+    if (id && confirm('确定要删除这条录音吗？')) {
+      getAllEntries().then(function(all) {
+        const entry = all.find(function(ent) { return ent.id === id; });
+        if (entry) {
+          entry.audio = null;
+          updateEntry(entry).then(function() {
+            invalidateXPCache();
+            showToast('✓ 录音已删除');
+            if (state.currentView === 'today') renderToday();
+            else if (state.currentView === 'week') renderWeek();
+            else renderMonth();
+          });
+        }
+      });
+    }
+    return;
+  }
+  // Delete image from entry
+  const delImg = e.target.closest('.entry-card-del-img');
+  if (delImg && delImg.dataset.imgId) {
+    e.stopPropagation();
+    const id = Number(delImg.dataset.imgId);
+    if (id && confirm('确定要删除这张图片吗？')) {
+      getAllEntries().then(function(all) {
+        const entry = all.find(function(ent) { return ent.id === id; });
+        if (entry) {
+          entry.image = null; entry.images = null;
+          updateEntry(entry).then(function() {
+            invalidateXPCache();
+            if (state.currentView === 'today') renderToday();
+            else if (state.currentView === 'week') renderWeek();
+            else renderMonth();
+          });
+        }
+      });
+    }
+    return;
+  }
+  // Delete audio from entry
+  const delAudio = e.target.closest('.entry-card-del-audio');
+  if (delAudio && delAudio.dataset.audioId) {
+    e.stopPropagation();
+    const id2 = Number(delAudio.dataset.audioId);
+    if (id2 && confirm('确定要删除这条录音吗？')) {
+      getAllEntries().then(function(all) {
+        const entry = all.find(function(ent) { return ent.id === id2; });
+        if (entry) {
+          entry.audio = null;
+          updateEntry(entry).then(function() {
+            invalidateXPCache();
+            if (state.currentView === 'today') renderToday();
+            else if (state.currentView === 'week') renderWeek();
+            else renderMonth();
+          });
+        }
+      });
+    }
+    return;
+  }
   // Edit button (check first to prevent action toggle)
   const editBtn = e.target.closest('.entry-card-edit');
   if (editBtn && editBtn.dataset.editId) {
@@ -3334,7 +3493,7 @@ document.addEventListener('click', (e) => {
     }
     return;
   }
-  // Toggle entry card actions on tap (not on edit/delete/add buttons)
+  // Toggle entry card actions on tap (not on edit/delete/add/more buttons)
   if (!e.target.closest('.entry-card-edit') && !e.target.closest('.entry-card-delete') && !e.target.closest('.entry-card-add')) {
     const entryCard = e.target.closest('.entry-card');
     if (entryCard) {
@@ -3371,6 +3530,278 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============================================================
+// WEEK REVIEW (click total spend in week stats)
+// ============================================================
+async function showWeekReview(offset) {
+  const range = dateUtils.getWeekRange(offset);
+  const entries = await getEntriesByDateRange(range.start, range.end);
+  const total = entries.length;
+  const daysActive = new Set(entries.map(e => e.date)).size;
+  const totalSpend = entries.reduce((s, e) => s + getEntryAmount(e), 0);
+
+  // Category breakdown
+  const catTotals = {};
+  entries.forEach(e => {
+    const cat = CATEGORIES.find(c => c.id === e.category);
+    const name = cat ? cat.label : (e.customQuickLabel || e.category);
+    catTotals[name] = (catTotals[name] || 0) + 1;
+  });
+  const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+
+  // Daily breakdown
+  const dayData = {};
+  entries.forEach(e => {
+    if (!dayData[e.date]) dayData[e.date] = { count: 0, spend: 0 };
+    dayData[e.date].count++;
+    dayData[e.date].spend += getEntryAmount(e);
+  });
+
+  let html = `<div style="padding:4px 0;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:var(--text);">${total}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);">总记录</div>
+      </div>
+      <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:var(--text);">${daysActive}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);">活跃天数</div>
+      </div>
+      <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:var(--c-spend);">¥${totalSpend.toFixed(0)}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);">总支出</div>
+      </div>
+      <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:var(--text);">${daysActive > 0 ? (total / daysActive).toFixed(1) : '0'}</div>
+        <div style="font-size:11px;color:var(--text-tertiary);">日均记录</div>
+      </div>
+    </div>`;
+
+  // Category ranking
+  if (sortedCats.length > 0) {
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">分类排行</div>';
+    sortedCats.forEach(([name, count], i) => {
+      const pct = (count / total) * 100;
+      html += `
+        <div style="display:flex;align-items:center;gap:6px;padding:3px 0;">
+          <span style="width:18px;font-size:11px;font-weight:700;color:var(--text-tertiary);text-align:center;">${i + 1}</span>
+          <span style="flex:1;font-size:12px;color:var(--text);">${name}</span>
+          <div style="width:60px;height:14px;background:#F0F0F0;border-radius:7px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:var(--secondary);border-radius:7px;"></div>
+          </div>
+          <span style="font-size:11px;font-weight:600;color:var(--text-tertiary);width:24px;text-align:right;">${count}</span>
+        </div>`;
+    });
+  }
+
+  // Daily breakdown
+  const sortedDays = Object.keys(dayData).sort().reverse();
+  if (sortedDays.length > 0) {
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin:10px 0 6px;">每日明细</div>';
+    sortedDays.forEach(d => {
+      const dd = dayData[d];
+      const spendStr = dd.spend > 0 ? ` <span style="color:var(--c-spend);font-weight:600;">¥${dd.spend.toFixed(0)}</span>` : '';
+      html += `<div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:12px;">
+        <span style="width:60px;font-size:11px;color:var(--text-tertiary);">${d.slice(5)}</span>
+        <span style="color:var(--text);">${dd.count} 条</span>${spendStr}
+      </div>`;
+    });
+  }
+
+  html += '</div>';
+  showCustomDialog('本周回顾', html);
+}
+
+function showCustomDialog(title, bodyHtml) {
+  const overlay = document.createElement('div');
+  overlay.className = 'dialog-overlay';
+  overlay.id = 'customDialog';
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="dialog" style="max-height:80vh;overflow-y:auto;">
+      <div class="dialog-title">${title}</div>
+      <div class="dialog-text" style="text-align:left;">${bodyHtml}</div>
+      <div class="dialog-actions"><button class="dialog-btn" onclick="this.closest('.dialog-overlay').remove()">关闭</button></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(function() { overlay.classList.add('open'); }, 10);
+}
+
+// ============================================================
+// MEDIA MENU (unified + button for image/camera/voice)
+// ============================================================
+function toggleMediaMenu() {
+  const menu = document.getElementById('mediaMenu');
+  if (menu.style.display === 'none' || menu.style.display === '') {
+    menu.style.display = 'block';
+    requestAnimationFrame(function() {
+      menu.style.opacity = '1';
+      menu.style.transform = 'translateY(0)';
+    });
+  } else {
+    menu.style.opacity = '0';
+    menu.style.transform = 'translateY(10px)';
+    setTimeout(function() { menu.style.display = 'none'; }, 200);
+  }
+}
+// Close media menu when clicking outside
+document.addEventListener('click', function _closeMedia(e) {
+  if (!e.target.closest('#mediaAddBtn') && !e.target.closest('#mediaMenu')) {
+    var menu = document.getElementById('mediaMenu');
+    if (menu && menu.style.display === 'block') {
+      menu.style.opacity = '0';
+      menu.style.transform = 'translateY(10px)';
+      setTimeout(function() { menu.style.display = 'none'; }, 200);
+    }
+  }
+});
+
+// ============================================================
+// AUDIO RECORDING (save as audio file in entry)
+// ============================================================
+let _mediaRecorder = null;
+let _audioChunks = [];
+let _recording = false;
+
+function toggleAudioRecording() {
+  if (_recording) { stopAudioRecording(); return; }
+  if (state.selectedAudio) {
+    if (!confirm('已有录音，重新录制将替换现有录音。继续？')) return;
+    removeSelectedAudio();
+  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showToast('设备不支持录音');
+    return;
+  }
+  var vt = document.getElementById('voiceMenuText'); if (vt) vt.textContent = '录音中...';
+  _audioChunks = [];
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+    _recording = true;
+    _mediaRecorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4' });
+    _mediaRecorder.ondataavailable = function(e) { if (e.data.size > 0) _audioChunks.push(e.data); };
+    _mediaRecorder.onstop = function() {
+      _recording = false;
+      stream.getTracks().forEach(function(t) { t.stop(); });
+      const blob = new Blob(_audioChunks, { type: _mediaRecorder.mimeType });
+      if (blob.size < 100) { showToast('录音太短'); return; }
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        state.selectedAudio = ev.target.result;
+        renderAudioPreview();
+        showToast('✓ 录音已添加');
+      };
+      reader.readAsDataURL(blob);
+    };
+    _mediaRecorder.start();
+  }).catch(function() {
+    showToast('麦克风权限被拒绝');
+    var vt2 = document.getElementById('voiceMenuText'); if (vt2) vt2.textContent = '录音';
+  });
+}
+
+function stopAudioRecording() {
+  if (_mediaRecorder && _mediaRecorder.state === 'recording') {
+    _mediaRecorder.stop();
+    var vt3 = document.getElementById('voiceMenuText'); if (vt3) vt3.textContent = '录音';
+  }
+}
+
+function renderAudioPreview() {
+  if (!state.selectedAudio) return;
+  const area = document.getElementById('audioPreviewArea');
+  const audio = document.getElementById('audioPreview');
+  audio.src = state.selectedAudio;
+  audio.load();
+  area.style.display = 'flex';
+}
+
+function removeSelectedAudio() {
+  state.selectedAudio = null;
+  document.getElementById('audioPreviewArea').style.display = 'none';
+  document.getElementById('audioPreview').src = '';
+  document.getElementById('audioProgress').style.width = '0%';
+  document.getElementById('audioTime').textContent = '0:00';
+}
+
+function toggleAudioPlayback() {
+  const audio = document.getElementById('audioPreview');
+  const btn = document.getElementById('audioPlayBtn');
+  if (audio.paused) {
+    audio.play().catch(function() { showToast('播放失败'); });
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+    // Update progress
+    audio.ontimeupdate = function() {
+      var pct = (audio.currentTime / audio.duration) * 100;
+      document.getElementById('audioProgress').style.width = pct + '%';
+      var mins = Math.floor(audio.currentTime / 60);
+      var secs = Math.floor(audio.currentTime % 60);
+      document.getElementById('audioTime').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+    };
+    audio.onended = function() {
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><polygon points="8,5 19,12 8,19"/></svg>';
+      document.getElementById('audioProgress').style.width = '0%';
+      document.getElementById('audioTime').textContent = '0:00';
+    };
+  } else {
+    audio.pause();
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><polygon points="8,5 19,12 8,19"/></svg>';
+  }
+}
+
+function playAudio(dataUrl) {
+  const audio = new Audio(dataUrl);
+  audio.play().catch(function(e) {
+    showToast('播放失败');
+  });
+}
+
+// ============================================================
+// QUICK BUTTON EDIT MODE (long press → reorder / delete)
+// ============================================================
+let _longPressTimer = null;
+
+function exitQuickEditMode() {
+  _quickEditMode = false;
+  renderQuickButtons();
+}
+
+function enterQuickEditMode() {
+  _quickEditMode = true;
+  renderQuickButtons();
+}
+
+// Long press on custom quick buttons to enter edit mode
+document.addEventListener('touchstart', (e) => {
+  const btn = e.target.closest('.quick-btn-custom');
+  if (!btn || _quickEditMode) { _longPressTimer = null; return; }
+  _longPressTimer = setTimeout(function() {
+    enterQuickEditMode();
+  }, 500);
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+  if (_longPressTimer) { clearTimeout(_longPressTimer); _longPressTimer = null; }
+}, { passive: true });
+
+// Delete custom button on tap in edit mode (the ✕ overlay is on .quick-btn-custom)
+document.addEventListener('click', (e) => {
+  if (!_quickEditMode) return;
+  const btn = e.target.closest('.quick-btn-custom');
+  if (btn && btn.dataset.qid) {
+    e.stopPropagation();
+    const id = Number(btn.dataset.qid);
+    if (id && confirm('确定要删除这个快捷按钮吗？')) {
+      deleteCustomQuickBtn(id).then(function() {
+        if (_quickEditMode) renderQuickButtons();
+      });
+    }
+  }
+});
+
+// ============================================================
 // SETTINGS: SEARCH
 // ============================================================
 let _allEntriesCache = null;
@@ -3381,6 +3812,7 @@ let _earlierCollapsed = false; // collapsed state for earlier records section
 let _monthChartState = { spend: false, activity: false, cat: false };
 let _quickCollapsed = false;
 let _xpCollapsed = false;
+let _quickEditMode = false;
 
 async function renderSettings() {
   // Settings page has no search — just data management buttons

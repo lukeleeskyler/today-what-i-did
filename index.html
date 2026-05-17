@@ -113,7 +113,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   padding: 0 16px !important;
 }
 
-/* Mobile text size boost — iPhone等设备文字偏小 */
+/* Mobile text & icon size boost — iPhone等设备偏小 */
 @media (max-width: 480px) {
   .header-date { font-size: 13px !important; }
   .quick-label { font-size: 14px !important; }
@@ -135,6 +135,21 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   #viewToday .cat-group-header .cat-label { font-size: 13px !important; }
   .xp-title { font-size: 14px !important; }
   .entry-form .form-textarea { font-size: 15px !important; }
+  /* Icon size boost for iPhone */
+  .entry-card-edit, .entry-card-delete { width: 36px !important; height: 36px !important; }
+  .entry-card-edit svg, .entry-card-delete svg { width: 22px !important; height: 22px !important; }
+  .entry-form-close { font-size: 22px !important; padding: 6px !important; }
+  .form-image-btn { font-size: 14px !important; padding: 8px 14px !important; }
+  .form-image-btn svg { width: 18px !important; height: 18px !important; }
+  .q-icon svg { width: 22px !important; height: 22px !important; }
+  .tab-btn svg { width: 16px !important; height: 16px !important; }
+  .header-btn { width: 40px !important; height: 40px !important; }
+  .header-btn svg { width: 22px !important; height: 22px !important; }
+  .quick-btn { padding: 8px 14px !important; }
+  .cat-arrow { font-size: 14px !important; }
+  .dialog-btn { font-size: 15px !important; padding: 10px 18px !important; }
+  .entry-card-image { width: 72px !important; height: 72px !important; }
+  .xp-bar-icon { font-size: 18px !important; }
 }
 
 /* ===== Header ===== */
@@ -538,18 +553,27 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   gap: 2px;
   opacity: 0;
   transition: opacity 0.15s;
+  pointer-events: none;
 }
-.entry-card:hover .entry-card-actions { opacity: 1; }
+.entry-card.show-actions .entry-card-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
 .entry-card-edit, .entry-card-delete {
   border: none;
   background: none;
-  font-size: 14px;
   cursor: pointer;
   padding: 4px 6px;
   border-radius: 4px;
   transition: all 0.1s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
 }
-.entry-card-edit { color: #FF6B6B; }
+.entry-card-edit:hover { background: #FFF0F0; }
+.entry-card-delete:hover { background: #FEE2E2; }
 .entry-card-edit:hover { background: #FFF0F0; }
 .entry-card-delete { color: #FF6B6B; }
 .entry-card-delete:hover { background: #FFF0F0; }
@@ -2418,8 +2442,12 @@ function renderEntryCard(e) {
               : '';
           })()}
           <div class="entry-card-actions">
-            <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑">✎</button>
-            <button class="entry-card-delete" data-del-id="${e.id}" title="删除">✕</button>
+            <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑">
+              <svg viewBox="0 0 24 24" fill="#FF6B6B" stroke="none" style="width:22px;height:22px;display:block;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            </button>
+            <button class="entry-card-delete" data-del-id="${e.id}" title="删除">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;display:block;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -3215,7 +3243,7 @@ document.addEventListener('click', (e) => {
     if (src) { e.stopPropagation(); openImageModal(src); }
     return;
   }
-  // Edit button
+  // Edit button (check first to prevent action toggle)
   const editBtn = e.target.closest('.entry-card-edit');
   if (editBtn && editBtn.dataset.editId) {
     e.stopPropagation();
@@ -3234,6 +3262,18 @@ document.addEventListener('click', (e) => {
     e.stopPropagation();
     deleteEntryById(Number(del.dataset.delId));
     return;
+  }
+  // Toggle entry card actions on tap (not on edit/delete buttons)
+  if (!e.target.closest('.entry-card-edit') && !e.target.closest('.entry-card-delete')) {
+    const entryCard = e.target.closest('.entry-card');
+    if (entryCard) {
+      document.querySelectorAll('.entry-card.show-actions').forEach(c => {
+        if (c !== entryCard) c.classList.remove('show-actions');
+      });
+      entryCard.classList.toggle('show-actions');
+    } else {
+      document.querySelectorAll('.entry-card.show-actions').forEach(c => c.classList.remove('show-actions'));
+    }
   }
   // Close entry form when clicking outside
   const entryForm = document.getElementById('entryForm');

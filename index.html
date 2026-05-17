@@ -540,24 +540,23 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 }
 .entry-card-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .entry-card-image {
-  width: 60px; height: 60px;
-  border-radius: 8px;
+  width: 72px; height: 72px;
+  border-radius: 10px;
   object-fit: cover;
   border: 1px solid var(--border);
   cursor: pointer;
   transition: transform 0.15s;
 }
 .entry-card-image:hover { transform: scale(1.05); }
+@media (max-width: 480px) {
+  .entry-card-image { width: 80px !important; height: 80px !important; }
+}
 .entry-card-actions {
-  display: flex;
+  display: none;
   gap: 2px;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
 }
 .entry-card.show-actions .entry-card-actions {
-  opacity: 1;
-  pointer-events: auto;
+  display: flex;
 }
 .entry-card-edit, .entry-card-delete {
   border: none;
@@ -2434,14 +2433,8 @@ function renderEntryCard(e) {
           ${e.text ? `<div class="entry-card-text">${escapeHtml(e.text)}</div>` : ''}
           ${amtStr ? `<div class="entry-card-amount" style="color:var(--c-spend)">${amtStr}</div>` : ''}
         </div>
-        <div class="entry-card-right">
-          ${(() => {
-            const imgs = e.images || (e.image ? [e.image] : []);
-            return imgs.length > 0
-              ? `<img class="entry-card-image" data-entry-img="${dataId}_0" src="${imgs[0]}" style="cursor:pointer;">`
-              : '';
-          })()}
-          <div class="entry-card-actions">
+        <div class="entry-card-right" style="gap:8px;">
+          <div class="entry-card-actions" style="gap:6px;">
             <button class="entry-card-edit" data-edit-id="${e.id}" title="编辑">
               <svg viewBox="0 0 24 24" fill="#FF6B6B" stroke="none" style="width:22px;height:22px;display:block;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
             </button>
@@ -2449,6 +2442,12 @@ function renderEntryCard(e) {
               <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;display:block;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>
           </div>
+          ${(() => {
+            const imgs = e.images || (e.image ? [e.image] : []);
+            return imgs.length > 0
+              ? `<img class="entry-card-image" data-entry-img="${dataId}_0" src="${imgs[0]}" style="cursor:pointer;">`
+              : '';
+          })()}
         </div>
       </div>
     </div>
@@ -3445,8 +3444,8 @@ function toggleSearchResult(el, eid) {
   let startX = 0, startY = 0;
   const views = ['today', 'week', 'month'];
   document.addEventListener('touchstart', (e) => {
-    // Don't swipe when interacting with entry form or dialogs
-    if (e.target.closest('.entry-form') || e.target.closest('.dialog-overlay')) return;
+    // Don't swipe when interacting with entry cards, form, or dialogs
+    if (e.target.closest('.entry-card') || e.target.closest('.entry-form') || e.target.closest('.dialog-overlay')) { startX = 0; return; }
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   }, { passive: true });

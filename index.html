@@ -882,15 +882,18 @@ canvas { display: block; width: 100%; height: auto; }
   <div class="view active" id="viewToday">
     <!-- Quick Log -->
     <div class="quick-section section-card">
-      <div class="quick-label">
-        <span style="font-size:15px;font-weight:700;margin-right:8px;">今天做了啥</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <polyline points="19 12 12 19 5 12"/>
-        </svg>
-        快速记录
+      <div class="quick-label" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const qg=document.getElementById('quickGrid');qg.classList.toggle('collapsed');_quickCollapsed=qg.classList.contains('collapsed');this.querySelector('.q-toggle').textContent=_quickCollapsed?'▲':'▼'">
+        <span>
+          <span style="font-size:15px;font-weight:700;margin-right:8px;">今天做了啥</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <polyline points="19 12 12 19 5 12"/>
+          </svg>
+          快速记录
+        </span>
+        <span class="q-toggle" style="font-size:10px;color:var(--text-tertiary);">▼</span>
       </div>
-      <div class="quick-grid" id="quickGrid"></div>
+      <div class="quick-grid collapsible-body" id="quickGrid"></div>
     </div>
 
     <!-- XP Stats -->
@@ -2011,6 +2014,10 @@ async function renderToday(targetDate) {
   // Pre-load custom buttons cache for badge fallback
   try { _customBtnsCache = await getCustomQuickButtons(); } catch(e) { _customBtnsCache = null; }
   await renderQuickButtons();
+  // Apply saved quick grid collapse state
+  const qg = document.getElementById('quickGrid');
+  if (_quickCollapsed) { qg.classList.add('collapsed'); document.querySelector('.q-toggle').textContent = '▲'; }
+  else { qg.classList.remove('collapsed'); document.querySelector('.q-toggle').textContent = '▼'; }
 
   const dateStr = targetDate || dateUtils.today();
   const isToday = dateStr === dateUtils.today();
@@ -3307,6 +3314,7 @@ let _dayCollapsed = {}; // collapsed state for day-group bodies
 let _weekChartCollapsed = false; // collapsed state for week chart section
 let _earlierCollapsed = false; // collapsed state for earlier records section
 let _monthChartState = { spend: false, activity: false, cat: false };
+let _quickCollapsed = false;
 
 async function renderSettings() {
   // Settings page has no search — just data management buttons

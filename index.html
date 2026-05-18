@@ -2438,10 +2438,7 @@ async function renderXPStats(entries) {
     ${levelHTML}
     <div class="xp-header" style="cursor:pointer;" onclick="const xg=document.getElementById('xpGrid');xg.classList.toggle('collapsed');_xpCollapsed=xg.classList.contains('collapsed');this.querySelector('.xp-toggle').textContent=_xpCollapsed?'▲':'▼'">
       <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
-      <span style="display:flex;align-items:center;gap:6px;">
-        <span class="xp-total">${todayTotal} / ${activeCats.length * XP_DAILY_CAP}</span>
-        <span class="xp-toggle" style="font-size:10px;color:var(--text);">${_xpCollapsed?'▲':'▼'}</span>
-      </span>
+      <span class="xp-toggle" style="font-size:10px;color:var(--text);">${_xpCollapsed?'▲':'▼'}</span>
     </div>
     <div style="margin:8px 0 4px;display:flex;align-items:center;gap:8px;">
       <div style="flex:1;height:8px;background:#F0EDE8;border-radius:4px;overflow:hidden;">

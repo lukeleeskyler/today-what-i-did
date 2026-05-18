@@ -944,7 +944,10 @@ canvas { display: block; width: 100%; height: auto; }
 
   <!-- ===== TODAY VIEW ===== -->
   <div class="view active" id="viewToday">
-    <!-- Quick Log -->
+    <!-- XP Stats -->
+    <div class="xp-section" id="xpSection"></div>
+
+<!-- Quick Log -->
     <div class="quick-section section-card">
       <div class="quick-label" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const qg=document.getElementById('quickGrid');qg.classList.toggle('collapsed');_quickCollapsed=qg.classList.contains('collapsed');this.querySelector('.q-toggle').textContent=_quickCollapsed?'▲':'▼'">
         <span>
@@ -960,8 +963,7 @@ canvas { display: block; width: 100%; height: auto; }
       <div class="quick-grid collapsible-body" id="quickGrid"></div>
     </div>
 
-    <!-- XP Stats -->
-    <div class="xp-section" id="xpSection"></div>
+    
 
     <!-- Entry Form -->
     <div class="entry-form" id="entryForm">
@@ -1021,6 +1023,13 @@ canvas { display: block; width: 100%; height: auto; }
           <div style="position:relative;display:inline-flex;align-items:center;">
             <img class="form-image-preview" id="formImagePreview">
             <button class="form-image-remove" id="formImageRemove" onclick="removeSelectedImage()">✕</button>
+          </div>
+          <div id="locationArea" style="display:none;align-items:center;gap:4px;flex-shrink:0;margin-right:4px;">
+            <button id="getLocationBtn" onclick="getCurrentLocation()" style="width:32px;height:32px;border:1.5px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="添加位置">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </button>
+            <span id="locationDisplay" style="font-size:11px;color:var(--secondary);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none;"></span>
+            <button id="clearLocationBtn" onclick="clearSelectedLocation()" style="display:none;border:none;background:none;color:#FF6B6B;font-size:14px;cursor:pointer;padding:2px;">✕</button>
           </div>
         </div>
         <button class="form-submit" id="formSubmit" onclick="submitEntry()">
@@ -1547,6 +1556,7 @@ let state = {
   selectedCategory: null,
   selectedImage: null,
   selectedAudio: null,
+  selectedLocation: null,
   editingId: null,
   weekOffset: 0,
   monthOffset: 0,
@@ -1734,7 +1744,7 @@ async function submitEntry() {
       const original = all.find(e => e.id === state.editingId);
       if (!original) { showToast('原始记录未找到'); return; }
       const images = state.selectedImage ? [state.selectedImage] : null;
-      const updated = { ...original, text, amount, images, image: images ? images[0] : null, audio: state.selectedAudio || original.audio || null };
+      const updated = { ...original, text, amount, images, image: images ? images[0] : null, audio: state.selectedAudio || original.audio || null, location: state.selectedLocation || original.location || null };
       await updateEntry(updated);
       invalidateXPCache();
       showToast('✓ 已更新');
@@ -1765,6 +1775,7 @@ async function submitEntry() {
       image: state.selectedImage || null,
       images: state.selectedImage ? [state.selectedImage] : null,
       audio: state.selectedAudio || null,
+      location: state.selectedLocation || null,
       customQuickIcon: hIcon || state.customQuickIcon || null,
       customQuickLabel: hLabel || state.customQuickLabel || null,
       customQuickBtnId: hBtnId ? Number(hBtnId) : (state.customQuickBtnId || null),
@@ -1885,6 +1896,14 @@ function openEntryForm(category) {
     amtInput.classList.remove('show');
     amtInput.value = '';
   }
+  // Show location button for "go" category
+  const locArea = document.getElementById('locationArea');
+  if (category.id === 'go') {
+    locArea.style.display = 'flex';
+  } else {
+    locArea.style.display = 'none';
+    clearSelectedLocation();
+  }
 
   // Render sub-option chips
   const subContainer = document.getElementById('subOptions');
@@ -1923,6 +1942,7 @@ function closeEntryForm() {
   document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg> 记录';
   removeSelectedAudio();
   removeSelectedImage();
+  clearSelectedLocation();
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
   state.selectedCategory = null;
   state.editingId = null;
@@ -2551,6 +2571,7 @@ function renderEntryCard(e, showAdd) {
           </div>
           ${e.text ? `<div class="entry-card-text">${escapeHtml(e.text)}</div>` : ''}
           ${amtStr ? `<div class="entry-card-amount" style="color:${e.category === 'earn' ? 'var(--c-earn)' : 'var(--c-spend)'}">${amtStr}</div>` : ''}
+          ${e.location ? `<div style="display:flex;align-items:center;gap:3px;margin-top:3px;font-size:11px;color:var(--secondary);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;display:block;flex-shrink:0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;">${e.location}</span></div>` : ''}
         </div>
         <div class="entry-card-right" style="gap:8px;">
           ${(() => {
@@ -3745,6 +3766,47 @@ function renderAudioPreview() {
   audio.src = state.selectedAudio;
   audio.load();
   area.style.display = 'flex';
+}
+
+// ============================================================
+// LOCATION
+// ============================================================
+function getCurrentLocation() {
+  if (!navigator.geolocation) { showToast('设备不支持定位'); return; }
+  showToast('📡 获取位置中...');
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+    state.selectedLocation = lat + ',' + lng;
+    // Try reverse geocoding via OpenStreetMap
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&zoom=16&accept-language=zh')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var addr = data.display_name || (lat + ', ' + lng);
+        // Shorten address
+        var parts = addr.split(',');
+        if (parts.length > 3) addr = parts.slice(0, 3).join(',');
+        state.selectedLocation = addr;
+        document.getElementById('locationDisplay').textContent = addr;
+        document.getElementById('locationDisplay').style.display = 'inline';
+        document.getElementById('clearLocationBtn').style.display = 'flex';
+        showToast('✓ 已获取位置');
+      })
+      .catch(function() {
+        document.getElementById('locationDisplay').textContent = lat + ', ' + lng;
+        document.getElementById('locationDisplay').style.display = 'inline';
+        document.getElementById('clearLocationBtn').style.display = 'flex';
+        showToast('✓ 已获取位置');
+      });
+  }, function(err) {
+    showToast('定位失败：' + (err.code === 1 ? '权限被拒绝' : '无法获取位置'));
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+function clearSelectedLocation() {
+  state.selectedLocation = null;
+  document.getElementById('locationDisplay').style.display = 'none';
+  document.getElementById('locationDisplay').textContent = '';
+  document.getElementById('clearLocationBtn').style.display = 'none';
 }
 
 function removeSelectedAudio() {

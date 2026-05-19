@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>今天做了啥</title>
+<title data-i18n="app.name"></title>
 <style>
 /* ===== Reset & Base ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -512,6 +512,13 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   to { opacity: 1; max-height: 1000px; }
 }
 
+/* Day detail expand/collapse */
+@keyframes dayDetailIn { from { opacity: 0; max-height: 0; transform: translateY(-8px); } to { opacity: 1; max-height: 2000px; transform: translateY(0); } }
+@keyframes dayDetailOut { from { opacity: 1; max-height: 2000px; transform: translateY(0); } to { opacity: 0; max-height: 0; transform: translateY(-8px); } }
+.day-detail-anim { overflow: hidden; }
+.day-detail-anim.open { animation: dayDetailIn 0.3s ease forwards; }
+.day-detail-anim.closing { animation: dayDetailOut 0.25s ease forwards; }
+
 /* ===== Today: horizontal category grid ===== */
 #viewToday #timeline {
   display: grid;
@@ -902,20 +909,19 @@ canvas { display: block; width: 100%; height: auto; }
   <div class="header">
     <div class="header-left">
       <div>
-        <div class="header-title">今天做了啥</div>
+        <div class="header-title" data-i18n="app.name"></div>
         <div class="header-date" id="headerDate"></div>
       </div>
     </div>
     <div class="header-actions">
-      <button class="header-btn" onclick="switchView('settings')" title="设置">
+      <button class="header-btn" onclick="switchView('settings')" data-i18n-title="settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block;">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
     </div>
-    <div style="position:fixed;bottom:8px;right:12px;font-size:10px;color:var(--text-tertiary);pointer-events:none;z-index:1;">v30</div>
-  </div>
+      </div>
 
   <!-- Tabs -->
   <div class="tabs">
@@ -924,7 +930,7 @@ canvas { display: block; width: 100%; height: auto; }
         <circle cx="12" cy="12" r="10"/>
         <polyline points="12 6 12 12 16 14"/>
       </svg>
-      今天
+      <span data-i18n="today"></span>
     </button>
     <button class="tab-btn" data-view="week" onclick="switchView('week')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;">
@@ -932,7 +938,7 @@ canvas { display: block; width: 100%; height: auto; }
         <line x1="18" y1="20" x2="18" y2="4"/>
         <line x1="6" y1="20" x2="6" y2="16"/>
       </svg>
-      本周
+      <span data-i18n="week"></span>
     </button>
     <button class="tab-btn" data-view="month" onclick="switchView('month')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:4px;">
@@ -941,7 +947,7 @@ canvas { display: block; width: 100%; height: auto; }
         <line x1="8" y1="2" x2="8" y2="6"/>
         <line x1="3" y1="10" x2="21" y2="10"/>
       </svg>
-      本月
+      <span data-i18n="month"></span>
     </button>
   </div>
 
@@ -954,12 +960,12 @@ canvas { display: block; width: 100%; height: auto; }
     <div class="quick-section section-card">
       <div class="quick-label" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const qg=document.getElementById('quickGrid');qg.classList.toggle('collapsed');_quickCollapsed=qg.classList.contains('collapsed');this.querySelector('.q-toggle').textContent=_quickCollapsed?'▲':'▼'">
         <span>
-          <span style="font-size:15px;font-weight:700;margin-right:8px;">今天做了啥</span>
+          <span style="font-size:15px;font-weight:700;margin-right:8px;" data-i18n="app.name"></span>
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <polyline points="19 12 12 19 5 12"/>
           </svg>
-          快速记录
+          <span data-i18n="quick.record"></span>
         </span>
         <span class="q-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
@@ -984,34 +990,34 @@ canvas { display: block; width: 100%; height: auto; }
       <input type="hidden" id="formCustomLabel" value="">
       <input type="hidden" id="formCustomBtnId" value="">
       <div style="display:flex;gap:8px;align-items:flex-start;">
-        <textarea class="form-textarea" id="formText" placeholder="记录一下..." rows="3" style="flex:1;"></textarea>
+        <textarea class="form-textarea" id="formText" placeholder="记录一下..." data-i18n-placeholder="text.placeholder" rows="3" style="flex:1;"></textarea>
         <input class="form-amount" id="formAmount" type="number" placeholder="¥" min="0" step="0.01" style="width:80px;flex-shrink:0;">
       </div>
       <div class="form-footer">
         <div class="form-image-area" style="position:relative;">
           <!-- Media add button (+, same size as image preview) -->
           <div style="position:relative;display:inline-flex;align-items:center;">
-            <button id="mediaAddBtn" onclick="toggleMediaMenu()" type="button" style="width:40px;height:40px;border:1.5px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;" title="添加附件">
+            <button id="mediaAddBtn" onclick="toggleMediaMenu()" type="button" style="width:40px;height:40px;border:1.5px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;" title="add.attachment">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </button>
             <!-- Popup menu -->
             <div id="mediaMenu" style="display:none;position:absolute;bottom:48px;left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);padding:6px;z-index:10;min-width:140px;opacity:0;transform:translateY(10px);transition:opacity 0.2s ease,transform 0.2s cubic-bezier(0.34,1.56,0.64,1);">
               <button onclick="document.getElementById('imageInput').click();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                图片
+                <span data-i18n="image"></span>
               </button>
               <button onclick="takeCameraPhoto();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                拍照
+                <span data-i18n="camera"></span>
               </button>
               <button id="voiceMenuBtn" onclick="toggleAudioRecording()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                <span id="voiceMenuText">录音</span>
+                <span id="voiceMenuText" data-i18n="audio"></span>
               </button>
             </div>
           </div>
           <div id="audioPreviewArea" style="display:none;align-items:center;gap:4px;">
-            <button id="audioPlayBtn" onclick="toggleAudioPlayback()" style="width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="播放/暂停">
+            <button id="audioPlayBtn" onclick="toggleAudioPlayback()" style="width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="play.pause">
               <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><polygon points="8,5 19,12 8,19"/></svg>
             </button>
             <div style="flex:1;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;max-width:80px;">
@@ -1030,7 +1036,7 @@ canvas { display: block; width: 100%; height: auto; }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          记录
+          <span data-i18n="btn.record"></span>
         </button>
       </div>
     </div>
@@ -1038,7 +1044,7 @@ canvas { display: block; width: 100%; height: auto; }
     <!-- Timeline -->
     <div class="timeline-section">
       <div class="timeline-header" style="cursor:pointer;" onclick="const tl=document.getElementById('timeline');tl.classList.toggle('collapsed');this.querySelector('.tl-toggle').textContent=tl.classList.contains('collapsed')?'▲':'▼'">
-        <div class="timeline-title"><span id="timelineTitle">📋 今天记录</span></div>
+        <div class="timeline-title"><span id="timelineTitle">📋 <span data-i18n="today.records"></span></span></div>
         <span style="display:flex;align-items:center;gap:6px;">
           <span class="timeline-count" id="timelineCount"></span>
           <span class="tl-toggle" style="font-size:10px;color:var(--text);">▼</span>
@@ -1061,14 +1067,14 @@ canvas { display: block; width: 100%; height: auto; }
       <div style="position:relative;margin-top:8px;">
         <div class="settings-search" style="margin-bottom:0;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="搜索关键词..." oninput="doSearch(this.value)">
+          <input type="text" id="searchInput" placeholder="搜索关键词..." data-i18n-placeholder="search.placeholder" oninput="doSearch(this.value)">
         </div>
         <div id="weekSearchResults" style="margin-top:4px;"></div>
       </div>
     </div>
     <div class="stats-row" id="weekStats"></div>
     <div class="section-card" id="weekChartSection">
-      <div class="chart-title">分类统计</div>
+      <div class="chart-title" data-i18n="category.stats"></div>
       <div id="weekChartContainer"></div>
     </div>
     <div id="weekEntries"></div>
@@ -1085,34 +1091,34 @@ canvas { display: block; width: 100%; height: auto; }
         <button class="month-nav-btn" id="monthNextBtn" onclick="navigateMonth(1)">›</button>
       </div>
     </div>
-    <div class="section-card" id="monthCalendarSection" style="padding-bottom:12px;">
-      <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const cal=document.getElementById('calendar');cal.classList.toggle('collapsed');this.querySelector('.cal-toggle').textContent=cal.classList.contains('collapsed')?'▲':'▼'">
-        <span>日历</span>
-        <span class="cal-toggle" style="font-size:10px;color:var(--text);">▼</span>
-      </div>
-      <div class="calendar collapsible-body" id="calendar"></div>
-    </div>
     <div class="month-stats" id="monthStats"></div>
     <div class="chart-container">
+      <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const mc=document.getElementById('monthChartContainer');mc.classList.toggle('collapsed');this.querySelector('.m-toggle').textContent=mc.classList.contains('collapsed')?'▲':'▼';_monthChartState.cat=mc.classList.contains('collapsed')">
+        <span data-i18n="category.dist"></span>
+        <span class="m-toggle" style="font-size:10px;color:var(--text);">▼</span>
+      </div>
+      <div id="monthChartContainer" class="collapsible-body"></div>
+    </div>
+    <div class="chart-container">
       <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const sc=document.getElementById('spendChartContainer');sc.classList.toggle('collapsed');this.querySelector('.s-toggle').textContent=sc.classList.contains('collapsed')?'▲':'▼';_monthChartState.spend=sc.classList.contains('collapsed')">
-        <span>每日支出</span>
+        <span data-i18n="daily.spend"></span>
         <span class="s-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div id="spendChartContainer" class="collapsible-body"></div>
     </div>
     <div class="chart-container">
       <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const ac=document.getElementById('activityChartContainer');ac.classList.toggle('collapsed');this.querySelector('.a-toggle').textContent=ac.classList.contains('collapsed')?'▲':'▼';_monthChartState.activity=ac.classList.contains('collapsed')">
-        <span>每日记录数</span>
+        <span data-i18n="daily.records"></span>
         <span class="a-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
       <div id="activityChartContainer" class="collapsible-body"></div>
     </div>
-    <div class="chart-container">
-      <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const mc=document.getElementById('monthChartContainer');mc.classList.toggle('collapsed');this.querySelector('.m-toggle').textContent=mc.classList.contains('collapsed')?'▲':'▼';_monthChartState.cat=mc.classList.contains('collapsed')">
-        <span>分类分布</span>
-        <span class="m-toggle" style="font-size:10px;color:var(--text);">▼</span>
+    <div class="section-card" id="monthCalendarSection" style="padding-bottom:12px;">
+      <div class="chart-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const cal=document.getElementById('calendar');cal.classList.toggle('collapsed');this.querySelector('.cal-toggle').textContent=cal.classList.contains('collapsed')?'▲':'▼'">
+        <span data-i18n="calendar"></span>
+        <span class="cal-toggle" style="font-size:10px;color:var(--text);">▼</span>
       </div>
-      <div id="monthChartContainer" class="collapsible-body"></div>
+      <div class="calendar collapsible-body" id="calendar"></div>
     </div>
     <div id="monthDayDetail"></div>
   </div>
@@ -1120,25 +1126,47 @@ canvas { display: block; width: 100%; height: auto; }
   <!-- ===== SETTINGS VIEW ===== -->
   <div class="view" id="viewSettings">
     <div class="settings-section">
-      <div class="section-title">数据管理</div>
+      <div class="section-title" data-i18n="data.manage"></div>
       <button class="settings-btn" onclick="showExportDialog()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        导出数据
+        <span data-i18n="export.data"></span>
       </button>
       <button class="settings-btn" onclick="showImportDialog()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        导入数据
+        <span data-i18n="import.data"></span>
       </button>
       <button class="settings-btn" onclick="startSync()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-        同步到电脑
+        <span data-i18n="sync.pc"></span>
       </button>
       <button class="settings-btn danger" onclick="confirmClearAll()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-        清空所有数据
+        <span data-i18n="clear.all"></span>
       </button>
     </div>
+    <div class="settings-section">
+      <div class="section-title" data-i18n="language"></div>
+      <button class="settings-btn" id="langToggleBtn" onclick="toggleLanguage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="langToggleText"></span>
+      </button>
+    </div>
+    <div style="text-align:center;padding:16px 0 8px;font-size:11px;color:var(--text-tertiary);">v40</div>
   </div>
+</div>
+
+<!-- ===== DONATE SECTION ===== -->
+<div class="settings-section" id="donateSection">
+  <div class="section-title" data-i18n="donate"></div>
+  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;" data-i18n="donate.desc"></div>
+  <a class="settings-btn" style="display:flex;text-decoration:none;" href="https://buymeacoffee.com/lukeleeskyler" target="_blank">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    <span data-i18n="donate.bmc"></span>
+  </a>
+  <a class="settings-btn" style="display:flex;text-decoration:none;" href="https://afdian.com/a/lukeleeskyler" target="_blank">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span data-i18n="donate.afdian"></span>
+  </a>
 </div>
 
 <!-- Toast -->
@@ -1159,11 +1187,11 @@ canvas { display: block; width: 100%; height: auto; }
         <polyline points="7 10 12 15 17 10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
-      导出数据
+      <span data-i18n="export.title"></span>
     </div>
-    <div class="dialog-text" id="exportText">选择要导出的数据范围。</div>
+    <div class="dialog-text" id="exportText" data-i18n="export.desc"></div>
     <div class="dialog-actions">
-      <button class="dialog-btn" onclick="closeDialog('exportDialog')">取消</button>
+      <button class="dialog-btn" onclick="closeDialog('exportDialog')" data-i18n="cancel"></button>
       <button class="dialog-btn" onclick="closeDialog('exportDialog')">✕</button>
     </div>
   </div>
@@ -1178,21 +1206,21 @@ canvas { display: block; width: 100%; height: auto; }
         <polyline points="17 8 12 3 7 8"/>
         <line x1="12" y1="3" x2="12" y2="15"/>
       </svg>
-      导入数据
+      <span data-i18n="import.title"></span>
     </div>
-    <div class="dialog-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;">选择 JSON 备份文件，或直接粘贴 JSON 内容</div>
+    <div class="dialog-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;" data-i18n="import.desc"></div>
     <div class="dialog-actions" style="margin-bottom:10px;">
-      <button class="dialog-btn primary" onclick="triggerImportFile()">📁 选择文件</button>
-      <button class="dialog-btn" onclick="togglePasteImport()">📋 粘贴内容</button>
+      <button class="dialog-btn primary" onclick="triggerImportFile()">📁 <span data-i18n="import.file"></span></button>
+      <button class="dialog-btn" onclick="togglePasteImport()">📋 <span data-i18n="import.paste"></span></button>
     </div>
     <div id="pasteImportArea" style="display:none;">
-      <textarea id="pasteImportText" style="width:100%;height:120px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:vertical;" placeholder="在此粘贴 JSON 数据..."></textarea>
+      <textarea id="pasteImportText" style="width:100%;height:120px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;resize:vertical;" placeholder="在此粘贴 JSON 数据..." data-i18n-placeholder="import.paste.placeholder"></textarea>
       <div class="dialog-actions" style="margin-top:8px;">
-        <button class="dialog-btn primary" onclick="doPasteImport()">导入粘贴内容</button>
+        <button class="dialog-btn primary" onclick="doPasteImport()" data-i18n="import.paste.btn"></button>
       </div>
     </div>
     <div class="dialog-actions">
-      <button class="dialog-btn" onclick="closeDialog('importDialog')">关闭</button>
+      <button class="dialog-btn" onclick="closeDialog('importDialog')" data-i18n="close"></button>
     </div>
   </div>
 </div>
@@ -1205,27 +1233,27 @@ canvas { display: block; width: 100%; height: auto; }
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
       </svg>
-      自定义快速记录
+      <span data-i18n="quickmgr.title"></span>
     </div>
-    <div class="dialog-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">添加常用的快捷按钮，点击即可快速记录。</div>
+    <div class="dialog-text" style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;" data-i18n="quickmgr.desc"></div>
 
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
       <div id="quickMgrIconPreview" style="width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;">
         <svg viewBox="0 0 200 200" style="width:28px;height:28px;display:block;"><rect width="200" height="200" fill="#4ECDC4"/><path d="M85 40 Q125 40 125 80 Q125 120 85 120 Q65 120 55 105 Q75 105 85 85 Q95 65 85 40 Z" fill="#FFD93D" stroke="#1a1a1a" stroke-width="5"/><rect x="40" y="130" width="120" height="40" rx="12" fill="#fff" stroke="#1a1a1a" stroke-width="5"/></svg>
       </div>
       <input type="hidden" id="quickMgrIcon" value="">
-      <input type="text" id="quickMgrLabel" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;" placeholder="名称（如：练字、冥想）">
+      <input type="text" id="quickMgrLabel" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;" placeholder="名称（如：练字、冥想）" data-i18n-placeholder="quickmgr.name.placeholder">
     </div>
     <!-- Emoji picker -->
-    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">选择图标</div>
+    <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;" data-i18n="quickmgr.select.icon"></div>
     <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;" id="emojiPicker">
     </div>
-    <button class="dialog-btn primary" onclick="handleAddCustomBtn()" style="width:100%;">＋ 添加</button>
+    <button class="dialog-btn primary" onclick="handleAddCustomBtn()" style="width:100%;" data-i18n="quickmgr.add"></button>
 
     <div id="quickMgrList" style="margin-top:12px;max-height:200px;overflow-y:auto;"></div>
 
     <div class="dialog-actions" style="margin-top:10px;">
-      <button class="dialog-btn" onclick="closeDialog('quickManagerDialog')">关闭</button>
+      <button class="dialog-btn" onclick="closeDialog('quickManagerDialog')" data-i18n="close"></button>
     </div>
   </div>
 </div>
@@ -1240,33 +1268,436 @@ canvas { display: block; width: 100%; height: auto; }
         <polyline points="7 23 3 19 7 15"/>
         <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
       </svg>
-      同步数据
+      <span data-i18n="sync.title"></span>
     </div>
     <div id="syncStatus">
       <div style="padding:16px 0;">
         <div style="font-size:40px;margin-bottom:12px;">🔄</div>
-        <div style="font-size:14px;font-weight:600;margin-bottom:6px;">正在准备数据...</div>
-        <div style="font-size:12px;color:var(--text-secondary);" id="syncMessage">读取数据中</div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:6px;" data-i18n="sync.preparing"></div>
+        <div style="font-size:12px;color:var(--text-secondary);" id="syncMessage" data-i18n="sync.reading"></div>
       </div>
     </div>
     <div id="syncReady" style="display:none;padding:12px 0;">
-      <div style="font-size:14px;font-weight:600;margin-bottom:12px;">✅ 同步服务器已启动</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px;" data-i18n="sync.started"></div>
       <div style="background:#F5F8F8;border-radius:12px;padding:14px;margin-bottom:12px;word-break:break-all;">
-        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">在电脑浏览器打开：</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;" data-i18n="sync.open.browser"></div>
         <div id="syncUrl" style="font-size:16px;font-weight:700;color:var(--text);letter-spacing:0.5px;"></div>
       </div>
       <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
-        确保手机和电脑在<b>同一个 WiFi 网络</b>下。<br>
-        打开链接即可下载 JSON 数据。
+        <span data-i18n-innerhtml="sync.wifi.tip"></span>
       </div>
     </div>
     <div class="dialog-actions" style="margin-top:12px;">
-      <button class="dialog-btn" id="syncCloseBtn" onclick="stopSync()">停止同步</button>
+      <button class="dialog-btn" id="syncCloseBtn" onclick="stopSync()" data-i18n="sync.stop"></button>
     </div>
   </div>
 </div>
 
-<script>
+<script>// ============================================================
+// I18N - Internationalization (auto-follow system language)
+// ============================================================
+const I18N = {
+  _locale: 'zh',
+  _strings: {
+    zh: {
+      'app.name': '今天做了啥',
+      'today': '今天',
+      'week': '本周',
+      'month': '本月',
+      'settings': '设置',
+      'quick.record': '快速记录',
+      'text.placeholder': '记录一下...',
+      'search.placeholder': '搜索关键词...',
+      'add.attachment': '添加附件',
+      'play.pause': '播放/暂停',
+      'today.records': '今天记录',
+      'camera': '拍照',
+      'image': '图片',
+      'audio': '录音',
+      'calendar': '日历',
+      'category.stats': '分类统计',
+      'daily.spend': '每日支出',
+      'daily.records': '每日记录数',
+      'category.dist': '分类分布',
+      'data.manage': '数据管理',
+      'export.data': '导出数据',
+      'import.data': '导入数据',
+      'sync.pc': '同步到电脑',
+      'clear.all': '清空所有数据',
+      'export.title': '导出数据',
+      'export.desc': '选择要导出的数据范围。',
+      'import.title': '导入数据',
+      'import.desc': '选择 JSON 备份文件，或直接粘贴 JSON 内容',
+      'import.file': '选择文件',
+      'import.paste': '粘贴内容',
+      'import.paste.placeholder': '在此粘贴 JSON 数据...',
+      'import.paste.btn': '导入粘贴内容',
+      'quickmgr.title': '自定义快速记录',
+      'quickmgr.desc': '添加常用的快捷按钮，点击即可快速记录。',
+      'quickmgr.name.placeholder': '名称（如：练字、冥想）',
+      'quickmgr.select.icon': '选择图标',
+      'quickmgr.add': '＋ 添加',
+      'sync.title': '同步数据',
+      'sync.preparing': '正在准备数据...',
+      'sync.reading': '读取数据中',
+      'sync.started': '同步服务器已启动',
+      'sync.open.browser': '在电脑浏览器打开：',
+      'sync.wifi.tip': '确保手机和电脑在<b>同一个 WiFi 网络</b>下。<br>打开链接即可下载 JSON 数据。',
+      'sync.stop': '停止同步',
+      'sync.nonandroid': '❌ 非 Android App 环境，无法启动同步',
+      'sync.nowifi': '❌ 未连接到 WiFi 网络，请连接后重试',
+      'sync.failed': '❌ 启动同步失败：',
+      'sync.running': '同步服务器已启动',
+      'earlier.records': '更早记录',
+      'this.week.none': '本周暂无记录',
+      'total.spend': '总支出',
+      'total.earn': '总收入',
+      'total.records': '总记录',
+      'active.days': '活跃天数',
+      'record.days': '记录天数',
+      'avg.daily': '日均记录',
+      'monthly.budget': '本月收支',
+      'no.spend': '暂无支出',
+      'no.month.records': '本月暂无记录',
+      'no.data.export': '暂无数据可导出',
+      'export.success.downloads': '✓ 已导出到「下载」文件夹',
+      'export.success': '✓ 数据已导出',
+      'export.failed': '导出失败：',
+      'import.failed': '导入失败：',
+      'import.failed.read': '无法读取文件',
+      'import.paste.empty': '请先粘贴 JSON 内容',
+      'import.confirm.prefix': '确定要导入 ',
+      'import.confirm.suffix': ' 吗？',
+      'import.success': '✓ 已导入 ',
+      'import.records': ' 条记录',
+      'import.custom.btns': ' + 自定义按钮',
+      'clear.confirm': '确定要清空所有数据吗？此操作不可恢复！',
+      'clear.confirm2': '再次确认：真的要删除所有记录吗？',
+      'clear.success': '✓ 已清空所有数据',
+      'clear.failed': '清空失败',
+      'delete.confirm': '删除这条记录？',
+      'delete.success': '已删除',
+      'delete.failed': '删除失败',
+      'delete.btn.error': '按钮数据错误',
+      'delete.audio.confirm': '确定要删除这条录音吗？',
+      'delete.audio.success': '✓ 录音已删除',
+      'delete.image.confirm': '确定要删除这张图片吗？',
+      'delete.quick.confirm': '确定要删除这个快捷按钮吗？',
+      'delete.quick.success': '已删除',
+      'edit.updated': '✓ 已更新',
+      'edit.failed': '更新失败',
+      'record.saved': '✓ 已记录',
+      'record.failed': '保存失败',
+      'input.required': '请选择分类',
+      'input.empty': '请输入内容或选择图片',
+      'original.notfound': '原始记录未找到',
+      'image.too.large': '图片太大',
+      'image.failed': '图片处理失败',
+      'photo.failed': '拍照处理失败',
+      'audio.unsupported': '设备不支持录音',
+      'audio.too.short': '录音太短',
+      'audio.added': '✓ 录音已添加',
+      'audio.overwrite.confirm': '已有录音，重新录制将替换现有录音。继续？',
+      'audio.permission.denied': '麦克风权限被拒绝',
+      'audio.play.failed': '播放失败',
+      'no.records.today': '今天还没有记录',
+      'click.to.record': '点击上方按钮快速记录',
+      'no.custom.btns': '还没有自定义按钮，在上方添加',
+      'quickmgr.name.empty': '请输入名称',
+      'quickmgr.added': '✓ 已添加',
+      'quickmgr.title.edit': '自定义快速记录',
+      'search.empty': '没有找到匹配的记录',
+      'search.many': '共 ',
+      'search.many2': ' 条结果，仅显示前 50 条',
+      'search.error': '搜索出错了，请重试',
+      'cat.unknown': '无法识别该分类',
+      'stat.total': '总记录',
+      'stat.days': '活跃天数',
+      'stat.spend': '总支出',
+      'spend': '支出',
+      'earn': '收入',
+      'stat.avg': '日均记录',
+      'cat.rank': '分类排行',
+      'daily.detail': '每日明细',
+      'week.review': '本周回顾',
+      'category': '分类',
+      'count': '条数',
+      'records': '条记录',
+      'recording': '录音中...',
+      'today.xp': '今日经验值',
+      'xp.start': '记录一条开始积累',
+      'next.level': '下一级',
+      'current.level': '当前等级',
+      'xp.required': '还需',
+      'xp.to.next': '经验升级',
+      'rename': '重命名',
+      'cancel': '取消',
+      'confirm': '确定',
+      'close': '关闭',
+      'save': '保存',
+      'btn.record': '记录',
+      'btn.update': '更新',
+      'add': '添加',
+      'edit': '编辑',
+      'delete': '删除',
+      'export.week': '导出本周',
+      'export.month': '导出本月',
+      'export.all': '导出全部',
+      'language': '语言',
+      'lang.zh': '中文',
+      'lang.en': 'English',
+      'donate': '支持开发者',
+      'donate.desc': '如果喜欢这个 App，可以请我喝杯咖啡 ☕',
+      'donate.bmc': 'Buy Me a Coffee',
+      'donate.afdian': '爱发电',
+      'version': '版本',
+    },
+    en: {
+      'app.name': 'What Did I Do Today',
+      'today': 'Today',
+      'week': 'Week',
+      'month': 'Month',
+      'settings': 'Settings',
+      'quick.record': 'Quick Record',
+      'text.placeholder': 'Write something...',
+      'search.placeholder': 'Search keywords...',
+      'add.attachment': 'Add attachment',
+      'play.pause': 'Play/Pause',
+      'today.records': "Today's Records",
+      'camera': 'Camera',
+      'image': 'Image',
+      'audio': 'Audio',
+      'calendar': 'Calendar',
+      'category.stats': 'Category Stats',
+      'daily.spend': 'Daily Spend',
+      'daily.records': 'Daily Records',
+      'category.dist': 'Category Distribution',
+      'data.manage': 'Data Management',
+      'export.data': 'Export Data',
+      'import.data': 'Import Data',
+      'sync.pc': 'Sync to Computer',
+      'clear.all': 'Clear All Data',
+      'export.title': 'Export Data',
+      'export.desc': 'Select data range to export.',
+      'import.title': 'Import Data',
+      'import.desc': 'Select a JSON backup file, or paste JSON content directly',
+      'import.file': 'Choose File',
+      'import.paste': 'Paste Content',
+      'import.paste.placeholder': 'Paste JSON data here...',
+      'import.paste.btn': 'Import Pasted Content',
+      'quickmgr.title': 'Custom Quick Buttons',
+      'quickmgr.desc': 'Add custom shortcut buttons for quick recording.',
+      'quickmgr.name.placeholder': 'Name (e.g. Piano, Meditation)',
+      'quickmgr.select.icon': 'Choose Icon',
+      'quickmgr.add': '＋ Add',
+      'sync.title': 'Sync Data',
+      'sync.preparing': 'Preparing data...',
+      'sync.reading': 'Reading data',
+      'sync.started': 'Sync server started',
+      'sync.open.browser': 'Open in your computer browser:',
+      'sync.wifi.tip': 'Make sure your phone and computer are on the <b>same WiFi network</b>.<br>Open the link to download JSON data.',
+      'sync.stop': 'Stop Sync',
+      'sync.nonandroid': 'Non-Android environment, cannot start sync',
+      'sync.nowifi': 'Not connected to WiFi, please connect and try again',
+      'sync.failed': 'Failed to start sync: ',
+      'sync.running': 'Sync server started',
+      'earlier.records': 'Earlier Records',
+      'this.week.none': 'No records this week',
+      'total.spend': 'Total Spend',
+      'total.earn': 'Total Earned',
+      'total.records': 'Total Records',
+      'active.days': 'Active Days',
+      'record.days': 'Record Days',
+      'avg.daily': 'Daily Avg',
+      'monthly.budget': 'Monthly Budget',
+      'no.spend': 'No spend data',
+      'no.month.records': 'No records this month',
+      'no.data.export': 'No data to export',
+      'export.success.downloads': '✓ Exported to Downloads folder',
+      'export.success': '✓ Data exported',
+      'export.failed': 'Export failed: ',
+      'import.failed': 'Import failed: ',
+      'import.failed.read': 'Cannot read file',
+      'import.paste.empty': 'Please paste JSON content first',
+      'import.confirm.prefix': 'Import ',
+      'import.confirm.suffix': '?',
+      'import.success': '✓ Imported ',
+      'import.records': ' records',
+      'import.custom.btns': ' + custom buttons',
+      'clear.confirm': 'Are you sure you want to clear ALL data? This cannot be undone!',
+      'clear.confirm2': 'Confirm again: Delete ALL records?',
+      'clear.success': '✓ All data cleared',
+      'clear.failed': 'Clear failed',
+      'delete.confirm': 'Delete this record?',
+      'delete.success': 'Deleted',
+      'delete.failed': 'Delete failed',
+      'delete.btn.error': 'Button data error',
+      'delete.audio.confirm': 'Delete this recording?',
+      'delete.audio.success': '✓ Recording deleted',
+      'delete.image.confirm': 'Delete this image?',
+      'delete.quick.confirm': 'Delete this shortcut button?',
+      'delete.quick.success': 'Deleted',
+      'edit.updated': '✓ Updated',
+      'edit.failed': 'Update failed',
+      'record.saved': '✓ Saved',
+      'record.failed': 'Save failed',
+      'input.required': 'Please select a category',
+      'input.empty': 'Please enter content or select an image',
+      'original.notfound': 'Original record not found',
+      'image.too.large': 'Image too large',
+      'image.failed': 'Image processing failed',
+      'photo.failed': 'Photo processing failed',
+      'audio.unsupported': 'Audio recording not supported',
+      'audio.too.short': 'Recording too short',
+      'audio.added': '✓ Audio added',
+      'audio.overwrite.confirm': 'You already have a recording. Replace it?',
+      'audio.permission.denied': 'Microphone permission denied',
+      'audio.play.failed': 'Playback failed',
+      'no.records.today': 'No records today',
+      'click.to.record': 'Tap a button above to start recording',
+      'no.custom.btns': 'No custom buttons yet. Add one above.',
+      'quickmgr.name.empty': 'Please enter a name',
+      'quickmgr.added': '✓ Added',
+      'quickmgr.title.edit': 'Custom Quick Record',
+      'search.empty': 'No matching records found',
+      'search.many': 'Found ',
+      'search.many2': ' results, showing first 50',
+      'search.error': 'Search error, please try again',
+      'cat.unknown': 'Unknown category',
+      'stat.total': 'Total Records',
+      'stat.days': 'Active Days',
+      'stat.spend': 'Total Spend',
+      'spend': 'Spend',
+      'earn': 'Earned',
+      'stat.avg': 'Daily Avg',
+      'cat.rank': 'Category Ranking',
+      'daily.detail': 'Daily Details',
+      'week.review': 'Week Review',
+      'category': 'Category',
+      'count': 'Count',
+      'records': ' records',
+      'recording': 'Recording...',
+      'today.xp': "Today's XP",
+      'xp.start': 'Start recording to earn XP',
+      'next.level': 'Next Level',
+      'current.level': 'Current Level',
+      'xp.required': '',
+      'xp.to.next': ' XP to next level',
+      'rename': 'Rename',
+      'cancel': 'Cancel',
+      'confirm': 'Confirm',
+      'close': 'Close',
+      'save': 'Save',
+      'btn.record': 'Record',
+      'btn.update': 'Update',
+      'add': 'Add',
+      'edit': 'Edit',
+      'delete': 'Delete',
+      'export.week': 'Export This Week',
+      'export.month': 'Export This Month',
+      'export.all': 'Export All',
+      'language': 'Language',
+      'lang.zh': '中文',
+      'lang.en': 'English',
+      'donate': 'Support the Developer',
+      'donate.desc': 'If you like this app, buy me a coffee ☕',
+      'donate.bmc': 'Buy Me a Coffee',
+      'donate.afdian': 'Love Power',
+      'version': 'Version',
+    }
+  },
+  t(key) { return this._strings[this._locale][key] || key; },
+  reapply() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = this.t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-innerhtml]').forEach(el => {
+      el.innerHTML = this.t(el.dataset.i18nInnerhtml);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      el.placeholder = this.t(el.dataset.i18nPlaceholder);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      el.title = this.t(el.dataset.i18nTitle);
+    });
+    document.title = this.t('app.name');
+  },
+  init() {
+    // Synchronous init: use browser language as default
+    const lang = (navigator.language || navigator.userLanguage || 'zh').toLowerCase();
+    this._locale = lang.startsWith('zh') ? 'zh' : 'en';
+    this.reapply();
+  },
+  async setLang(locale) {
+    this._locale = locale;
+    this._saveLang(); // fire-and-forget save
+    this.reapply();
+    // Re-render current view, then reapply data-i18n to dynamic content
+    if (typeof state !== 'undefined' && state.currentView) {
+      const v = state.currentView;
+      if (v === 'today') await renderToday();
+      else if (v === 'week') await renderWeek();
+      else if (v === 'month') await renderMonth();
+      else if (v === 'settings') renderSettings();
+      // Reapply translations to newly created data-i18n elements
+      this.reapply();
+    }
+  },
+  _saveLang() {
+    // Save language preference to config store (fire-and-forget)
+    if (typeof openDB !== 'undefined') {
+      openDB().then(db => {
+        const tx = db.transaction('config', 'readwrite');
+        tx.objectStore('config').put({ key: 'language', value: this._locale });
+      }).catch(() => {});
+    }
+  }
+};
+
+// English category labels & subs
+const CATEGORIES_EN = [
+  { id: 'eat',   label: 'I Ate',  subs: ['Fruit', 'Vegetables', 'Staples', 'Meat', 'Snacks', 'Dessert', 'Drinks', 'Takeout', 'Home Cooking', 'Breakfast', 'Lunch', 'Dinner', 'Late Night'] },
+  { id: 'learn', label: 'I Learned', subs: ['Reading', 'Courses', 'Coding', 'Language', 'Video Tutorials', 'Book Notes', 'Tech Articles', 'AI', 'Writing', 'Certification'] },
+  { id: 'watch', label: 'I Watched', subs: ['Movie', 'TV Series', 'Documentary', 'Variety', 'Anime', 'Short Videos', 'Live Stream', 'Sports', 'Talks'] },
+  { id: 'spend', label: 'I Spent', subs: ['Dining', 'Shopping', 'Transport', 'Entertainment', 'Housing', 'Medical', 'Education', 'Daily Goods', 'Clothing', 'Digital', 'Gifts', 'Top Up'] },
+  { id: 'earn', label: 'I Earned', subs: ['Salary', 'Part-time', 'Investments', 'Red Packet', 'Reimbursement', 'Refund', 'Bonus', 'Sell', 'Other Income'] },
+  { id: 'read',  label: 'I Read', subs: ['Novel', 'Non-fiction', 'Magazine', 'Paper', 'WeChat', 'News', 'Professional', 'Blog', 'Comic'] },
+  { id: 'mood',  label: 'Mood',      subs: ['Happy', 'Calm', 'Tired', 'Anxious', 'Excited', 'Sad', 'Angry', 'Grateful', 'Lost', 'Content'] },
+  { id: 'go',    label: 'Places', subs: ['Work', 'Park', 'Mall', 'Restaurant', 'Cafe', 'Gym', 'Travel', 'Home', 'Hospital', 'Library'] },
+  { id: 'sport', label: 'Sport',     subs: ['Running', 'Gym', 'Yoga', 'Walking', 'Cycling', 'Swimming', 'Ball Games', 'Jump Rope', 'Hiking', 'Stretching', 'Other'] },
+  { id: 'work',  label: 'Work',      subs: ['Meeting', 'Coding', 'Writing', 'Design', 'Communication', 'Report', 'Planning', 'Review', 'Interview', 'Training', 'Business Trip'] },
+  { id: 'custom', label: 'Custom',   subs: [] },
+];
+
+// English level titles
+const LEVELS_EN = [
+  'Apprentice', 'Beginner', 'Intermediate', 'Advanced', 'Record Pro',
+  'Record Elite', 'Record Master', 'Legendary', 'Record King', 'Record God',
+  'Star Recorder', 'Galaxy Recorder', 'Universe Recorder', 'Space-time Recorder', 'Dimension Recorder',
+  'Genesis Recorder', 'Infinite Recorder', 'Eternal Recorder', 'Legendary Proof', 'Myth Reborn'
+];
+
+function getCatLabel(catId, def) {
+  if (I18N._locale === 'zh') return def;
+  const en = CATEGORIES_EN.find(c => c.id === catId);
+  return en ? en.label : def;
+}
+function getSubLabels(catId, zhSubs) {
+  if (I18N._locale === 'zh') return zhSubs;
+  const en = CATEGORIES_EN.find(c => c.id === catId);
+  return en ? en.subs : zhSubs;
+}
+function getLevelTitle(idx) {
+  if (I18N._locale === 'zh') return LEVELS[idx].title;
+  return LEVELS_EN[idx] || LEVELS[idx].title;
+}
+function getBeyondLevelTitle(lvl) {
+  if (I18N._locale === 'zh') return `Lv.${lvl} 无限超越者`;
+  return `Lv.${lvl} Infinite Transcender`;
+}
+function t(key) { return I18N.t(key); }
+I18N.init();
+
 // ============================================================
 // DATA LAYER - IndexedDB
 // ============================================================
@@ -1336,6 +1767,19 @@ function openDB() {
     req.onerror = () => reject(req.error);
   });
 }
+
+// Load saved language preference from config store (after data layer is ready)
+openDB().then(db => {
+  const tx = db.transaction('config', 'readonly');
+  const req = tx.objectStore('config').get('language');
+  req.onsuccess = () => {
+    const saved = req.result?.value;
+    if (saved === 'zh' || saved === 'en') {
+      I18N._locale = saved;
+      I18N.reapply();
+    }
+  };
+}).catch(() => {});
 
 async function addEntry(entry) {
   const db = await openDB();
@@ -1426,7 +1870,7 @@ function openEntryFormFromCustom(btnElement) {
   const icon = btnElement.dataset.qicon || '📌';
   const label = btnElement.dataset.qlabel || '';
   const btnId = btnElement.dataset.qid ? Number(btnElement.dataset.qid) : null;
-  if (!label) { showToast('按钮数据错误'); return; }
+  if (!label) { showToast(t('delete.btn.error')); return; }
   // Each custom button gets its own unique category ID so it appears as an independent group
   const catId = `cbtn_${btnId}`;
   const cat = { id: catId, icon: icon, svg: icon, label: label, subs: [], color: '#94A3B8' };
@@ -1495,7 +1939,7 @@ async function renderQuickManagerList() {
   const listEl = document.getElementById('quickMgrList');
   const btns = await getCustomQuickButtons();
   if (btns.length === 0) {
-    listEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-tertiary);font-size:12px;">还没有自定义按钮，在上方添加</div>';
+    listEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-tertiary);font-size:12px;" data-i18n="no.custom.btns"></div>';
     return;
   }
   listEl.innerHTML = btns.map(b =>
@@ -1509,21 +1953,21 @@ async function renderQuickManagerList() {
 async function handleAddCustomBtn() {
   const icon = document.getElementById('quickMgrIcon').value.trim() || '📌';
   const label = document.getElementById('quickMgrLabel').value.trim();
-  if (!label) { showToast('请输入名称'); return; }
+  if (!label) { showToast(t('quickmgr.name.empty')); return; }
   await addCustomQuickBtn(icon, label, 'custom');
   await renderQuickManagerList();
   document.getElementById('quickMgrLabel').value = '';
   // Reset to first SVG icon
   document.getElementById('quickMgrIcon').value = CUSTOM_ICONS[0].svg;
   document.getElementById('quickMgrIconPreview').innerHTML = CUSTOM_ICONS[0].svg.replace('<svg ', '<svg style="width:32px;height:32px;display:block;" ');
-  showToast('✓ 已添加');
+  showToast(t('quickmgr.added'));
 }
 
 async function handleDeleteCustomBtn(id) {
-  if (!confirm('删除此快捷按钮？')) return;
+  if (!confirm(t('delete.quick.confirm'))) return;
   await deleteCustomQuickBtn(id);
   await renderQuickManagerList();
-  showToast('已删除');
+  showToast(t('delete.quick.success'));
 }
 
 async function getEntriesByDate(dateStr) {
@@ -1575,8 +2019,14 @@ let dateUtils = {
   formatDisplay(dateStr) {
     const [y,m,d] = dateStr.split('-').map(Number);
     const dt = new Date(y, m-1, d);
-    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-    return `${y}年${m}月${d}日 周${weekdays[dt.getDay()]}`;
+    if (I18N._locale === 'zh') {
+      const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+      return `${y}年${m}月${d}日 周${weekdays[dt.getDay()]}`;
+    } else {
+      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${months[m-1]} ${d}, ${y} ${weekdays[dt.getDay()]}`;
+    }
   },
   parseDate(dateStr) {
     const [y,m,d] = dateStr.split('-').map(Number);
@@ -1594,8 +2044,8 @@ let dateUtils = {
     return {
       start: this.formatDate(monday),
       end: this.formatDate(sunday),
-      startDisplay: `${monday.getMonth()+1}月${monday.getDate()}日`,
-      endDisplay: `${sunday.getMonth()+1}月${sunday.getDate()}日`,
+      startDisplay: I18N._locale === 'zh' ? `${monday.getMonth()+1}月${monday.getDate()}日` : `${monday.getMonth()+1}/${monday.getDate()}`,
+      endDisplay: I18N._locale === 'zh' ? `${sunday.getMonth()+1}月${sunday.getDate()}日` : `${sunday.getMonth()+1}/${sunday.getDate()}`,
     };
   },
   getMonthYear(offset = 0) {
@@ -1664,22 +2114,22 @@ document.getElementById('cameraInput').addEventListener('change', function(e) {
   const now = Date.now();
   if (now - _lastPhotoTime < 1500) return;
   _lastPhotoTime = now;
-  if (file.size > 20 * 1024 * 1024) { showToast('图片太大'); return; }
+  if (file.size > 20 * 1024 * 1024) { showToast(t('image.too.large')); return; }
   compressImage(file).then(dataUrl => {
     state.selectedImage = dataUrl;
     renderImagePreview();
-  }).catch(() => showToast('拍照处理失败'));
+  }).catch(() => showToast(t('photo.failed')));
 });
 
 document.getElementById('imageInput').addEventListener('change', function(e) {
   const file = e.target.files[0];
   e.target.value = '';
   if (!file) return;
-  if (file.size > 20 * 1024 * 1024) { showToast('图片太大'); return; }
+  if (file.size > 20 * 1024 * 1024) { showToast(t('image.too.large')); return; }
   compressImage(file).then(dataUrl => {
     state.selectedImage = dataUrl;
     renderImagePreview();
-  }).catch(() => showToast('图片处理失败'));
+  }).catch(() => showToast(t('image.failed')));
 });
 
 function removeSelectedImage() {
@@ -1724,8 +2174,8 @@ function closeImageModal() {
 async function submitEntry() {
   const text = document.getElementById('formText').value.trim();
   const cat = state.selectedCategory;
-  if (!cat) { showToast('请选择分类'); return; }
-  if (!text && !state.selectedImage) { showToast('请输入内容或选择图片'); return; }
+  if (!cat) { showToast(t('input.required')); return; }
+  if (!text && !state.selectedImage) { showToast(t('input.empty')); return; }
 
   const amtField = parseFloat(document.getElementById('formAmount').value) || 0;
   const amount = (cat.id === 'spend' || cat.id === 'earn' || cat.id === 'eat') ? (amtField || parseAmountFromText(text)) : 0;
@@ -1735,18 +2185,18 @@ async function submitEntry() {
     try {
       const all = await getAllEntries();
       const original = all.find(e => e.id === state.editingId);
-      if (!original) { showToast('原始记录未找到'); return; }
+      if (!original) { showToast(t('original.notfound')); return; }
       const images = state.selectedImage ? [state.selectedImage] : null;
       const updated = { ...original, text, amount, images, image: images ? images[0] : null, audio: state.selectedAudio || original.audio || null };
       await updateEntry(updated);
       invalidateXPCache();
-      showToast('✓ 已更新');
+      showToast(t('edit.updated'));
       closeEntryForm();
       if (state.currentView === 'today') renderToday();
       else if (state.currentView === 'week') renderWeek();
       else renderMonth();
     } catch (err) {
-      showToast('更新失败');
+      showToast(t('edit.failed'));
     }
   } else {
     // Create new entry
@@ -1777,28 +2227,28 @@ async function submitEntry() {
     try {
       await addEntry(entry);
       invalidateXPCache();
-      showToast('✓ 已记录');
+      showToast(t('record.saved'));
       closeEntryForm();
       if (state.currentView === 'today') renderToday();
       else if (state.currentView === 'week') renderWeek();
       else renderMonth();
     } catch (err) {
-      showToast('保存失败');
+      showToast(t('record.failed'));
     }
   }
 }
 
 async function deleteEntryById(id) {
-  if (!confirm('删除这条记录？')) return;
+  if (!confirm(t('delete.confirm'))) return;
   try {
     await deleteEntry(id);
     invalidateXPCache();
-    showToast('已删除');
+    showToast(t('delete.quick.success'));
     if (state.currentView === 'today') renderToday();
     else if (state.currentView === 'week') renderWeek();
     else renderMonth();
   } catch (err) {
-    showToast('删除失败');
+    showToast(t('delete.failed'));
   }
 }
 
@@ -1814,8 +2264,8 @@ async function editEntryById(id, entryData) {
   // Fill form
   const displayIcon = entryData.customQuickIcon || cat.emoji;
   const displayLabel = entryData.customQuickLabel || cat.label;
-  document.getElementById('formCategoryText').innerHTML = `${displayIcon} ${displayLabel} (编辑)`;
-  document.getElementById('formText').placeholder = `记录一下${displayLabel}...`;
+  document.getElementById('formCategoryText').innerHTML = `${displayIcon} ${displayLabel} (${t('edit')})`;
+  document.getElementById('formText').placeholder = t('text.placeholder').replace('...', ' ') + displayLabel + '...';
   // Restore custom button state and hidden fields for re-submit
   state.customQuickIcon = entryData.customQuickIcon || null;
   state.customQuickLabel = entryData.customQuickLabel || null;
@@ -1848,8 +2298,9 @@ async function editEntryById(id, entryData) {
   // Render sub-options
   const subContainer = document.getElementById('subOptions');
   subContainer.innerHTML = '';
-  if (cat.subs && cat.subs.length > 0) {
-    cat.subs.forEach(s => {
+  const editSubs = getSubLabels(cat.id, cat.subs);
+  if (editSubs && editSubs.length > 0) {
+    editSubs.forEach(s => {
       const chip = document.createElement('button');
       chip.className = 'sub-option-chip';
       chip.type = 'button';
@@ -1866,7 +2317,7 @@ async function editEntryById(id, entryData) {
     });
   }
 
-  document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> 更新';
+  document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> ' + t('btn.update');
   document.getElementById('entryForm').classList.add('open');
   document.getElementById('formText').focus();
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
@@ -1877,8 +2328,8 @@ async function editEntryById(id, entryData) {
 // ============================================================
 function openEntryForm(category) {
   state.selectedCategory = category;
-  document.getElementById('formCategoryText').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">${category.svg}<span style="vertical-align:middle;">${category.label}</span></span>`;
-  document.getElementById('formText').placeholder = `记录一下${category.label}...`;
+  document.getElementById('formCategoryText').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">${category.svg}<span style="vertical-align:middle;">${getCatLabel(category.id, category.label)}</span></span>`;
+  document.getElementById('formText').placeholder = t('text.placeholder').replace('...', ' ') + getCatLabel(category.id, category.label) + '...';
 
   const amtInput = document.getElementById('formAmount');
   if (category.id === 'spend' || category.id === 'earn' || category.id === 'eat') {
@@ -1892,8 +2343,9 @@ function openEntryForm(category) {
   // Render sub-option chips
   const subContainer = document.getElementById('subOptions');
   subContainer.innerHTML = '';
-  if (category.subs && category.subs.length > 0) {
-    category.subs.forEach(s => {
+  const subs = getSubLabels(category.id, category.subs);
+  if (subs && subs.length > 0) {
+    subs.forEach(s => {
       const chip = document.createElement('button');
       chip.className = 'sub-option-chip';
       chip.type = 'button';
@@ -1924,7 +2376,7 @@ function closeEntryForm() {
   document.getElementById('formAmount').value = '';
   document.getElementById('formAmount').style.display = 'none';
   document.getElementById('subOptions').innerHTML = '';
-  document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg> 记录';
+  document.getElementById('formSubmit').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg> ' + t('btn.record');
   removeSelectedAudio();
   removeSelectedImage();
   document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
@@ -2130,7 +2582,7 @@ async function renderToday(targetDate) {
 
   // Update header date and timeline title to reflect the viewed date
   document.getElementById('headerDate').textContent = dateUtils.formatDisplay(dateStr);
-  document.getElementById('timelineTitle').textContent = isToday ? '📋 今天记录' : `📋 ${dateUtils.formatDisplay(dateStr)}`;
+  document.getElementById('timelineTitle').textContent = isToday ? '📋 ' + t('today.records') : `📋 ${dateUtils.formatDisplay(dateStr)}`;
 
   // Populate image lookup
   _imgLookup = {};
@@ -2151,8 +2603,8 @@ async function renderToday(targetDate) {
             <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
           </svg>
         </span>
-        ${isToday ? '今天还没有记录' : dateUtils.formatDisplay(dateStr) + ' 还没有记录'}<br>
-        <span style="font-size:12px;color:var(--text-tertiary);">点击上方按钮快速记录</span>
+        ${isToday ? t('no.records.today') : dateUtils.formatDisplay(dateStr) + ' ' + t('no.records.today')}<br>
+        <span style="font-size:12px;color:var(--text-tertiary);" data-i18n="click.to.record"></span>
       </div>`;
     countEl.textContent = '';
     return;
@@ -2162,7 +2614,7 @@ async function renderToday(targetDate) {
   const spendEntries = entries.filter(e => e.category === 'spend' || (e.category === 'eat' && getEntryAmount(e) > 0));
   const todaySpend = spendEntries.reduce((s, e) => s + getEntryAmount(e), 0);
   const spendStr = spendEntries.length > 0 ? `  ¥${todaySpend.toFixed(2)}` : '';
-  countEl.innerHTML = `共 ${entries.length} 条${spendStr ? `<span style="color:#5B7BA3;font-weight:600;">${spendStr}</span>` : ''}`;
+  countEl.innerHTML = `${entries.length} ${t('records')}${spendStr ? `<span style="color:#5B7BA3;font-weight:600;">${spendStr}</span>` : ''}`;
 
   // Group entries by category — standard categories + cbtn_ dynamic categories
   const grouped = {};
@@ -2182,7 +2634,7 @@ async function renderToday(targetDate) {
     const list = grouped[cat.id];
     if (!list || list.length === 0) return;
     let groupIcon = cat.svg;
-    let groupLabel = cat.label;
+    let groupLabel = getCatLabel(cat.id, cat.label);
     if (cat.id === 'custom') {
       const labels = new Set(list.map(e => e.customQuickLabel).filter(Boolean));
       if (labels.size === 1) {
@@ -2292,11 +2744,11 @@ function getLevelThreshold(level) {
 
 function getLevelData(totalXP) {
   let currentLevel = 1;
-  let currentTitle = LEVELS[0].title;
+  let currentTitle = getLevelTitle(0);
   for (let i = LEVELS.length - 1; i >= 0; i--) {
     if (totalXP >= LEVELS[i].xp) {
       currentLevel = LEVELS[i].level;
-      currentTitle = LEVELS[i].title;
+      currentTitle = getLevelTitle(i);
       break;
     }
   }
@@ -2305,7 +2757,7 @@ function getLevelData(totalXP) {
     let lvl = LEVELS[LEVELS.length - 1].level;
     while (getLevelThreshold(lvl + 1) <= totalXP) lvl++;
     currentLevel = lvl;
-    currentTitle = lvl <= 20 ? LEVELS[lvl - 1].title : `Lv.${lvl} 无限超越者`;
+    currentTitle = lvl <= 20 ? getLevelTitle(lvl - 1) : getBeyondLevelTitle(lvl);
   }
 
   const nextXP = getLevelThreshold(currentLevel + 1);
@@ -2388,14 +2840,14 @@ async function renderXPStats(entries) {
 
   // Build next level info for the expandable section
   const nextLevel = levelData.level + 1;
-  const nextLevelTitle = (nextLevel <= 20 ? (LEVELS.find(l => l.level === nextLevel)?.title || '') : `Lv.${nextLevel} 无限超越者`);
+  const nextLevelTitle = (nextLevel <= 20 ? getLevelTitle(nextLevel - 1) : getBeyondLevelTitle(nextLevel));
   const nextLevelXP = getLevelThreshold(nextLevel);
   const xpGap = nextLevelXP - levelData.totalXP;
   let nextLevelHtml = `<div id="xpLevelList" class="collapsible-body collapsed" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
     <div style="display:flex;align-items:center;gap:8px;padding:4px 6px;background:var(--secondary-light);border-radius:6px;">
       <span style="width:28px;text-align:center;font-size:11px;font-weight:700;color:var(--secondary);">Lv.${nextLevel}</span>
       <span style="flex:1;font-size:12px;color:var(--text);">${nextLevelTitle}</span>
-      <span style="font-size:10px;color:var(--text-tertiary);">还需 ${xpGap.toLocaleString()} XP</span>
+      <span style="font-size:10px;color:var(--text-tertiary);">${t('xp.required')} ${xpGap.toLocaleString()}${t('xp.to.next')}</span>
       <span style="font-size:11px;">🔒</span>
     </div>
   </div>`;
@@ -2421,8 +2873,8 @@ async function renderXPStats(entries) {
   if (activeCats.length === 0) {
     xpHeaderHTML = `
       <div class="xp-header">
-        <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
-        <div class="xp-total">记录一条开始积累</div>
+        <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="xp-total" data-i18n="xp.start"></div>
       </div>`;
   }
 
@@ -2448,7 +2900,7 @@ async function renderXPStats(entries) {
   container.innerHTML = `
     ${levelHTML}
     <div class="xp-header" style="cursor:pointer;" onclick="const xg=document.getElementById('xpGrid');xg.classList.toggle('collapsed');_xpCollapsed=xg.classList.contains('collapsed');this.querySelector('.xp-toggle').textContent=_xpCollapsed?'▲':'▼'">
-      <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>今日经验值</div>
+      <div class="xp-title"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
       <span class="xp-toggle" style="font-size:10px;color:var(--text);">${_xpCollapsed?'▲':'▼'}</span>
     </div>
     <div style="margin:8px 0 4px;display:flex;align-items:center;gap:8px;">
@@ -2481,7 +2933,7 @@ async function renderQuickButtons() {
   let html = CATEGORIES.filter(cat => cat.id !== 'custom').map(cat => `
     <button class="quick-btn" data-cat="${cat.id}" onclick="openEntryForm(${JSON.stringify(cat).replace(/"/g, '&quot;')})">
       <span class="q-icon">${cat.svg}</span>
-      <span class="q-label">${cat.label}</span>
+      <span class="q-label">${getCatLabel(cat.id, cat.label)}</span>
     </button>
   `).join('');
 
@@ -2499,7 +2951,7 @@ async function renderQuickButtons() {
   });
 
   // "+" manage button
-  html += `<button class="quick-btn quick-add-btn" onclick="showCustomQuickManager()" title="自定义快速记录">
+  html += `<button class="quick-btn quick-add-btn" onclick="showCustomQuickManager()" data-i18n-title="quickmgr.title">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;">
       <line x1="12" y1="5" x2="12" y2="19"/>
       <line x1="5" y1="12" x2="19" y2="12"/>
@@ -2508,7 +2960,7 @@ async function renderQuickButtons() {
 
   // In edit mode, add "完成" button and enable edit mode class
   if (_quickEditMode) {
-    html += `<button class="quick-btn-edit-done" onclick="exitQuickEditMode()">完成</button>`;
+    html += `<button class="quick-btn-edit-done" onclick="exitQuickEditMode()" data-i18n="confirm"></button>`;
   }
   grid.innerHTML = html;
   const qs = document.querySelector('.quick-section');
@@ -2519,7 +2971,7 @@ async function renderQuickButtons() {
 function renderEntryCard(e, showAdd) {
   const isCbtn = e.category && e.category.startsWith('cbtn_');
   const cat = CATEGORIES.find(c => c.id === e.category)
-    || (isCbtn ? { id: e.category, emoji: e.customQuickIcon || '📌', label: e.customQuickLabel || '自定义', color: '#94A3B8', subs: [] } : null)
+    || (isCbtn ? { id: e.category, emoji: e.customQuickIcon || '📌', label: e.customQuickLabel || getCatLabel('custom', '自定义'), color: '#94A3B8', subs: [] } : null)
     || CATEGORIES[7];
   const amtVal = getEntryAmount(e);
   const amtStr = amtVal > 0 ? `¥${amtVal.toFixed(2)}` : '';
@@ -2529,7 +2981,7 @@ function renderEntryCard(e, showAdd) {
   // Priority: 1) stored customQuickIcon/label from entry, 2) cache lookup by button ID or text,
   //           3) category default
   let badgeIcon = e.customQuickIcon || cat.emoji;
-  let badgeLabel = e.customQuickLabel || cat.label;
+  let badgeLabel = e.customQuickLabel || getCatLabel(cat.id || e.category, cat.label);
 
   // For custom button entries (legacy 'custom' or new 'cbtn_*'), try cache lookup
   const isCustomCat = isCbtn || e.category === 'custom';
@@ -2562,14 +3014,14 @@ function renderEntryCard(e, showAdd) {
             if (imgs.length > 0) {
               mediaHtml += `<div style="position:relative;display:inline-block;">
                 <img class="entry-card-image" data-entry-img="${dataId}_0" src="${imgs[0]}" style="cursor:pointer;">
-                <button class="entry-card-del-img show-on-card-tap" data-img-id="${e.id}" title="删除图片" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#FF6B6B;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,0.3);">✕</button>
+                <button class="entry-card-del-img show-on-card-tap" data-img-id="${e.id}" title="'" data-i18n-title="delete.image" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#FF6B6B;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,0.3);">✕</button>
               </div>`;
             }
             if (e.audio) {
               mediaHtml += `<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;padding:4px 10px 4px 8px;border-radius:8px;background:#EDFBF9;position:relative;cursor:pointer;" onclick="event.stopPropagation();playAudio('${e.audio}')">
                 <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:18px;height:18px;display:block;flex-shrink:0;"><path d="M8 5v14l11-7z"/></svg>
                 <span style="font-size:12px;font-weight:500;color:#4ECDC4;">语音</span>
-                <button class="entry-card-del-audio show-on-card-tap" data-audio-id="${e.id}" title="删除录音" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#FF6B6B;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,0.3);padding:0;">✕</button>
+                <button class="entry-card-del-audio show-on-card-tap" data-audio-id="${e.id}" title="'" data-i18n-title="delete.audio" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border:none;border-radius:50%;background:#FF6B6B;color:#fff;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,0.3);padding:0;">✕</button>
               </div>`;
             }
             return mediaHtml;
@@ -2664,10 +3116,10 @@ async function renderWeek() {
   const totalEarn = entries.filter(e => e.category === 'earn').reduce((s, e) => s + getEntryAmount(e), 0);
 
   document.getElementById('weekStats').innerHTML = `
-    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">总记录</div></div>
-    <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label">活跃天数</div></div>
-    <div class="stat-card" style="cursor:pointer;" onclick="showWeekReview(${state.weekOffset})"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">总支出 ›</div></div>
-    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${totalEarn.toFixed(0)}</div><div class="stat-label">总收入</div></div>` : ''}
+    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label" data-i18n="stat.total"></div></div>
+    <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label" data-i18n="stat.days"></div></div>
+    <div class="stat-card" style="cursor:pointer;" onclick="showWeekReview(${state.weekOffset})"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">${t('total.spend')} ›</div></div>
+    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${totalEarn.toFixed(0)}</div><div class="stat-label" data-i18n="total.earn"></div></div>` : ''}
   `;
 
   // Category chart — horizontal bars with icons (max 50 fills bar)
@@ -2690,7 +3142,7 @@ async function renderWeek() {
     chartHtml += `
       <div style="display:flex;align-items:center;gap:8px;">
         <span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0;">${catSvg(c.id)}</span>
-        <span style="font-size:12px;width:44px;flex-shrink:0;color:var(--text);">${c.label}</span>
+        <span style="font-size:12px;width:44px;flex-shrink:0;color:var(--text);">${getCatLabel(c.id, c.label)}</span>
         <div style="flex:1;height:22px;background:#F0F0F0;border-radius:11px;overflow:hidden;position:relative;">
           <div class="chart-bar-fill" style="height:100%;width:0%;background:${color};border-radius:11px;transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;min-width:24px;" data-w="${pct}">
             <span style="font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.2);opacity:0;transition:opacity 0.2s 0.4s ease;" class="chart-bar-label">${val}</span>
@@ -2702,7 +3154,7 @@ async function renderWeek() {
   // Wrap in collapsible container with smooth toggle
   document.getElementById('weekChartSection').querySelector('.chart-title').innerHTML = `
     <span style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="var c=document.getElementById('weekChartContainer');var isCollapsed=c.classList.contains('collapsed');if(isCollapsed){c.classList.remove('collapsed');requestAnimationFrame(function(){c.querySelectorAll('.chart-bar-fill').forEach(function(b){b.style.width=b.dataset.w+'%';});});}else{c.classList.add('collapsed');c.querySelectorAll('.chart-bar-fill').forEach(function(b){b.style.width='0%';});c.querySelectorAll('.chart-bar-label').forEach(function(l){l.style.opacity='0';});}_weekChartCollapsed=!isCollapsed;this.querySelector('.chart-toggle').textContent=isCollapsed?'▼':'▲';">
-      分类统计
+      ${t('category.stats')}
       <span class="chart-toggle" style="font-size:10px;color:var(--text);">▼</span>
     </span>`;
   const chartContainer = document.getElementById('weekChartContainer');
@@ -2715,17 +3167,19 @@ async function renderWeek() {
     chartContainer.querySelectorAll('.chart-bar-label').forEach(function(l) { l.style.opacity = '0'; });
     document.querySelector('#weekChartSection .chart-toggle').textContent = '▲';
   }
-  // Bars start at 0% (set in HTML). On next frame, animate to target.
+  // Bars start at 0% (set in HTML). Double-RAF to ensure 0% paints before animating.
   requestAnimationFrame(function() {
-    chartContainer.querySelectorAll('.chart-bar-fill').forEach(function(b) {
-      b.style.width = b.dataset.w + '%';
-    });
-    // Also fade in labels after bars have grown
-    setTimeout(function() {
-      chartContainer.querySelectorAll('.chart-bar-label').forEach(function(l) {
-        l.style.opacity = '1';
+    requestAnimationFrame(function() {
+      chartContainer.querySelectorAll('.chart-bar-fill').forEach(function(b) {
+        b.style.width = b.dataset.w + '%';
       });
-    }, 400);
+      // Also fade in labels after bars have grown
+      setTimeout(function() {
+        chartContainer.querySelectorAll('.chart-bar-label').forEach(function(l) {
+          l.style.opacity = '1';
+        });
+      }, 400);
+    });
   });
   // Entries by day
   const dayGroups = {};
@@ -2766,19 +3220,28 @@ async function renderWeek() {
     const dayGroupId = `day_${ds}`.replace(/-/g, '');
     // First day default expanded, others default collapsed (unless user overrode)
     const isDayCollapsed = _dayCollapsed[ds] !== undefined ? _dayCollapsed[ds] : (dayCount > 1);
-    // Format short date: "26年5月26 周一"
+    // Format short date: e.g. "26年5月26 周一" or "May 26 Mon"
     var dArr = ds.split('-');
-    var shortDate = dArr[0].slice(2) + '年' + parseInt(dArr[1]) + '月' + parseInt(dArr[2]);
-    var weekdays = ['日','一','二','三','四','五','六'];
-    var wd = weekdays[new Date(ds).getDay()];
-    var dateLabel = shortDate + ' 周' + wd;
-    let dayHTML = `<div class="day-group-header" style="cursor:pointer;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;"><span style="font-size:13px;font-weight:600;color:var(--text);">${dateLabel}</span>${dayEarnStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">收入</span>' + dayEarnStr : ''}${daySpendStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">支出</span>' + daySpendStr : ''} <span class="day-toggle" style="font-size:10px;color:var(--text);margin-left:6px;">${isDayCollapsed?'▲':'▼'}</span></div>
+    var wdIdx = new Date(ds).getDay();
+    var shortDate, dateLabel;
+    if (I18N._locale === 'zh') {
+      shortDate = dArr[0].slice(2) + '年' + parseInt(dArr[1]) + '月' + parseInt(dArr[2]);
+      var weekdays = ['日','一','二','三','四','五','六'];
+      dateLabel = shortDate + ' 周' + weekdays[wdIdx];
+    } else {
+      var enMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var enWeekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      dateLabel = enMonths[parseInt(dArr[1])-1] + ' ' + parseInt(dArr[2]) + ' ' + enWeekdays[wdIdx];
+    }
+    const earnLabel = t('total.earn');
+    const spendLabel = t('total.spend');
+    let dayHTML = `<div class="day-group-header" style="cursor:pointer;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;"><span style="font-size:13px;font-weight:600;color:var(--text);">${dateLabel}</span>${dayEarnStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">' + earnLabel + '</span>' + dayEarnStr : ''}${daySpendStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">' + spendLabel + '</span>' + daySpendStr : ''} <span class="day-toggle" style="font-size:10px;color:var(--text);margin-left:6px;">${isDayCollapsed?'▲':'▼'}</span></div>
     <div id="${dayGroupId}" class="day-body collapsible-body${isDayCollapsed?' collapsed':''}">`;
     CATEGORIES.forEach(cat => {
       const list = dayGrouped[cat.id];
       if (!list || list.length === 0) return;
       let gIcon = cat.svg;
-      let gLabel = cat.label;
+      let gLabel = getCatLabel(cat.id, cat.label);
       if (cat.id === 'custom') {
         const labels = new Set(list.map(e => e.customQuickLabel).filter(Boolean));
         if (labels.size === 1) {
@@ -2837,7 +3300,7 @@ async function renderWeek() {
     weekContainer.innerHTML += `
       <div class="section-card" style="padding:0;overflow:hidden;">
         <div class="day-group-header" style="cursor:pointer;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;" onclick="var eb=this.nextElementSibling;eb.classList.toggle('collapsed');_earlierCollapsed=eb.classList.contains('collapsed');this.querySelector('.earlier-arrow').textContent=_earlierCollapsed?'▶':'▼'">
-          <span style="font-size:13px;font-weight:600;color:var(--text-secondary);">更早记录</span>
+          <span style="font-size:13px;font-weight:600;color:var(--text-secondary);" data-i18n="earlier.records"></span>
           <span class="earlier-arrow" style="font-size:12px;color:var(--text);">${_earlierCollapsed?'▶':'▼'}</span>
         </div>
         <div class="collapsible-body${_earlierCollapsed?' collapsed':''}" style="padding:0 16px 12px;">${earlierHtml}</div>
@@ -2851,7 +3314,7 @@ async function renderWeek() {
     <line x1="18" y1="20" x2="18" y2="4"/>
     <line x1="6" y1="20" x2="6" y2="16"/>
   </svg>
-</span><div class="empty-text">本周暂无记录</div></div>`;
+</span><div class="empty-text">t(暂无记录</div></div>`;
   }
 }
 
@@ -2862,7 +3325,7 @@ async function renderMonth() {
   // Pre-load custom buttons cache for badge fallback
   try { _customBtnsCache = await getCustomQuickButtons(); } catch(e) { _customBtnsCache = null; }
   const { year, month } = dateUtils.getMonthYear(state.monthOffset);
-  document.getElementById('monthTitle').textContent = `${year}年${month}月`;
+  document.getElementById('monthTitle').textContent = I18N._locale === 'zh' ? `${year}年${month}月` : `${month}/${year}`;
   // Disable next button when at current month
   const monthNextBtn = document.getElementById('monthNextBtn');
   if (state.monthOffset >= 0) {
@@ -2893,11 +3356,11 @@ async function renderMonth() {
   const avgPerDay = daysActive > 0 ? (total / daysActive).toFixed(1) : '0';
 
   document.getElementById('monthStats').innerHTML = `
-    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">总记录</div></div>
-    <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label">记录天数</div></div>
-    <div class="stat-card"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">总支出</div></div>
-    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${totalEarn.toFixed(0)}</div><div class="stat-label">总收入</div></div>` : ''}
-    <div class="stat-card"><div class="stat-value">${avgPerDay}</div><div class="stat-label">日均记录</div></div>
+    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label" data-i18n="stat.total"></div></div>
+    <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label" data-i18n="record.days"></div></div>
+    <div class="stat-card"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label" data-i18n="stat.spend"></div></div>
+    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${totalEarn.toFixed(0)}</div><div class="stat-label" data-i18n="total.earn"></div></div>` : ''}
+    <div class="stat-card"><div class="stat-value">${avgPerDay}</div><div class="stat-label" data-i18n="stat.avg"></div></div>
   `;
 
   // Category distribution — horizontal bars with icons + text
@@ -2920,7 +3383,7 @@ async function renderMonth() {
     catChartHtml += `
       <div style="display:flex;align-items:center;gap:8px;">
         <span style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0;">${catSvg(c.id)}</span>
-        <span style="font-size:12px;width:44px;flex-shrink:0;color:var(--text);">${c.label}</span>
+        <span style="font-size:12px;width:44px;flex-shrink:0;color:var(--text);">${getCatLabel(c.id, c.label)}</span>
         <div style="flex:1;height:22px;background:#F0F0F0;border-radius:11px;overflow:hidden;position:relative;">
           <div class="chart-bar-fill" style="height:100%;width:0%;background:${color};border-radius:11px;transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;min-width:24px;" data-w="${pct}">
             <span style="font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.2);opacity:0;transition:opacity 0.2s 0.4s ease;" class="chart-bar-label">${val}</span>
@@ -2932,16 +3395,18 @@ async function renderMonth() {
   const mc = document.getElementById('monthChartContainer');
   mc.innerHTML = catChartHtml;
   if (_monthChartState.cat) { mc.classList.add('collapsed'); document.querySelector('.m-toggle').textContent = '▲'; }
-  // Animate bars from 0 → target
+  // Animate bars from 0 → target (double-RAF ensures 0% paints first)
   requestAnimationFrame(function() {
-    mc.querySelectorAll('.chart-bar-fill').forEach(function(b) {
-      b.style.width = b.dataset.w + '%';
-    });
-    setTimeout(function() {
-      mc.querySelectorAll('.chart-bar-label').forEach(function(l) {
-        l.style.opacity = '1';
+    requestAnimationFrame(function() {
+      mc.querySelectorAll('.chart-bar-fill').forEach(function(b) {
+        b.style.width = b.dataset.w + '%';
       });
-    }, 400);
+      setTimeout(function() {
+        mc.querySelectorAll('.chart-bar-label').forEach(function(l) {
+          l.style.opacity = '1';
+        });
+      }, 400);
+    });
   });
 
   // Daily spend chart — horizontal bars (only spend, no income)
@@ -2977,16 +3442,16 @@ async function renderMonth() {
     spendHtml += '</div>';
     // Monthly income/outgo summary bar
     spendHtml += `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
-      <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">本月收支</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;" data-i18n="monthly.budget"></div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-        <span style="font-size:10px;color:var(--text-tertiary);width:32px;text-align:right;flex-shrink:0;">支出</span>
+        <span style="font-size:10px;color:var(--text-tertiary);width:32px;text-align:right;flex-shrink:0;" data-i18n="spend"></span>
         <div style="flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden;">
           <div style="height:100%;width:${(monthlyOutgo / netMax) * 100}%;background:#5B7BA3;border-radius:4px;transition:width 0.6s ease;"></div>
         </div>
         <span style="font-size:10px;font-weight:600;color:#5B7BA3;width:50px;text-align:right;flex-shrink:0;">¥${monthlyOutgo.toFixed(0)}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:10px;color:var(--text-tertiary);width:32px;text-align:right;flex-shrink:0;">收入</span>
+        <span style="font-size:10px;color:var(--text-tertiary);width:32px;text-align:right;flex-shrink:0;" data-i18n="earn"></span>
         <div style="flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden;">
           <div style="height:100%;width:${(monthlyIncome / netMax) * 100}%;background:#10B981;border-radius:4px;transition:width 0.6s ease;"></div>
         </div>
@@ -3006,7 +3471,7 @@ async function renderMonth() {
       }, 400);
     });
   } else {
-    document.getElementById('spendChartContainer').innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-tertiary);font-size:12px;">暂无支出</div>';
+    document.getElementById('spendChartContainer').innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-tertiary);font-size:12px;" data-i18n="no.spend"></div>';
   }
 
   // Daily activity chart — horizontal bars (only dates with records)
@@ -3054,17 +3519,27 @@ async function renderMonth() {
     });
   }
 
-  // Day detail
+  // Day detail with smooth expand/collapse
+  const detailEl = document.getElementById('monthDayDetail');
   if (state.selectedDay) {
     const dayEntries = entries.filter(e => e.date === state.selectedDay);
-    const detailEl = document.getElementById('monthDayDetail');
     if (dayEntries.length > 0) {
-      detailEl.innerHTML = `
+      const content = `
         <div class="day-detail-card">
           <div class="day-detail-date">${dateUtils.formatDisplay(state.selectedDay)}</div>
           ${dayEntries.map(e => renderEntryCard(e)).join('')}
         </div>
       `;
+      detailEl.innerHTML = `<div class="day-detail-anim open">${content}</div>`;
+    } else {
+      detailEl.innerHTML = '';
+    }
+  } else {
+    const anim = detailEl.querySelector('.day-detail-anim');
+    if (anim) {
+      anim.classList.remove('open');
+      anim.classList.add('closing');
+      setTimeout(() => { if (detailEl.querySelector('.closing')) detailEl.innerHTML = ''; }, 260);
     } else {
       detailEl.innerHTML = '';
     }
@@ -3133,7 +3608,7 @@ async function selectDay(dateStr) {
 // ============================================================
 // NAVIGATION
 // ============================================================
-function switchView(view, direction) {
+async function switchView(view, direction) {
   const views = ['today', 'week', 'month', 'settings'];
   state.currentView = view;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
@@ -3150,10 +3625,11 @@ function switchView(view, direction) {
   if (view === 'today') {
     const targetDate = state._searchTargetDate;
     state._searchTargetDate = null;
-    renderToday(targetDate);
-  } else if (view === 'week') renderWeek();
-  else if (view === 'month') renderMonth();
+    await renderToday(targetDate);
+  } else if (view === 'week') await renderWeek();
+  else if (view === 'month') await renderMonth();
   else if (view === 'settings') renderSettings();
+  I18N.reapply();
 }
 
 function navigateWeek(dir) {
@@ -3178,7 +3654,7 @@ async function showExportDialog() {
   try {
     const entries = await getAllEntries();
     if (entries.length === 0) {
-      showToast('暂无数据可导出');
+      showToast(t('no.data.export'));
       return;
     }
     let customBtns = [];
@@ -3190,11 +3666,11 @@ async function showExportDialog() {
       customQuickButtons: customBtns,
     };
     const jsonStr = JSON.stringify(exportData, null, 2);
-    const filename = `今天做了啥_备份_${dateUtils.today()}.json`;
+    const filename = t('app.name').replace(/\\s/g, '_') + '_backup_' + dateUtils.today() + '.json';
     // Use Android bridge if available (WebView), fallback to data URL
     if (window.AndroidBridge && window.AndroidBridge.exportJson) {
       AndroidBridge.exportJson(filename, jsonStr);
-      showToast('✓ 已导出到「下载」文件夹');
+      showToast(t('export.success.downloads'));
     } else {
       const dataUrl = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonStr);
       const a = document.createElement('a');
@@ -3203,10 +3679,10 @@ async function showExportDialog() {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      showToast('✓ 数据已导出');
+      showToast(t('export.success'));
     }
   } catch (err) {
-    showToast('导出失败：' + (err.message || '未知错误'));
+    showToast(t('export.failed') + (err.message || 'unknown'));
   }
 }
 
@@ -3241,7 +3717,7 @@ document.getElementById('importFileInput').addEventListener('change', (e) => {
     }
   };
   reader.onerror = function() {
-    showToast('无法读取文件');
+    showToast(t('import.failed.read'));
   };
   reader.readAsText(file);
 });
@@ -3249,7 +3725,7 @@ document.getElementById('importFileInput').addEventListener('change', (e) => {
 // Paste import handler
 async function doPasteImport() {
   const text = document.getElementById('pasteImportText').value.trim();
-  if (!text) { showToast('请先粘贴 JSON 内容'); return; }
+  if (!text) { showToast(t('import.paste.empty')); return; }
   try {
     await doImportData(text);
   } catch (err) {
@@ -3284,7 +3760,7 @@ async function doImportData(jsonText) {
   closeDialog('importDialog');
 
   const hasCustomBtns = customBtns && customBtns.length > 0;
-  if (!confirm(`将导入 ${entries.length} 条记录${hasCustomBtns ? ' + 自定义按钮' : ''}，是否继续？`)) return;
+  if (!confirm(t('import.confirm.prefix') + entries.length + t('import.records') + (hasCustomBtns ? t('import.custom.btns') : '') + t('import.confirm.suffix'))) return;
 
   // Import custom quick buttons first
   if (customBtns && Array.isArray(customBtns) && customBtns.length > 0) {
@@ -3298,7 +3774,7 @@ async function doImportData(jsonText) {
       imported++;
     }
   }
-  showToast(`✓ 已导入 ${imported} 条记录${hasCustomBtns ? ' + 自定义按钮' : ''}`);
+  showToast(t('import.success') + imported + t('import.records') + (hasCustomBtns ? t('import.custom.btns') : ''));
   invalidateXPCache();
   if (state.currentView === 'today') renderToday();
   else if (state.currentView === 'week') renderWeek();
@@ -3306,19 +3782,19 @@ async function doImportData(jsonText) {
 }
 
 async function confirmClearAll() {
-  if (!confirm('确定要清空所有数据吗？此操作不可恢复！')) return;
-  if (!confirm('再次确认：真的要删除所有记录吗？')) return;
+  if (!confirm(t('clear.confirm'))) return;
+  if (!confirm(t('clear.confirm2'))) return;
   try {
     const entries = await getAllEntries();
     for (const e of entries) {
       await deleteEntry(e.id);
     }
-    showToast('✓ 已清空所有数据');
+    showToast(t('clear.success'));
     if (state.currentView === 'today') renderToday();
     else if (state.currentView === 'week') renderWeek();
     else renderMonth();
   } catch (err) {
-    showToast('清空失败');
+    showToast(t('clear.failed'));
   }
 }
 
@@ -3333,12 +3809,12 @@ async function startSync() {
 
   statusEl.style.display = 'block';
   readyEl.style.display = 'none';
-  msgEl.textContent = '正在读取全部数据...';
+  msgEl.textContent = t('sync.reading');
   document.getElementById('syncDialog').classList.add('open');
 
   // Check if Android bridge is available
   if (typeof AndroidBridge === 'undefined' || !AndroidBridge.startSyncServer) {
-    msgEl.textContent = '❌ 非 Android App 环境，无法启动同步';
+    msgEl.textContent = t('sync.nonandroid');
     document.getElementById('syncCloseBtn').textContent = '关闭';
     return;
   }
@@ -3355,17 +3831,17 @@ async function startSync() {
     };
     const json = JSON.stringify(data, null, 2);
 
-    msgEl.textContent = '正在启动同步服务器...';
+    msgEl.textContent = t('sync.preparing');
 
     // Call Android to start the HTTP server
     const url = AndroidBridge.startSyncServer(json);
     if (url.startsWith('ERROR:no-wifi')) {
-      msgEl.textContent = '❌ 未连接到 WiFi 网络，请连接后重试';
+      msgEl.textContent = t('sync.nowifi');
       document.getElementById('syncCloseBtn').textContent = '关闭';
       return;
     }
     if (url.startsWith('ERROR:')) {
-      msgEl.textContent = '❌ 启动同步失败：' + url;
+      msgEl.textContent = t('sync.failed') + url;
       document.getElementById('syncCloseBtn').textContent = '关闭';
       return;
     }
@@ -3374,8 +3850,8 @@ async function startSync() {
     statusEl.style.display = 'none';
     readyEl.style.display = 'block';
     urlEl.textContent = url;
-    document.getElementById('syncCloseBtn').textContent = '停止同步';
-    showToast('同步服务器已启动');
+    document.getElementById('syncCloseBtn').textContent = t('sync.stop');
+    showToast(t('sync.started'));
   } catch (err) {
     msgEl.textContent = '❌ 错误：' + err.message;
     document.getElementById('syncCloseBtn').textContent = '关闭';
@@ -3387,7 +3863,7 @@ function stopSync() {
   if (typeof AndroidBridge !== 'undefined' && AndroidBridge.stopSyncServer) {
     AndroidBridge.stopSyncServer();
   }
-  document.getElementById('syncCloseBtn').textContent = '停止同步';
+  document.getElementById('syncCloseBtn').textContent = t('sync.stop');
 }
 
 // ============================================================
@@ -3437,7 +3913,7 @@ document.addEventListener('click', (e) => {
           entry.audio = null;
           updateEntry(entry).then(function() {
             invalidateXPCache();
-            showToast('✓ 录音已删除');
+            showToast(t('delete.audio.success'));
             if (state.currentView === 'today') renderToday();
             else if (state.currentView === 'week') renderWeek();
             else renderMonth();
@@ -3497,7 +3973,7 @@ document.addEventListener('click', (e) => {
     getAllEntries().then(function(all) {
       var entry = all.find(function(ent) { return ent.id === id; });
       if (entry) editEntryById(id, entry);
-      else showToast('找不到该记录');
+      else showToast(t('record.notfound'));
     });
     return;
   }
@@ -3531,7 +4007,7 @@ document.addEventListener('click', (e) => {
         document.getElementById('formText').focus();
         state.editingId = null;
       } else {
-        showToast('无法识别该分类');
+        showToast(t('cat.unknown'));
       }
     }
     return;
@@ -3587,7 +4063,7 @@ async function showWeekReview(offset) {
   const catTotals = {};
   entries.forEach(e => {
     const cat = CATEGORIES.find(c => c.id === e.category);
-    const name = cat ? cat.label : (e.customQuickLabel || e.category);
+    const name = cat ? getCatLabel(cat.id, cat.label) : (e.customQuickLabel || e.category);
     catTotals[name] = (catTotals[name] || 0) + 1;
   });
   const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
@@ -3606,25 +4082,25 @@ async function showWeekReview(offset) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
       <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
         <div style="font-size:20px;font-weight:800;color:var(--text);">${total}</div>
-        <div style="font-size:11px;color:var(--text-tertiary);">总记录</div>
+        <div style="font-size:11px;color:var(--text-tertiary);" data-i18n="stat.total"></div>
       </div>
       <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
         <div style="font-size:20px;font-weight:800;color:var(--text);">${daysActive}</div>
-        <div style="font-size:11px;color:var(--text-tertiary);">活跃天数</div>
+        <div style="font-size:11px;color:var(--text-tertiary);" data-i18n="stat.days"></div>
       </div>
       <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
         <div style="font-size:20px;font-weight:800;color:var(--c-spend);">¥${totalSpend.toFixed(0)}</div>
-        <div style="font-size:11px;color:var(--text-tertiary);">总支出</div>
+        <div style="font-size:11px;color:var(--text-tertiary);" data-i18n="stat.spend"></div>
       </div>
       <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
         <div style="font-size:20px;font-weight:800;color:var(--text);">${daysActive > 0 ? (total / daysActive).toFixed(1) : '0'}</div>
-        <div style="font-size:11px;color:var(--text-tertiary);">日均记录</div>
+        <div style="font-size:11px;color:var(--text-tertiary);" data-i18n="stat.avg"></div>
       </div>
     </div>`;
 
   // Category ranking
   if (sortedCats.length > 0) {
-    html += '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">分类排行</div>';
+    html += '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;" data-i18n="cat.rank"></div>';
     sortedCats.forEach(([name, count], i) => {
       const pct = (count / total) * 100;
       html += `
@@ -3643,7 +4119,7 @@ async function showWeekReview(offset) {
   const sortedDays = Object.keys(dayData).sort().reverse();
   if (sortedDays.length > 0) {
     html += '<div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin:10px 0 6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="var db=this.nextElementSibling;db.style.display=db.style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.rev-toggle\').textContent=db.style.display===\'none\'?\'▶\':\'▼\'">'
-      + '<span>每日明细</span>'
+      + '<span data-i18n="daily.detail"></span>'
       + '<span class="rev-toggle" style="font-size:10px;color:var(--text);">▼</span></div>';
     html += '<div id="weekReviewDays">';
     sortedDays.forEach(d => {
@@ -3662,7 +4138,7 @@ async function showWeekReview(offset) {
   }
 
   html += '</div>';
-  showCustomDialog('本周回顾', html);
+  showCustomDialog(t('week.review'), html);
 }
 
 function showCustomDialog(title, bodyHtml) {
@@ -3674,7 +4150,7 @@ function showCustomDialog(title, bodyHtml) {
     <div class="dialog" style="max-height:80vh;overflow-y:auto;">
       <div class="dialog-title">${title}</div>
       <div class="dialog-text" style="text-align:left;">${bodyHtml}</div>
-      <div class="dialog-actions"><button class="dialog-btn" onclick="this.closest('.dialog-overlay').remove()">关闭</button></div>
+      <div class="dialog-actions"><button class="dialog-btn" onclick="this.closest('.dialog-overlay').remove()" data-i18n="close"></button></div>
     </div>`;
   document.body.appendChild(overlay);
   setTimeout(function() { overlay.classList.add('open'); }, 10);
@@ -3719,14 +4195,14 @@ let _recording = false;
 function toggleAudioRecording() {
   if (_recording) { stopAudioRecording(); return; }
   if (state.selectedAudio) {
-    if (!confirm('已有录音，重新录制将替换现有录音。继续？')) return;
+    if (!confirm(t('audio.overwrite.confirm'))) return;
     removeSelectedAudio();
   }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    showToast('设备不支持录音');
+    showToast(t('audio.unsupported'));
     return;
   }
-  var vt = document.getElementById('voiceMenuText'); if (vt) vt.textContent = '录音中...';
+  var vt = document.getElementById('voiceMenuText'); if (vt) vt.textContent = t('recording');
   _audioChunks = [];
   navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
     _recording = true;
@@ -3736,18 +4212,18 @@ function toggleAudioRecording() {
       _recording = false;
       stream.getTracks().forEach(function(t) { t.stop(); });
       const blob = new Blob(_audioChunks, { type: _mediaRecorder.mimeType });
-      if (blob.size < 100) { showToast('录音太短'); return; }
+      if (blob.size < 100) { showToast(t('audio.too.short')); return; }
       const reader = new FileReader();
       reader.onload = function(ev) {
         state.selectedAudio = ev.target.result;
         renderAudioPreview();
-        showToast('✓ 录音已添加');
+        showToast(t('audio.added'));
       };
       reader.readAsDataURL(blob);
     };
     _mediaRecorder.start();
   }).catch(function() {
-    showToast('麦克风权限被拒绝');
+    showToast(t('audio.permission.denied'));
     var vt2 = document.getElementById('voiceMenuText'); if (vt2) vt2.textContent = '录音';
   });
 }
@@ -3782,7 +4258,7 @@ function toggleAudioPlayback() {
   const audio = document.getElementById('audioPreview');
   const btn = document.getElementById('audioPlayBtn');
   if (audio.paused) {
-    audio.play().catch(function() { showToast('播放失败'); });
+    audio.play().catch(function() { showToast(t('audio.play.failed')); });
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
     // Update progress
     audio.ontimeupdate = function() {
@@ -3806,7 +4282,7 @@ function toggleAudioPlayback() {
 function playAudio(dataUrl) {
   const audio = new Audio(dataUrl);
   audio.play().catch(function(e) {
-    showToast('播放失败');
+    showToast(t('audio.play.failed'));
   });
 }
 
@@ -3871,7 +4347,25 @@ let _xpCollapsed = false;
 let _quickEditMode = false;
 
 async function renderSettings() {
-  // Settings page has no search — just data management buttons
+  // Update language toggle button text
+  const langBtn = document.getElementById('langToggleText');
+  if (langBtn) {
+    const current = I18N._locale === 'zh' ? t('lang.zh') : t('lang.en');
+    const other = I18N._locale === 'zh' ? t('lang.en') : t('lang.zh');
+    langBtn.textContent = current + ' → ' + other;
+  }
+}
+
+function toggleLanguage() {
+  const newLang = I18N._locale === 'zh' ? 'en' : 'zh';
+  I18N.setLang(newLang);
+  // Update toggle button text immediately
+  const langBtn = document.getElementById('langToggleText');
+  if (langBtn) {
+    const current = I18N._locale === 'zh' ? t('lang.zh') : t('lang.en');
+    const other = I18N._locale === 'zh' ? t('lang.en') : t('lang.zh');
+    langBtn.textContent = current + ' → ' + other;
+  }
 }
 
 function findCategory(id) {
@@ -3898,7 +4392,7 @@ async function performSearch(query) {
     // Use cache if available, else load
     if (!_allEntriesCache) _allEntriesCache = await getAllEntries();
     if (!_allEntriesCache || !_allEntriesCache.length) {
-      results.innerHTML = '<div class="search-empty">没有找到匹配的记录</div>';
+      results.innerHTML = '<div class="search-empty" data-i18n="search.empty"></div>';
       return;
     }
     // Search in multiple fields: text, customQuickLabel, category, and category label
@@ -3908,9 +4402,13 @@ async function performSearch(query) {
         (e.customQuickLabel || '').toLowerCase(),
         (e.category || '').toLowerCase(),
       ];
-      // Also add category label if it's a standard category
+      // Also add category labels (Chinese + English) if it's a standard category
       const cat = findCategory(e.category);
-      if (cat) searchText.push(cat.label.toLowerCase());
+      if (cat) {
+        searchText.push(cat.label.toLowerCase()); // Chinese label
+        const enCat = CATEGORIES_EN.find(c => c.id === e.category);
+        if (enCat) searchText.push(enCat.label.toLowerCase()); // English label
+      }
       // Return true if any field contains the keyword
       return searchText.some(field => field.includes(kw));
     });
@@ -3918,7 +4416,7 @@ async function performSearch(query) {
     matched.sort((a, b) => (b.id || 0) - (a.id || 0));
 
     if (matched.length === 0) {
-      results.innerHTML = '<div class="search-empty">没有找到匹配的记录</div>';
+      results.innerHTML = '<div class="search-empty" data-i18n="search.empty"></div>';
       return;
     }
 
@@ -3927,7 +4425,7 @@ async function performSearch(query) {
     let html = '';
     for (const e of display) {
       const cat = findCategory(e.category);
-      const catName = cat ? cat.label : e.category;
+      const catName = cat ? getCatLabel(cat.id, cat.label) : e.category;
       const dateStr = dateUtils.formatDisplay(e.date);
       // Show what matched — prefer text, fallback to customQuickLabel, then category
       let displayText = e.text || e.customQuickLabel || e.category || '';
@@ -3947,12 +4445,12 @@ async function performSearch(query) {
       </div>`;
     }
     if (matched.length > 50) {
-      html += `<div class="search-empty">共 ${matched.length} 条结果，仅显示前 50 条</div>`;
+      html += `<div class="search-empty">${t("search.many")}${matched.length}${t("search.many2")}</div>`;
     }
     results.innerHTML = html;
   } catch(e) {
     console.error('Search error:', e);
-    document.getElementById('weekSearchResults').innerHTML = '<div class="search-empty">搜索出错了，请重试</div>';
+    document.getElementById('weekSearchResults').innerHTML = '<div class="search-empty">' + t('search.error') + '</div>';
   }
 }
 
@@ -4011,15 +4509,15 @@ function toggleSearchResult(el, eid) {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   }, { passive: true });
-  document.addEventListener('touchend', (e) => {
+  document.addEventListener('touchend', async (e) => {
     if (startX === 0) return;
     const dx = e.changedTouches[0].clientX - startX;
     const dy = e.changedTouches[0].clientY - startY;
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 1.5) { startX = 0; return; }
     const currentIdx = views.indexOf(state.currentView);
     if (currentIdx === -1) { startX = 0; return; }
-    if (dx < 0 && currentIdx < views.length - 1) switchView(views[currentIdx + 1], 1);
-    else if (dx > 0 && currentIdx > 0) switchView(views[currentIdx - 1], -1);
+    if (dx < 0 && currentIdx < views.length - 1) await switchView(views[currentIdx + 1], 1);
+    else if (dx > 0 && currentIdx > 0) await switchView(views[currentIdx - 1], -1);
     startX = 0;
   }, { passive: true });
 })();

@@ -68,6 +68,8 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .settings-btn svg { width: 18px; height: 18px; display: block; flex-shrink: 0; }
 .settings-btn.danger { color: #F87171; }
 .settings-btn.danger:hover { background: #FEE2E2; }
+.font-size-btn.active { background: #4ECDC4; color: #fff; }
+.font-size-btn.active:hover { background: #4ECDC4; }
 .settings-search { position: relative; margin-bottom: 12px; }
 .settings-search input {
   width: 100%; padding: 10px 12px 10px 36px; border: 1.5px solid var(--border);
@@ -329,20 +331,30 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 /* ===== Entry Form ===== */
 .entry-form {
   display: none;
-  background: var(--surface);
-  border-radius: var(--radius);
+  background: #fff;
+  border-radius: 14px;
   padding: 16px;
-  margin-bottom: 16px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
 .entry-form.open {
   display: block;
-  animation: formSlideIn 0.2s ease;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  width: calc(100% - 32px);
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  border: none;
+  animation: formSlideIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 @keyframes formSlideIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 .entry-form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .entry-form-category { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
@@ -974,79 +986,12 @@ canvas { display: block; width: 100%; height: auto; }
 
     
 
-    <!-- Entry Form -->
-    <div class="entry-form" id="entryForm">
-      <div class="entry-form-header">
-        <div class="entry-form-category" id="formCategory">
-          <span id="formCategoryText">记录</span>
-        </div>
-        <button class="entry-form-close" onclick="closeEntryForm()">✕</button>
-      </div>
-      <div class="sub-options" id="subOptions"></div>
-      <input type="file" accept="image/*" multiple id="imageInput" class="hidden-input">
-      <input type="file" accept="image/*" capture="environment" id="cameraInput" class="hidden-input">
-      <input type="file" accept=".json,application/json" id="importFileInput" class="hidden-input">
-      <input type="hidden" id="formCustomIcon" value="">
-      <input type="hidden" id="formCustomLabel" value="">
-      <input type="hidden" id="formCustomBtnId" value="">
-      <div style="display:flex;gap:8px;align-items:flex-start;">
-        <textarea class="form-textarea" id="formText" placeholder="记录一下..." data-i18n-placeholder="text.placeholder" rows="3" style="flex:1;"></textarea>
-        <input class="form-amount" id="formAmount" type="number" placeholder="¥" min="0" step="0.01" style="width:80px;flex-shrink:0;">
-      </div>
-      <div class="form-footer">
-        <div class="form-image-area" style="position:relative;">
-          <!-- Media add button (+, same size as image preview) -->
-          <div style="position:relative;display:inline-flex;align-items:center;">
-            <button id="mediaAddBtn" onclick="toggleMediaMenu()" type="button" style="width:40px;height:40px;border:1.5px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;" title="add.attachment">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
-            <!-- Popup menu -->
-            <div id="mediaMenu" style="display:none;position:absolute;bottom:48px;left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);padding:6px;z-index:10;min-width:140px;opacity:0;transform:translateY(10px);transition:opacity 0.2s ease,transform 0.2s cubic-bezier(0.34,1.56,0.64,1);">
-              <button onclick="document.getElementById('imageInput').click();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                <span data-i18n="image"></span>
-              </button>
-              <button onclick="takeCameraPhoto();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                <span data-i18n="camera"></span>
-              </button>
-              <button id="voiceMenuBtn" onclick="toggleAudioRecording()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
-                <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                <span id="voiceMenuText" data-i18n="audio"></span>
-              </button>
-            </div>
-          </div>
-          <div id="audioPreviewArea" style="display:none;align-items:center;gap:4px;">
-            <button id="audioPlayBtn" onclick="toggleAudioPlayback()" style="width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="play.pause">
-              <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><polygon points="8,5 19,12 8,19"/></svg>
-            </button>
-            <div style="flex:1;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;max-width:80px;">
-              <div id="audioProgress" style="height:100%;width:0%;background:#4ECDC4;border-radius:2px;transition:width 0.1s linear;"></div>
-            </div>
-            <span id="audioTime" style="font-size:10px;color:var(--text-tertiary);min-width:32px;">0:00</span>
-            <button onclick="removeSelectedAudio()" style="border:none;background:none;color:#FF6B6B;font-size:15px;cursor:pointer;padding:2px;">✕</button>
-            <audio id="audioPreview" style="display:none;"></audio>
-          </div>
-          <div style="position:relative;display:inline-flex;align-items:center;">
-            <img class="form-image-preview" id="formImagePreview">
-            <button class="form-image-remove" id="formImageRemove" onclick="removeSelectedImage()">✕</button>
-          </div>
-        </div>
-        <button class="form-submit" id="formSubmit" onclick="submitEntry()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          <span data-i18n="btn.record"></span>
-        </button>
-      </div>
-    </div>
-
     <!-- Timeline -->
     <div class="timeline-section">
       <div class="timeline-header" style="cursor:pointer;" onclick="const tl=document.getElementById('timeline');tl.classList.toggle('collapsed');this.querySelector('.tl-toggle').textContent=tl.classList.contains('collapsed')?'▲':'▼'">
         <div class="timeline-title"><span id="timelineTitle">📋 <span data-i18n="today.records"></span></span></div>
-        <span style="display:flex;align-items:center;gap:6px;">
-          <span class="timeline-count" id="timelineCount"></span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <span id="todayTotalSpend" style="font-size:11px;font-weight:600;color:var(--c-spend);"></span>
           <span class="tl-toggle" style="font-size:10px;color:var(--text);">▼</span>
         </span>
       </div>
@@ -1150,6 +1095,20 @@ canvas { display: block; width: 100%; height: auto; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <span id="langToggleText"></span>
       </button>
+    </div>
+    <div class="settings-section">
+      <div class="section-title" data-i18n="font.size"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="settings-btn font-size-btn" onclick="setFontSize('small')" id="fontSmall" style="flex:1;justify-content:center;">
+          <span data-i18n="font.small"></span>
+        </button>
+        <button class="settings-btn font-size-btn" onclick="setFontSize('medium')" id="fontMedium" style="flex:1;justify-content:center;">
+          <span data-i18n="font.medium"></span>
+        </button>
+        <button class="settings-btn font-size-btn" onclick="setFontSize('large')" id="fontLarge" style="flex:1;justify-content:center;">
+          <span data-i18n="font.large"></span>
+        </button>
+      </div>
     </div>
     <div style="text-align:center;padding:16px 0 8px;font-size:11px;color:var(--text-tertiary);">v40</div>
   </div>
@@ -1293,6 +1252,73 @@ canvas { display: block; width: 100%; height: auto; }
   </div>
 </div>
 
+<!-- Entry Form (shared across all views) -->
+<div class="entry-form" id="entryForm">
+  <div class="entry-form-header">
+    <div class="entry-form-category" id="formCategory">
+      <span id="formCategoryText">记录</span>
+    </div>
+    <button class="entry-form-close" onclick="closeEntryForm()">✕</button>
+  </div>
+  <div class="sub-options" id="subOptions"></div>
+  <input type="file" accept="image/*" multiple id="imageInput" class="hidden-input">
+  <input type="file" accept="image/*" capture="environment" id="cameraInput" class="hidden-input">
+  <input type="file" accept=".json,application/json" id="importFileInput" class="hidden-input">
+  <input type="hidden" id="formCustomIcon" value="">
+  <input type="hidden" id="formCustomLabel" value="">
+  <input type="hidden" id="formCustomBtnId" value="">
+  <div style="display:flex;gap:8px;align-items:flex-start;">
+    <textarea class="form-textarea" id="formText" placeholder="记录一下..." data-i18n-placeholder="text.placeholder" rows="3" style="flex:1;"></textarea>
+    <input class="form-amount" id="formAmount" type="number" placeholder="¥" min="0" step="0.01" style="width:80px;flex-shrink:0;">
+  </div>
+  <div class="form-footer">
+    <div class="form-image-area" style="position:relative;">
+      <!-- Media add button (+, same size as image preview) -->
+      <div style="position:relative;display:inline-flex;align-items:center;">
+        <button id="mediaAddBtn" onclick="toggleMediaMenu()" type="button" style="width:40px;height:40px;border:1.5px dashed var(--border);border-radius:6px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;" title="add.attachment">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <!-- Popup menu -->
+        <div id="mediaMenu" style="display:none;position:absolute;bottom:48px;left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);padding:6px;z-index:10;min-width:140px;opacity:0;transform:translateY(10px);transition:opacity 0.2s ease,transform 0.2s cubic-bezier(0.34,1.56,0.64,1);">
+          <button onclick="document.getElementById('imageInput').click();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span data-i18n="image"></span>
+          </button>
+          <button onclick="takeCameraPhoto();toggleMediaMenu()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span data-i18n="camera"></span>
+          </button>
+          <button id="voiceMenuBtn" onclick="toggleAudioRecording()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);white-space:nowrap;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background=''">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            <span id="voiceMenuText" data-i18n="audio"></span>
+          </button>
+        </div>
+      </div>
+      <div id="audioPreviewArea" style="display:none;align-items:center;gap:4px;">
+        <button id="audioPlayBtn" onclick="toggleAudioPlayback()" style="width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" title="play.pause">
+          <svg viewBox="0 0 24 24" fill="#4ECDC4" stroke="none" style="width:16px;height:16px;display:block;"><polygon points="8,5 19,12 8,19"/></svg>
+        </button>
+        <div style="flex:1;height:4px;background:#F0F0F0;border-radius:2px;overflow:hidden;max-width:80px;">
+          <div id="audioProgress" style="height:100%;width:0%;background:#4ECDC4;border-radius:2px;transition:width 0.1s linear;"></div>
+        </div>
+        <span id="audioTime" style="font-size:10px;color:var(--text-tertiary);min-width:32px;">0:00</span>
+        <button onclick="removeSelectedAudio()" style="border:none;background:none;color:#FF6B6B;font-size:15px;cursor:pointer;padding:2px;">✕</button>
+        <audio id="audioPreview" style="display:none;"></audio>
+      </div>
+      <div style="position:relative;display:inline-flex;align-items:center;">
+        <img class="form-image-preview" id="formImagePreview">
+        <button class="form-image-remove" id="formImageRemove" onclick="removeSelectedImage()">✕</button>
+      </div>
+    </div>
+    <button class="form-submit" id="formSubmit" onclick="submitEntry()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:3px;">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <span data-i18n="btn.record"></span>
+    </button>
+  </div>
+</div>
+
 <script>// ============================================================
 // I18N - Internationalization (auto-follow system language)
 // ============================================================
@@ -1412,6 +1438,7 @@ const I18N = {
       'search.error': '搜索出错了，请重试',
       'cat.unknown': '无法识别该分类',
       'stat.total': '总记录',
+      'total': '总计',
       'stat.days': '活跃天数',
       'stat.spend': '总支出',
       'spend': '支出',
@@ -1446,6 +1473,10 @@ const I18N = {
       'language': '语言',
       'lang.zh': '中文',
       'lang.en': 'English',
+      'font.size': '字体大小',
+      'font.small': '小',
+      'font.medium': '中',
+      'font.large': '大',
       'donate': '支持开发者',
       'donate.desc': '如果喜欢这个 App，可以请我喝杯咖啡 ☕',
       'donate.bmc': 'Buy Me a Coffee',
@@ -1565,6 +1596,7 @@ const I18N = {
       'search.error': 'Search error, please try again',
       'cat.unknown': 'Unknown category',
       'stat.total': 'Total Records',
+      'total': 'Total',
       'stat.days': 'Active Days',
       'stat.spend': 'Total Spend',
       'spend': 'Spend',
@@ -1599,6 +1631,10 @@ const I18N = {
       'language': 'Language',
       'lang.zh': '中文',
       'lang.en': 'English',
+      'font.size': 'Font Size',
+      'font.small': 'Small',
+      'font.medium': 'Medium',
+      'font.large': 'Large',
       'donate': 'Support the Developer',
       'donate.desc': 'If you like this app, buy me a coffee ☕',
       'donate.bmc': 'Buy Me a Coffee',
@@ -1768,15 +1804,22 @@ function openDB() {
   });
 }
 
-// Load saved language preference from config store (after data layer is ready)
+// Load saved language preference and font size from config store
 openDB().then(db => {
   const tx = db.transaction('config', 'readonly');
-  const req = tx.objectStore('config').get('language');
-  req.onsuccess = () => {
-    const saved = req.result?.value;
+  const langReq = tx.objectStore('config').get('language');
+  langReq.onsuccess = () => {
+    const saved = langReq.result?.value;
     if (saved === 'zh' || saved === 'en') {
       I18N._locale = saved;
       I18N.reapply();
+    }
+  };
+  const fontReq = tx.objectStore('config').get('fontSize');
+  fontReq.onsuccess = () => {
+    const saved = fontReq.result?.value;
+    if (saved === 'small' || saved === 'medium' || saved === 'large') {
+      setFontSize(saved);
     }
   };
 }).catch(() => {});
@@ -2578,11 +2621,14 @@ async function renderToday(targetDate) {
   const isToday = dateStr === dateUtils.today();
   const entries = await getEntriesByDate(dateStr);
   const timeline = document.getElementById('timeline');
-  const countEl = document.getElementById('timelineCount');
 
   // Update header date and timeline title to reflect the viewed date
   document.getElementById('headerDate').textContent = dateUtils.formatDisplay(dateStr);
   document.getElementById('timelineTitle').textContent = isToday ? '📋 ' + t('today.records') : `📋 ${dateUtils.formatDisplay(dateStr)}`;
+
+  // Show today's total spend in timeline header
+  const todaySpendTotal = entries.filter(function(e) { return e.category === 'spend' || (e.category === 'eat' && getEntryAmount(e) > 0); }).reduce(function(s, e) { return s + getEntryAmount(e); }, 0);
+  document.getElementById('todayTotalSpend').textContent = todaySpendTotal > 0 ? t('total') + ' ¥' + todaySpendTotal.toFixed(0) : '';
 
   // Populate image lookup
   _imgLookup = {};
@@ -2606,15 +2652,8 @@ async function renderToday(targetDate) {
         ${isToday ? t('no.records.today') : dateUtils.formatDisplay(dateStr) + ' ' + t('no.records.today')}<br>
         <span style="font-size:12px;color:var(--text-tertiary);" data-i18n="click.to.record"></span>
       </div>`;
-    countEl.textContent = '';
     return;
   }
-
-  // Today total entries count + total spending
-  const spendEntries = entries.filter(e => e.category === 'spend' || (e.category === 'eat' && getEntryAmount(e) > 0));
-  const todaySpend = spendEntries.reduce((s, e) => s + getEntryAmount(e), 0);
-  const spendStr = spendEntries.length > 0 ? `  ¥${todaySpend.toFixed(2)}` : '';
-  countEl.innerHTML = `${entries.length} ${t('records')}${spendStr ? `<span style="color:#5B7BA3;font-weight:600;">${spendStr}</span>` : ''}`;
 
   // Group entries by category — standard categories + cbtn_ dynamic categories
   const grouped = {};
@@ -3193,10 +3232,10 @@ async function renderWeek() {
 
   let hasEntries = false;
   let dayCount = 0;
-  let earlierHtml = '';
   const sortedDays = Object.entries(dayGroups).sort(([a], [b]) => b.localeCompare(a));
   for (const [ds, dayEntries] of sortedDays) {
     if (dayEntries.length === 0) continue;
+    if (dayCount >= 2) break; // Only show most recent 2 days with entries
     hasEntries = true;
 
     // Group day's entries by category — standard + cbtn_ dynamic
@@ -3283,28 +3322,11 @@ async function renderWeek() {
     }
     dayHTML += '</div>'; // close day-body
 
-    // Only show most recent 2 days with entries; collect rest for collapsible section
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'day-group';
+    dayDiv.innerHTML = dayHTML;
+    weekContainer.appendChild(dayDiv);
     dayCount++;
-    if (dayCount <= 2) {
-      const dayDiv = document.createElement('div');
-      dayDiv.className = 'day-group';
-      dayDiv.innerHTML = dayHTML;
-      weekContainer.appendChild(dayDiv);
-    } else {
-      earlierHtml += dayHTML;
-    }
-  }
-
-  // Add collapsible section for earlier entries
-  if (earlierHtml) {
-    weekContainer.innerHTML += `
-      <div class="section-card" style="padding:0;overflow:hidden;">
-        <div class="day-group-header" style="cursor:pointer;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;" onclick="var eb=this.nextElementSibling;eb.classList.toggle('collapsed');_earlierCollapsed=eb.classList.contains('collapsed');this.querySelector('.earlier-arrow').textContent=_earlierCollapsed?'▶':'▼'">
-          <span style="font-size:13px;font-weight:600;color:var(--text-secondary);" data-i18n="earlier.records"></span>
-          <span class="earlier-arrow" style="font-size:12px;color:var(--text);">${_earlierCollapsed?'▶':'▼'}</span>
-        </div>
-        <div class="collapsible-body${_earlierCollapsed?' collapsed':''}" style="padding:0 16px 12px;">${earlierHtml}</div>
-      </div>`;
   }
 
   if (!hasEntries) {
@@ -3432,11 +3454,11 @@ async function renderMonth() {
       const labelPrefix = isEarn ? '+' : '';
       spendHtml += `
         <div style="display:flex;align-items:center;gap:6px;">
-          <span style="width:32px;font-size:10px;color:var(--text-tertiary);text-align:right;flex-shrink:0;">${dayLabel}</span>
+          <span style="width:40px;font-size:10px;color:var(--text-tertiary);text-align:right;flex-shrink:0;">${dayLabel}</span>
           <div style="flex:1;height:18px;background:#F0F0F0;border-radius:9px;overflow:hidden;position:relative;">
             <div class="spend-bar-fill-bar" style="height:100%;width:${pct}%;background:${barColor};border-radius:9px;transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);min-width:0;" data-w="${pct}"></div>
           </div>
-          <span class="spend-bar-label" style="font-size:10px;font-weight:600;color:${barColor};width:50px;text-align:right;flex-shrink:0;opacity:0;transition:opacity 0.2s 0.4s ease;">${labelPrefix}¥${absVal.toFixed(0)}</span>
+          <span class="spend-bar-label" style="font-size:10px;font-weight:600;color:${barColor};width:56px;text-align:right;flex-shrink:0;opacity:0;transition:opacity 0.2s 0.4s ease;">${labelPrefix}¥${absVal.toFixed(0)}</span>
         </div>`;
     });
     spendHtml += '</div>';
@@ -3632,19 +3654,21 @@ async function switchView(view, direction) {
   I18N.reapply();
 }
 
-function navigateWeek(dir) {
+async function navigateWeek(dir) {
   const newOffset = state.weekOffset + dir;
   if (newOffset > 0) return; // can't go past current week
   state.weekOffset = newOffset;
-  renderWeek();
+  await renderWeek();
+  I18N.reapply();
 }
 
-function navigateMonth(dir) {
+async function navigateMonth(dir) {
   const newOffset = state.monthOffset + dir;
   if (newOffset > 0) return; // can't go past current month
   state.monthOffset = newOffset;
   state.selectedDay = null;
-  renderMonth();
+  await renderMonth();
+  I18N.reapply();
 }
 
 // ============================================================
@@ -4340,7 +4364,6 @@ let _allEntriesCache = null;
 let _searchTimeout = null;
 let _dayCollapsed = {}; // collapsed state for day-group bodies
 let _weekChartCollapsed = false; // collapsed state for week chart section
-let _earlierCollapsed = false; // collapsed state for earlier records section
 let _monthChartState = { spend: false, activity: false, cat: false };
 let _quickCollapsed = false;
 let _xpCollapsed = false;
@@ -4366,6 +4389,24 @@ function toggleLanguage() {
     const other = I18N._locale === 'zh' ? t('lang.en') : t('lang.zh');
     langBtn.textContent = current + ' → ' + other;
   }
+}
+
+function setFontSize(size) {
+  var zoomVal = 1;
+  if (size === 'small') zoomVal = 0.85;
+  else if (size === 'large') zoomVal = 1.15;
+  document.body.style.zoom = zoomVal;
+  // Update active button highlight
+  document.querySelectorAll('.font-size-btn').forEach(function(b) {
+    b.classList.toggle('active', b.id === 'font' + size.charAt(0).toUpperCase() + size.slice(1));
+  });
+  // Persist to config store (fire-and-forget)
+  try {
+    openDB().then(function(db) {
+      var tx = db.transaction('config', 'readwrite');
+      tx.objectStore('config').put({ key: 'fontSize', value: size });
+    }).catch(function() {});
+  } catch(e) {}
 }
 
 function findCategory(id) {
@@ -4502,7 +4543,7 @@ function toggleSearchResult(el, eid) {
 // ============================================================
 (function() {
   let startX = 0, startY = 0;
-  const views = ['today', 'week', 'month'];
+  const views = ['today', 'week', 'month', 'settings'];
   document.addEventListener('touchstart', (e) => {
     // Don't swipe when interacting with entry cards, form, or dialogs
     if (e.target.closest('.entry-card') || e.target.closest('.entry-form') || e.target.closest('.dialog-overlay')) { startX = 0; return; }

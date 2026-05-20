@@ -2049,6 +2049,7 @@ let state = {
   customQuickLabel: null,
   customQuickBtnId: null,
   _searchTargetDate: null,
+  _targetDate: null,
 };
 
 let dateUtils = {
@@ -2242,9 +2243,10 @@ async function submitEntry() {
       showToast(t('edit.failed'));
     }
   } else {
-    // Create new entry
+    // Create new entry (use target date if set, e.g. when adding entry from week view past day)
     const now = new Date();
-    const dateStr = dateUtils.formatDate(now);
+    const dateStr = state._targetDate || dateUtils.formatDate(now);
+    state._targetDate = null; // reset after use
     const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
     // Read custom button info from DOM hidden fields (most reliable), fallback to JS state
@@ -2428,6 +2430,7 @@ function closeEntryForm() {
   state.customQuickIcon = null;
   state.customQuickLabel = null;
   state.customQuickBtnId = null;
+  state._targetDate = null;
   // Clear hidden form fields
   document.getElementById('formCustomIcon').value = '';
   document.getElementById('formCustomLabel').value = '';
@@ -3320,6 +3323,8 @@ async function renderWeek() {
           </div>
         </div>`;
     }
+    // Add "+" button for adding new entry to this day
+    dayHTML += '<div style="text-align:center;padding:6px 0 2px;"><button onclick="event.stopPropagation();state._targetDate=\'' + ds + '\';openEntryForm(CATEGORIES[0])" style="width:28px;height:28px;border:none;border-radius:50%;background:#4ECDC4;color:#fff;font-size:16px;font-weight:300;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(78,205,196,0.3);line-height:1;">+</button></div>';
     dayHTML += '</div>'; // close day-body
 
     const dayDiv = document.createElement('div');
@@ -4393,8 +4398,8 @@ function toggleLanguage() {
 
 function setFontSize(size) {
   var zoomVal = 1;
-  if (size === 'small') zoomVal = 0.85;
-  else if (size === 'large') zoomVal = 1.15;
+  if (size === 'small') zoomVal = 0.875;
+  else if (size === 'large') zoomVal = 1.25;
   document.body.style.zoom = zoomVal;
   // Update active button highlight
   document.querySelectorAll('.font-size-btn').forEach(function(b) {

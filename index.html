@@ -4543,7 +4543,7 @@ function toggleSearchResult(el, eid) {
 // ============================================================
 (function() {
   let startX = 0, startY = 0;
-  const views = ['today', 'week', 'month', 'settings'];
+  const mainViews = ['today', 'week', 'month']; // circular: today → week → month → today
   document.addEventListener('touchstart', (e) => {
     // Don't swipe when interacting with entry cards, form, or dialogs
     if (e.target.closest('.entry-card') || e.target.closest('.entry-form') || e.target.closest('.dialog-overlay')) { startX = 0; return; }
@@ -4555,10 +4555,18 @@ function toggleSearchResult(el, eid) {
     const dx = e.changedTouches[0].clientX - startX;
     const dy = e.changedTouches[0].clientY - startY;
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 1.5) { startX = 0; return; }
-    const currentIdx = views.indexOf(state.currentView);
+    // Settings: swipe from left edge to right → go back to today
+    if (state.currentView === 'settings') {
+      if (dx > 0) await switchView('today', -1);
+      startX = 0;
+      return;
+    }
+    // Main views: circular navigation
+    const currentIdx = mainViews.indexOf(state.currentView);
     if (currentIdx === -1) { startX = 0; return; }
-    if (dx < 0 && currentIdx < views.length - 1) await switchView(views[currentIdx + 1], 1);
-    else if (dx > 0 && currentIdx > 0) await switchView(views[currentIdx - 1], -1);
+    const len = mainViews.length;
+    if (dx < 0) await switchView(mainViews[(currentIdx + 1) % len], 1);
+    else if (dx > 0) await switchView(mainViews[(currentIdx - 1 + len) % len], -1);
     startX = 0;
   }, { passive: true });
 })();

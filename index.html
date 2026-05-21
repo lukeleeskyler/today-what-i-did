@@ -562,6 +562,28 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .day-detail-anim { overflow: hidden; }
 .day-detail-anim.open { animation: dayDetailIn 0.3s ease forwards; }
 .day-detail-anim.closing { animation: dayDetailOut 0.25s ease forwards; }
+.day-detail-panel { display: none; }
+.day-detail-panel.open {
+  display: block;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-height: 55vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+  z-index: 90;
+  padding: 16px;
+  animation: dayPanelIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes dayPanelIn {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes dayPanelOut {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
 
 /* ===== Today: horizontal category grid ===== */
 #viewToday #timeline {
@@ -1105,8 +1127,10 @@ canvas { display: block; width: 100%; height: auto; }
       </div>
       <div class="calendar collapsible-body" id="calendar"></div>
     </div>
-    <div id="monthDayDetail"></div>
   </div>
+
+  <!-- Month Day Detail - floating bottom panel -->
+  <div id="monthDayDetail" class="day-detail-panel"></div>
 
   <!-- ===== SETTINGS VIEW ===== -->
   <div class="view" id="viewSettings">
@@ -3606,30 +3630,25 @@ async function renderMonth() {
     });
   }
 
-  // Day detail with smooth expand/collapse
+  // Day detail - floating bottom panel
   const detailEl = document.getElementById('monthDayDetail');
   if (state.selectedDay) {
     const dayEntries = entries.filter(e => e.date === state.selectedDay);
     if (dayEntries.length > 0) {
-      const content = `
-        <div class="day-detail-card">
+      detailEl.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div class="day-detail-date">${dateUtils.formatDisplay(state.selectedDay)}</div>
-          ${dayEntries.map(e => renderEntryCard(e)).join('')}
+          <button onclick="state.selectedDay=null;renderMonth()" style="border:none;background:none;font-size:18px;color:var(--text-tertiary);cursor:pointer;padding:4px;">✕</button>
         </div>
+        ${dayEntries.map(e => renderEntryCard(e)).join('')}
       `;
-      detailEl.innerHTML = `<div class="day-detail-anim open">${content}</div>`;
+      detailEl.classList.remove('closing');
+      detailEl.classList.add('open');
     } else {
-      detailEl.innerHTML = '';
+      detailEl.classList.remove('open', 'closing');
     }
   } else {
-    const anim = detailEl.querySelector('.day-detail-anim');
-    if (anim) {
-      anim.classList.remove('open');
-      anim.classList.add('closing');
-      setTimeout(() => { if (detailEl.querySelector('.closing')) detailEl.innerHTML = ''; }, 260);
-    } else {
-      detailEl.innerHTML = '';
-    }
+    closeDayDetail();
   }
 }
 
@@ -3690,6 +3709,18 @@ function renderCalendar(year, month, entries) {
 async function selectDay(dateStr) {
   state.selectedDay = state.selectedDay === dateStr ? null : dateStr;
   await renderMonth();
+}
+function closeDayDetail() {
+  var panel = document.getElementById('monthDayDetail');
+  if (!panel.classList.contains('open') && !panel.classList.contains('closing')) return;
+  panel.classList.remove('open');
+  panel.classList.add('closing');
+  panel.style.animation = 'dayPanelOut 0.25s ease forwards';
+  setTimeout(function() {
+    panel.classList.remove('closing');
+    panel.style.animation = '';
+    panel.innerHTML = '';
+  }, 260);
 }
 
 // ============================================================
@@ -4645,10 +4676,18 @@ function toggleSearchResult(el, eid) {
   const mainViews = ['today', 'week', 'month']; // circular: today → week → month → today
   document.addEventListener('touchstart', (e) => {
     // Don't swipe when interacting with entry cards, form, or dialogs
-    if (e.target.closest('.entry-card') || e.target.closest('.entry-form') || e.target.closest('.dialog-overlay')) { startX = 0; return; }
+    if (e.target.closest('.entry-card') || e.target.closest('.entry-form') || e.target.closest('.dialog-overlay') || e.target.closest('.day-detail-panel')) { startX = 0; return; }
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   }, { passive: true });
+  // Clamp scroll in day-detail-panel to prevent bounce from escaping
+  document.addEventListener('touchmove', function(e) {
+    var panel = e.target.closest('.day-detail-panel');
+    if (panel && panel.classList.contains('open')) {
+      if (panel.scrollTop <= 0) panel.scrollTop = 1;
+      if (panel.scrollTop + panel.clientHeight >= panel.scrollHeight) panel.scrollTop = panel.scrollHeight - panel.clientHeight - 1;
+    }
+  }, { passive: false });
   document.addEventListener('touchend', async (e) => {
     if (startX === 0) return;
     const dx = e.changedTouches[0].clientX - startX;

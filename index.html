@@ -932,7 +932,7 @@ canvas { display: block; width: 100%; height: auto; }
       </div>
       <input type="file" accept="image/*" id="avatarInput" class="hidden-input" onchange="handleAvatarUpload(this)">
       <div>
-        <div class="header-title" data-i18n="app.name"></div>
+        <div class="header-name" id="headerName" onclick="editName()" style="font-size:15px;font-weight:600;color:#fff;cursor:pointer;text-shadow:0 1px 2px rgba(0,0,0,0.1);" data-i18n="set.nickname"></div>
         <div class="header-date" id="headerDate"></div>
       </div>
     </div>
@@ -1493,6 +1493,8 @@ const I18N = {
       'donate.bmc': 'Buy Me a Coffee',
       'donate.afdian': '爱发电',
       'version': '版本',
+      'set.nickname': '点击设置昵称',
+      'input.nickname': '请输入昵称',
     },
     en: {
       'app.name': 'What Did I Do Today',
@@ -1651,6 +1653,8 @@ const I18N = {
       'donate.bmc': 'Buy Me a Coffee',
       'donate.afdian': 'Love Power',
       'version': 'Version',
+      'set.nickname': 'Tap to set nickname',
+      'input.nickname': 'Enter your nickname',
     }
   },
   t(key) { return this._strings[this._locale][key] || key; },
@@ -1841,6 +1845,11 @@ openDB().then(db => {
       document.getElementById('avatarImg').style.display = 'block';
       document.getElementById('avatarPlaceholder').style.display = 'none';
     }
+  };
+  var nickReq = tx.objectStore('config').get('nickname');
+  nickReq.onsuccess = function() {
+    var nick = nickReq.result?.value;
+    if (nick) document.getElementById('headerName').textContent = nick;
   };
 }).catch(() => {});
 
@@ -4452,6 +4461,22 @@ function handleAvatarUpload(input) {
     } catch(e) {}
   };
   reader.readAsDataURL(input.files[0]);
+}
+
+function editName() {
+  var current = document.getElementById('headerName').textContent;
+  if (current === t('set.nickname')) current = '';
+  var name = prompt(t('input.nickname'), current);
+  if (name && name.trim()) {
+    name = name.trim();
+    document.getElementById('headerName').textContent = name;
+    try {
+      openDB().then(function(db) {
+        var tx = db.transaction('config', 'readwrite');
+        tx.objectStore('config').put({ key: 'nickname', value: name });
+      }).catch(function() {});
+    } catch(e) {}
+  }
 }
 
 function findCategory(id) {

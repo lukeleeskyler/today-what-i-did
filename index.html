@@ -104,7 +104,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 
 /* Smooth collapse/expand animation */
 .collapsible-body {
-  max-height: 600px;
+  max-height: 3000px;
   opacity: 1;
   overflow: hidden;
   transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.25s ease, padding 0.25s ease;
@@ -158,6 +158,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 /* ===== Header ===== */
 .header { padding: 12px 0 8px; display: flex; align-items: center; justify-content: space-between; }
 .header-left { display: flex; align-items: center; gap: 10px; }
+.header-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.15); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
 .header-icon { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.2); border-radius: 10px; }
 .header-title { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); display:none; }
 .header-date { font-size: 12px; color: rgba(255,255,255,0.75); }
@@ -482,7 +483,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ===== Foldable Category Groups ===== */
-.cat-group { margin-bottom: 12px; background: #F9FBFB; border-radius: var(--radius-sm); overflow: hidden; }
+.cat-group { margin-bottom: 12px; background: #F9FBFB; border-radius: var(--radius-sm); min-width: 0; }
 .cat-group-header {
   display: flex;
   align-items: center;
@@ -492,7 +493,9 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   user-select: none;
   transition: background 0.1s;
   border-left: 4px solid var(--border);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
+.cat-group-body { min-width: 0; border-radius: 0 0 var(--radius-sm) var(--radius-sm); }
 .cat-group-header:hover { background: #F0F5F5; }
 .cat-group-header .cat-icon { display: flex; align-items: center; font-size: 18px; line-height: 1; }
 .cat-group-header .cat-icon svg { width: 20px; height: 20px; display: block; }
@@ -576,6 +579,7 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   transition: all 0.15s;
   position: relative;
 }
+.entry-card-top { min-height: 0; }
 .entry-card:last-child { margin-bottom: 0; }
 .entry-card:hover { background: #F0F5F5; }
 .entry-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
@@ -593,7 +597,9 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
 .cat-icon svg { width: 16px; height: 16px; display: block; }
 .q-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .q-icon svg { width: 22px; height: 22px; display: block; }
-.entry-card-text { font-size: 14px; line-height: 1.6; word-break: break-word; }
+.entry-card-text { font-size: 14px; line-height: 1.6; word-break: break-word; max-height: 100px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #ccc transparent; }
+.entry-card-text::-webkit-scrollbar { width: 4px; }
+.entry-card-text::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
 .entry-card-amount {
   font-size: 14px;
   font-weight: 700;
@@ -920,6 +926,11 @@ canvas { display: block; width: 100%; height: auto; }
   <!-- Header -->
   <div class="header">
     <div class="header-left">
+      <div class="header-avatar" id="headerAvatar" onclick="document.getElementById('avatarInput').click()" title="点击更换头像">
+        <img id="avatarImg" style="width:36px;height:36px;border-radius:50%;object-fit:cover;display:none;" alt="">
+        <svg id="avatarPlaceholder" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;display:block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <input type="file" accept="image/*" id="avatarInput" class="hidden-input" onchange="handleAvatarUpload(this)">
       <div>
         <div class="header-title" data-i18n="app.name"></div>
         <div class="header-date" id="headerDate"></div>
@@ -1822,6 +1833,15 @@ openDB().then(db => {
       setFontSize(saved);
     }
   };
+  var avatarReq = tx.objectStore('config').get('avatar');
+  avatarReq.onsuccess = function() {
+    var av = avatarReq.result?.value;
+    if (av) {
+      document.getElementById('avatarImg').src = av;
+      document.getElementById('avatarImg').style.display = 'block';
+      document.getElementById('avatarPlaceholder').style.display = 'none';
+    }
+  };
 }).catch(() => {});
 
 async function addEntry(entry) {
@@ -2236,9 +2256,10 @@ async function submitEntry() {
       invalidateXPCache();
       showToast(t('edit.updated'));
       closeEntryForm();
-      if (state.currentView === 'today') renderToday();
-      else if (state.currentView === 'week') renderWeek();
-      else renderMonth();
+      if (state.currentView === 'today') await renderToday();
+      else if (state.currentView === 'week') await renderWeek();
+      else await renderMonth();
+      I18N.reapply();
     } catch (err) {
       showToast(t('edit.failed'));
     }
@@ -2274,9 +2295,10 @@ async function submitEntry() {
       invalidateXPCache();
       showToast(t('record.saved'));
       closeEntryForm();
-      if (state.currentView === 'today') renderToday();
-      else if (state.currentView === 'week') renderWeek();
-      else renderMonth();
+      if (state.currentView === 'today') await renderToday();
+      else if (state.currentView === 'week') await renderWeek();
+      else await renderMonth();
+      I18N.reapply();
     } catch (err) {
       showToast(t('record.failed'));
     }
@@ -4412,6 +4434,24 @@ function setFontSize(size) {
       tx.objectStore('config').put({ key: 'fontSize', value: size });
     }).catch(function() {});
   } catch(e) {}
+}
+
+function handleAvatarUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    document.getElementById('avatarImg').src = dataUrl;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarPlaceholder').style.display = 'none';
+    try {
+      openDB().then(function(db) {
+        var tx = db.transaction('config', 'readwrite');
+        tx.objectStore('config').put({ key: 'avatar', value: dataUrl });
+      }).catch(function() {});
+    } catch(e) {}
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 function findCategory(id) {

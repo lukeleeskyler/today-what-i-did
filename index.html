@@ -386,6 +386,10 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
+@keyframes catPickerIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
 .entry-form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .entry-form-category { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .entry-form-category svg { width: 24px; height: 24px; display: block; }
@@ -420,6 +424,60 @@ input, textarea, button { font-family: inherit; font-size: inherit; }
   transition: all 0.12s;
   white-space: nowrap;
 }
+/* Category picker overlay for week view add button */
+.cat-picker-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 110;
+  background: transparent;
+}
+.cat-picker-overlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cat-picker-overlay.open .cat-picker-panel {
+  background: #fff;
+}
+.cat-picker-panel {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  width: calc(100% - 40px);
+  max-width: 320px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  animation: catPickerIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.cat-picker-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+  color: var(--text);
+}
+.cat-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.cat-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+  transition: all 0.12s;
+}
+.cat-picker-item:hover { background: #F0F5F5; border-color: #4ECDC4; }
+.cat-picker-item svg { width: 22px; height: 22px; display: block; flex-shrink: 0; }
 .sub-option-chip:hover {
   border-color: var(--primary);
   color: var(--primary);
@@ -1131,6 +1189,14 @@ canvas { display: block; width: 100%; height: auto; }
 
   <!-- Month Day Detail - floating bottom panel -->
   <div id="monthDayDetail" class="day-detail-panel"></div>
+
+  <!-- Category picker overlay (for week view add entry) -->
+  <div class="cat-picker-overlay" id="catPickerOverlay" onclick="closeCatPicker()">
+    <div class="cat-picker-panel" onclick="event.stopPropagation()">
+      <div class="cat-picker-title">选择分类</div>
+      <div class="cat-picker-grid" id="catPickerGrid"></div>
+    </div>
+  </div>
 
   <!-- ===== SETTINGS VIEW ===== -->
   <div class="view" id="viewSettings">
@@ -3408,7 +3474,7 @@ async function renderWeek() {
         </div>`;
     }
     // Add "+" button for adding new entry to this day
-    dayHTML += '<div style="text-align:center;padding:6px 0 2px;"><button onclick="event.stopPropagation();state._targetDate=\'' + ds + '\';openEntryForm(CATEGORIES[0])" style="width:28px;height:28px;border:none;border-radius:50%;background:#4ECDC4;color:#fff;font-size:16px;font-weight:300;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(78,205,196,0.3);line-height:1;">+</button></div>';
+    dayHTML += '<div style="text-align:center;padding:6px 0 2px;"><button onclick="event.stopPropagation();showCategoryPicker(\'' + ds + '\')" style="width:28px;height:28px;border:none;border-radius:50%;background:#4ECDC4;color:#fff;font-size:16px;font-weight:300;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(78,205,196,0.3);line-height:1;-webkit-tap-highlight-color:transparent;outline:none;">+</button></div>';
     dayHTML += '</div>'; // close day-body
 
     const dayDiv = document.createElement('div');
@@ -4539,6 +4605,24 @@ function editName() {
   }
 }
 
+function showCategoryPicker(dateStr) {
+  state._targetDate = dateStr;
+  var grid = document.getElementById('catPickerGrid');
+  grid.innerHTML = CATEGORIES.filter(function(c) { return c.id !== 'custom'; }).map(function(c) {
+    return '<div class="cat-picker-item" onclick="pickCategory(\'' + c.id + '\')">' + c.svg + '<span>' + getCatLabel(c.id, c.label) + '</span></div>';
+  }).join('');
+  document.getElementById('catPickerOverlay').classList.add('open');
+}
+function pickCategory(catId) {
+  document.getElementById('catPickerOverlay').classList.remove('open');
+  var cat = CATEGORIES.find(function(c) { return c.id === catId; });
+  if (cat) setTimeout(function() { openEntryForm(cat); }, 100);
+}
+function closeCatPicker() {
+  document.getElementById('catPickerOverlay').classList.remove('open');
+  state._targetDate = null;
+}
+
 function findCategory(id) {
   return CATEGORIES.find(c => c.id === id);
 }
@@ -4674,14 +4758,20 @@ function toggleSearchResult(el, eid) {
 (function() {
   let startX = 0, startY = 0;
   const mainViews = ['today', 'week', 'month']; // circular: today → week → month → today
+  // Lock all touch interactions when category picker is open
+  function isPopupOpen() {
+    return document.getElementById('catPickerOverlay').classList.contains('open');
+  }
   document.addEventListener('touchstart', (e) => {
+    if (isPopupOpen()) { startX = 0; return; }
     // Don't swipe when interacting with entry cards, form, or dialogs
     if (e.target.closest('.entry-card') || e.target.closest('.entry-form') || e.target.closest('.dialog-overlay') || e.target.closest('.day-detail-panel')) { startX = 0; return; }
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   }, { passive: true });
-  // Clamp scroll in day-detail-panel to prevent bounce from escaping
+  // Prevent all touch movement when picker is open
   document.addEventListener('touchmove', function(e) {
+    if (isPopupOpen()) { e.preventDefault(); return; }
     var panel = e.target.closest('.day-detail-panel');
     if (panel && panel.classList.contains('open')) {
       if (panel.scrollTop <= 0) panel.scrollTop = 1;

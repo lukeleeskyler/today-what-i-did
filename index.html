@@ -1110,7 +1110,8 @@ canvas { display: block; width: 100%; height: auto; }
     <div class="timeline-section">
       <div class="timeline-header" style="cursor:pointer;" onclick="const tl=document.getElementById('timeline');tl.classList.toggle('collapsed');this.querySelector('.tl-toggle').textContent=tl.classList.contains('collapsed')?'▲':'▼'">
         <div class="timeline-title"><span id="timelineTitle">📋 <span data-i18n="today.records"></span></span></div>
-        <span style="display:flex;align-items:center;gap:8px;">
+        <span style="display:flex;align-items:center;gap:6px;">
+          <span id="todayRecordCount" style="font-size:11px;color:var(--text-secondary);font-weight:500;"></span>
           <span id="todayTotalSpend" style="font-size:11px;font-weight:600;color:var(--c-spend);"></span>
           <span class="tl-toggle" style="font-size:10px;color:var(--text);">▼</span>
         </span>
@@ -1866,6 +1867,14 @@ function getBeyondLevelTitle(lvl) {
   return `Lv.${lvl} Infinite Transcender`;
 }
 function t(key) { return I18N.t(key); }
+function formatAmount(val) {
+  var n = typeof val === 'number' ? val : parseFloat(val) || 0;
+  if (n >= 10000) {
+    if (I18N._locale === 'zh') return (n / 10000).toFixed(1) + '万';
+    return (n / 1000).toFixed(1) + 'k';
+  }
+  return n.toFixed(0);
+}
 I18N.init();
 
 // ============================================================
@@ -2781,7 +2790,8 @@ async function renderToday(targetDate) {
 
   // Show today's total spend in timeline header
   const todaySpendTotal = entries.filter(function(e) { return e.category === 'spend' || (e.category === 'eat' && getEntryAmount(e) > 0); }).reduce(function(s, e) { return s + getEntryAmount(e); }, 0);
-  document.getElementById('todayTotalSpend').textContent = todaySpendTotal > 0 ? t('total') + ' ¥' + todaySpendTotal.toFixed(0) : '';
+  document.getElementById('todayRecordCount').textContent = entries.length > 0 ? entries.length + ' ' + t('records') : '';
+  document.getElementById('todayTotalSpend').textContent = todaySpendTotal > 0 ? t('total') + ' ¥' + formatAmount(todaySpendTotal) : '';
 
   // Populate image lookup
   _imgLookup = {};
@@ -3310,8 +3320,8 @@ async function renderWeek() {
   document.getElementById('weekStats').innerHTML = `
     <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label" data-i18n="stat.total"></div></div>
     <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label" data-i18n="stat.days"></div></div>
-    <div class="stat-card" style="cursor:pointer;" onclick="showWeekReview(${state.weekOffset})"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label">${t('total.spend')} ›</div></div>
-    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${totalEarn.toFixed(0)}</div><div class="stat-label" data-i18n="total.earn"></div></div>` : ''}
+    <div class="stat-card" style="cursor:pointer;" onclick="showWeekReview(${state.weekOffset})"><div class="stat-value">¥${formatAmount(totalSpend)}</div><div class="stat-label">${t('total.spend')} ›</div></div>
+    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${formatAmount(totalEarn)}</div><div class="stat-label" data-i18n="total.earn"></div></div>` : ''}
   `;
 
   // Category chart — horizontal bars with icons (max 50 fills bar)
@@ -3407,8 +3417,8 @@ async function renderWeek() {
     // Build day HTML
     const daySpend = dayEntries.filter(e => e.category === 'spend' || (e.category === 'eat' && getEntryAmount(e) > 0)).reduce((s, e) => s + getEntryAmount(e), 0);
     const dayEarn = dayEntries.filter(e => e.category === 'earn').reduce((s, e) => s + getEntryAmount(e), 0);
-    const daySpendStr = daySpend > 0 ? ` <span style="color:var(--c-spend);font-weight:700;">¥${daySpend.toFixed(1)}</span>` : '';
-    const dayEarnStr = dayEarn > 0 ? ` <span style="color:var(--c-earn);font-weight:700;">¥${dayEarn.toFixed(1)}</span>` : '';
+    const daySpendStr = daySpend > 0 ? ` <span style="color:var(--c-spend);font-weight:700;">¥${formatAmount(daySpend)}</span>` : '';
+    const dayEarnStr = dayEarn > 0 ? ` <span style="color:var(--c-earn);font-weight:700;">¥${formatAmount(dayEarn)}</span>` : '';
     const dayGroupId = `day_${ds}`.replace(/-/g, '');
     // First day default expanded, others default collapsed (unless user overrode)
     const isDayCollapsed = _dayCollapsed[ds] !== undefined ? _dayCollapsed[ds] : (dayCount > 1);
@@ -3427,7 +3437,8 @@ async function renderWeek() {
     }
     const earnLabel = t('total.earn');
     const spendLabel = t('total.spend');
-    let dayHTML = `<div class="day-group-header" style="cursor:pointer;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;"><span style="font-size:13px;font-weight:600;color:var(--text);">${dateLabel}</span>${dayEarnStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">' + earnLabel + '</span>' + dayEarnStr : ''}${daySpendStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">' + spendLabel + '</span>' + daySpendStr : ''} <span class="day-toggle" style="font-size:10px;color:var(--text);margin-left:6px;">${isDayCollapsed?'▲':'▼'}</span></div>
+    var dayCountStr = dayEntries.length + ' ' + t('records');
+    let dayHTML = `<div class="day-group-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="const db=document.getElementById('${dayGroupId}');db.classList.toggle('collapsed');const coll=db.classList.contains('collapsed');this.querySelector('.day-toggle').textContent=coll?'▲':'▼';_dayCollapsed['${ds}']=coll;"><span style="font-size:13px;font-weight:600;color:var(--text);">${dateLabel}</span> <span style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:var(--text);font-weight:500;">${dayCountStr}</span>${dayEarnStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">' + earnLabel + '</span>' + dayEarnStr : ''}${daySpendStr ? ' <span style="font-size:11px;color:var(--text-tertiary);">' + spendLabel + '</span>' + daySpendStr : ''} <span class="day-toggle" style="font-size:10px;color:var(--text);">${isDayCollapsed?'▲':'▼'}</span></span></div>
     <div id="${dayGroupId}" class="day-body collapsible-body${isDayCollapsed?' collapsed':''}">`;
     CATEGORIES.forEach(cat => {
       const list = dayGrouped[cat.id];
@@ -3535,8 +3546,8 @@ async function renderMonth() {
   document.getElementById('monthStats').innerHTML = `
     <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label" data-i18n="stat.total"></div></div>
     <div class="stat-card"><div class="stat-value">${daysActive}</div><div class="stat-label" data-i18n="record.days"></div></div>
-    <div class="stat-card"><div class="stat-value">¥${totalSpend.toFixed(0)}</div><div class="stat-label" data-i18n="stat.spend"></div></div>
-    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${totalEarn.toFixed(0)}</div><div class="stat-label" data-i18n="total.earn"></div></div>` : ''}
+    <div class="stat-card"><div class="stat-value">¥${formatAmount(totalSpend)}</div><div class="stat-label" data-i18n="stat.spend"></div></div>
+    ${totalEarn > 0 ? `<div class="stat-card"><div class="stat-value" style="color:var(--c-earn);">¥${formatAmount(totalEarn)}</div><div class="stat-label" data-i18n="total.earn"></div></div>` : ''}
     <div class="stat-card"><div class="stat-value">${avgPerDay}</div><div class="stat-label" data-i18n="stat.avg"></div></div>
   `;
 
@@ -3613,7 +3624,7 @@ async function renderMonth() {
           <div style="flex:1;height:18px;background:#F0F0F0;border-radius:9px;overflow:hidden;position:relative;">
             <div class="spend-bar-fill-bar" style="height:100%;width:${pct}%;background:${barColor};border-radius:9px;transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);min-width:0;" data-w="${pct}"></div>
           </div>
-          <span class="spend-bar-label" style="font-size:10px;font-weight:600;color:${barColor};width:56px;text-align:right;flex-shrink:0;opacity:0;transition:opacity 0.2s 0.4s ease;">${labelPrefix}¥${absVal.toFixed(0)}</span>
+          <span class="spend-bar-label" style="font-size:10px;font-weight:600;color:${barColor};width:56px;text-align:right;flex-shrink:0;opacity:0;transition:opacity 0.2s 0.4s ease;">${labelPrefix}¥${formatAmount(absVal)}</span>
         </div>`;
     });
     spendHtml += '</div>';
@@ -3625,14 +3636,14 @@ async function renderMonth() {
         <div style="flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden;">
           <div style="height:100%;width:${(monthlyOutgo / netMax) * 100}%;background:#5B7BA3;border-radius:4px;transition:width 0.6s ease;"></div>
         </div>
-        <span style="font-size:10px;font-weight:600;color:#5B7BA3;width:50px;text-align:right;flex-shrink:0;">¥${monthlyOutgo.toFixed(0)}</span>
+        <span style="font-size:10px;font-weight:600;color:#5B7BA3;width:50px;text-align:right;flex-shrink:0;">¥${formatAmount(monthlyOutgo)}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
         <span style="font-size:10px;color:var(--text-tertiary);width:32px;text-align:right;flex-shrink:0;" data-i18n="earn"></span>
         <div style="flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden;">
           <div style="height:100%;width:${(monthlyIncome / netMax) * 100}%;background:#10B981;border-radius:4px;transition:width 0.6s ease;"></div>
         </div>
-        <span style="font-size:10px;font-weight:600;color:#10B981;width:50px;text-align:right;flex-shrink:0;">¥${monthlyIncome.toFixed(0)}</span>
+        <span style="font-size:10px;font-weight:600;color:#10B981;width:50px;text-align:right;flex-shrink:0;">¥${formatAmount(monthlyIncome)}</span>
       </div>
     </div>`;
     const sc = document.getElementById('spendChartContainer');
@@ -4275,7 +4286,7 @@ async function showWeekReview(offset) {
         <div style="font-size:11px;color:var(--text-tertiary);" data-i18n="stat.days"></div>
       </div>
       <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:20px;font-weight:800;color:var(--c-spend);">¥${totalSpend.toFixed(0)}</div>
+        <div style="font-size:20px;font-weight:800;color:var(--c-spend);">¥${formatAmount(totalSpend)}</div>
         <div style="font-size:11px;color:var(--text-tertiary);" data-i18n="stat.spend"></div>
       </div>
       <div style="background:#F9FBFB;border-radius:10px;padding:12px;text-align:center;">
@@ -4310,8 +4321,8 @@ async function showWeekReview(offset) {
     html += '<div id="weekReviewDays">';
     sortedDays.forEach(d => {
       const dd = dayData[d];
-      const earnStr = dd.earn > 0 ? ` <span style="color:var(--c-earn);font-weight:600;">+¥${dd.earn.toFixed(0)}</span>` : '';
-      const spendStr = dd.spend > 0 ? ` <span style="color:var(--c-spend);font-weight:600;">¥${dd.spend.toFixed(0)}</span>` : '';
+      const earnStr = dd.earn > 0 ? ` <span style="color:var(--c-earn);font-weight:600;">+¥${formatAmount(dd.earn)}</span>` : '';
+      const spendStr = dd.spend > 0 ? ` <span style="color:var(--c-spend);font-weight:600;">¥${formatAmount(dd.spend)}</span>` : '';
       const weekdays = ['日','一','二','三','四','五','六'];
       var dateObj = new Date(d);
       var weekday = weekdays[dateObj.getDay()];

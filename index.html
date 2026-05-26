@@ -2379,7 +2379,7 @@ async function submitEntry() {
   if (!text && !state.selectedImage) { showToast(t('input.empty')); return; }
 
   const amtField = parseFloat(document.getElementById('formAmount').value) || 0;
-  const amount = (cat.id === 'spend' || cat.id === 'earn' || cat.id === 'eat') ? (amtField || parseAmountFromText(text)) : 0;
+  const amount = amtField || ((cat.id === 'spend' || cat.id === 'eat') ? parseAmountFromText(text) : 0);
 
   if (state.editingId) {
     // Update existing entry — preserve original date/time
@@ -2480,14 +2480,9 @@ async function editEntryById(id, entryData) {
   document.getElementById('formText').value = entryData.text || '';
 
   const amtInput = document.getElementById('formAmount');
-  if (cat.id === 'spend' || cat.id === 'eat' || cat.id === 'earn') {
-    amtInput.style.display = 'block';
-    amtInput.placeholder = '¥';
-    amtInput.value = entryData.amount || '';
-  } else {
-    amtInput.style.display = 'none';
-    amtInput.value = '';
-  }
+  amtInput.style.display = 'block';
+  amtInput.placeholder = '¥';
+  amtInput.value = entryData.amount || '';
 
   // Restore image
   removeSelectedImage();
@@ -2536,13 +2531,8 @@ function openEntryForm(category) {
   document.getElementById('formText').placeholder = t('text.placeholder').replace('...', ' ') + getCatLabel(category.id, category.label) + '...';
 
   const amtInput = document.getElementById('formAmount');
-  if (category.id === 'spend' || category.id === 'earn' || category.id === 'eat') {
-    amtInput.style.display = 'block';
-    amtInput.placeholder = category.id === 'earn' ? '¥' : '¥';
-  } else {
-    amtInput.style.display = 'none';
-    amtInput.value = '';
-  }
+  amtInput.style.display = 'block';
+  amtInput.placeholder = '¥';
 
   // Render sub-option chips
   const subContainer = document.getElementById('subOptions');
